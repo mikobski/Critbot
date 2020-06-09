@@ -1,0 +1,1 @@
+Folder ten zawiera oprogramowanie pozwalające na zdalne sterowanie robotem
