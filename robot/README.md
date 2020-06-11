@@ -1,1 +1,1 @@
-Folder ten zawiera oprogramowanie samego robota.
+Folder ten zawiera oprogramowanie sterujące robota.
