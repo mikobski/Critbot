@@ -1,0 +1,1 @@
+Folder ten zawiera kod obsługi ROS-a.
