@@ -53,10 +53,6 @@ echo "!  Updating Ubuntu repositories"
 sudo apt update
 sudo apt-get update
 
-## Gazebo simulator dependencies
-echo "!  Installing gazebo dependencies"
-sudo apt-get install protobuf-compiler libeigen3-dev libopencv-dev -y
-
 ## Get ROS/Gazebo
 echo "!  Installing ROS and GAZEBO"
 sudo apt install ros-melodic-desktop-full -y
