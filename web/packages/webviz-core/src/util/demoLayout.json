@@ -1,0 +1,180 @@
+{
+  "layout": {
+    "direction": "row",
+    "first": {
+      "direction": "column",
+      "second": "3D Panel!1bkpp87",
+      "first": "3D Panel!309p5r8"
+    },
+    "second": {
+      "direction": "column",
+      "second": {
+        "first": "RawMessages!48wvnv5",
+        "second": "Plot!ry117m",
+        "direction": "row",
+        "splitPercentage": 52.15845606907058
+      },
+      "first": {
+        "first": "ImageViewPanel!vn68db",
+        "second": {
+          "direction": "row",
+          "second": "DiagnosticStatusPanel!49o9wd0",
+          "first": "DiagnosticSummary!3f5wist",
+          "splitPercentage": 36.61757237176232
+        },
+        "direction": "column",
+        "splitPercentage": 50.889679715302485
+      },
+      "splitPercentage": 67.01112877583466
+    },
+    "splitPercentage": 51.091924834941594
+  },
+  "savedProps": {
+    "3D Panel!309p5r8": {
+      "checkedKeys": [
+        "/cloud_nodelet/parameter_descriptions",
+        "/cloud_nodelet/parameter_updates",
+        "/diagnostics",
+        "/diagnostics_agg",
+        "/diagnostics_toplevel_state",
+        "/gps/fix",
+        "/gps/rtkfix",
+        "/gps/time",
+        "/image_raw",
+        "/obs1/gps/fix",
+        "/obs1/gps/rtkfix",
+        "/obs1/gps/time",
+        "/radar/range",
+        "/radar/tracks",
+        "/rosout",
+        "/tf",
+        "/velodyne_nodelet_manager/bond",
+        "/velodyne_packets",
+        "/velodyne_points",
+        "name:Topics"
+      ],
+      "expandedKeys": [],
+      "followTf": "velodyne",
+      "cameraState": {
+        "targetOffset": [0.09330692712710864, 0.04332363563045752, 0],
+        "distance": 64.9136785575918,
+        "perspective": true,
+        "phi": 0,
+        "thetaOffset": 1.136103520496095,
+        "fovy": 0.7853981633974483,
+        "near": 0.01,
+        "far": 5000
+      },
+      "modifiedNamespaceTopics": [],
+      "pinTopics": false,
+      "topicSettings": {
+        "/velodyne_points": {
+          "colorField": "ring",
+          "pointShape": "circle",
+          "colorMode": {
+            "mode": "rainbow",
+            "colorField": "ring"
+          },
+          "pointSize": 2
+        }
+      },
+      "followOrientation": false
+    },
+    "3D Panel!1bkpp87": {
+      "checkedKeys": [
+        "/cloud_nodelet/parameter_descriptions",
+        "/cloud_nodelet/parameter_updates",
+        "/diagnostics",
+        "/diagnostics_agg",
+        "/diagnostics_toplevel_state",
+        "/gps/fix",
+        "/gps/rtkfix",
+        "/gps/time",
+        "/image_raw",
+        "/obs1/gps/fix",
+        "/obs1/gps/rtkfix",
+        "/obs1/gps/time",
+        "/radar/range",
+        "/radar/tracks",
+        "/rosout",
+        "/tf",
+        "/velodyne_nodelet_manager/bond",
+        "/velodyne_packets",
+        "/velodyne_points",
+        "name:Topics"
+      ],
+      "expandedKeys": ["name:Topics"],
+      "followTf": "velodyne",
+      "cameraState": {
+        "targetOffset": [2.460426157758374, 0.24321332222014067, 0],
+        "distance": 4.224236212354354,
+        "perspective": true,
+        "phi": 1.2286699312074771,
+        "thetaOffset": 1.477398015435503,
+        "fovy": 0.7853981633974483,
+        "near": 0.01,
+        "far": 5000
+      },
+      "modifiedNamespaceTopics": [],
+      "pinTopics": false,
+      "topicSettings": {
+        "/velodyne_points": {
+          "colorField": "ring",
+          "pointSize": 4,
+          "pointShape": "square",
+          "colorMode": {
+            "mode": "gradient",
+            "colorField": "intensity",
+            "minValue": 0,
+            "maxValue": 6,
+            "minColor": "#FF0000",
+            "maxColor": "#A8AEEE"
+          }
+        }
+      }
+    },
+    "ImageViewPanel!vn68db": {
+      "cameraTopic": "/image_raw",
+      "enabledMarkerNames": [],
+      "scale": 0.2,
+      "transformMarkers": true,
+      "synchronize": false,
+      "mode": "fit",
+      "zoomPercentage": 50.78125,
+      "offset": [47.53125, -0.484375]
+    },
+    "DiagnosticStatusPanel!49o9wd0": {
+      "topicToRender": "/diagnostics",
+      "selectedHardwareId": "Velodyne HDL-32E",
+      "selectedName": "velodyne_nodelet_manager: velodyne_packets topic status"
+    },
+    "RawMessages!48wvnv5": {
+      "topicName": "/radar/tracks",
+      "diffTopicName": ""
+    },
+    "Plot!ry117m": {
+      "paths": [
+        {
+          "value": "/radar/tracks.tracks[:].rate",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        },
+        {
+          "value": "/radar/tracks.tracks[:].accel",
+          "enabled": true,
+          "timestampMethod": "receiveTime"
+        }
+      ],
+      "minYValue": "-10",
+      "maxYValue": "10",
+      "showLegend": true,
+      "xAxisVal": "index"
+    }
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "linkedGlobalVariables": [],
+  "playbackConfig": {
+    "speed": 1
+  }
+}
