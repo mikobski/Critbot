@@ -1,0 +1,25 @@
+//  Copyright (c) 2018-present, Cruise LLC
+//
+//  This source code is licensed under the Apache License, Version 2.0,
+//  found in the LICENSE file in the root directory of this source tree.
+//  You may not use this file except in compliance with the License.
+
+.button {
+  display: flex;
+  max-width: 100%;
+  padding: 4px 8px;
+
+  .title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex-shrink: 1;
+    display: flex;
+    align-items: center;
+  }
+}
+
+option:disabled {
+  color: gray;
+  cursor: not-allowed;
+}
