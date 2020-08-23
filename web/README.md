@@ -1,5 +1,15 @@
 # Interfejs graficzny strony internetowej
 
+## Instalacja Node.js i NPM
+#### Linux
+Uruchom `./install_environment_web.sh`.
+#### Windows
+Zainstaluj z linku dla [x64](https://nodejs.org/dist/latest-v10.x/node-v10.22.0-x64.msi) lub [x86](https://nodejs.org/dist/latest-v10.x/node-v10.22.0-x86.msi).
+
+Może być konieczne ponowne odpalenie konsoli lub reset, aby zaciągnęło nowe zmienne środowiskowe. Dla sprawdzenia można uruchomić komendy:
+* `node -v` powinna wypluć `v10.22.0`
+*  `npm -v` powinna wypluć `6.14.6`
+
 ## Budowanie Webviz
 Uruchom w folderze *web/*:
 * `npm run bootstrap` - dociąganie zależności
