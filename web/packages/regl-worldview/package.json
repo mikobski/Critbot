@@ -19,7 +19,7 @@
     "build": "rollup -c",
     "build:watch": "rollup -c --watch",
     "clean": "rimraf dist",
-    "watch": "NODE_ENV=development npm run build:watch"
+    "watch": "set NODE_ENV=development&& npm run build:watch"
   },
   "publishConfig": {
     "access": "public"

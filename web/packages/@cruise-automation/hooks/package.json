@@ -12,7 +12,7 @@
     "build": "rollup -c",
     "build:watch": "rollup -c --watch",
     "clean": "rimraf dist",
-    "watch": "NODE_ENV=development npm run build:watch"
+    "watch": "set NODE_ENV=development&& npm run build:watch"
   },
   "devDependencies": {
     "flow-bin": "0.80.0"
