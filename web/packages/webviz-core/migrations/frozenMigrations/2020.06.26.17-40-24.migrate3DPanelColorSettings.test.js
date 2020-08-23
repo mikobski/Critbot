@@ -5,7 +5,7 @@
 //  This source code is licensed under the Apache License, Version 2.0,
 //  found in the LICENSE file in the root directory of this source tree.
 //  You may not use this file except in compliance with the License.
-import { migrate3DPanelColorSettings } from "webviz-core/migrations/frozenMigrations/2020.06.26.17:40:24.migrate3DPanelColorSettings";
+import { migrate3DPanelColorSettings } from "webviz-core/migrations/frozenMigrations/2020.06.26.17-40-24.migrate3DPanelColorSettings";
 
 describe("migrate3DPanelColorSettings", () => {
   it("converts rgba string to rgba objects ", () => {

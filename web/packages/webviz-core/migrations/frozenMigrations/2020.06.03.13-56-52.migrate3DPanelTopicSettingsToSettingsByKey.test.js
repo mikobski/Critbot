@@ -6,7 +6,7 @@
 //  found in the LICENSE file in the root directory of this source tree.
 //  You may not use this file except in compliance with the License.
 
-import { migrate3DPanelTopicSettingsToSettingsByKey } from "webviz-core/migrations/frozenMigrations/2020.06.03.13:56:52.migrate3DPanelTopicSettingsToSettingsByKey";
+import { migrate3DPanelTopicSettingsToSettingsByKey } from "webviz-core/migrations/frozenMigrations/2020.06.03.13-56-52.migrate3DPanelTopicSettingsToSettingsByKey";
 
 describe("migrate3DPanelTopicSettingsToSettingsByKey", () => {
   it("migrates topicSettings to settingsByKey", () => {

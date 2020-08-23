@@ -6,7 +6,7 @@
 //  found in the LICENSE file in the root directory of this source tree.
 //  You may not use this file except in compliance with the License.
 
-import { migrate3DPanelFeatureGroupKeys } from "webviz-core/migrations/frozenMigrations/2020.05.14.13:39:17.migrate3DPanelFeatureGroupKeys";
+import { migrate3DPanelFeatureGroupKeys } from "webviz-core/migrations/frozenMigrations/2020.05.14.13-39-17.migrate3DPanelFeatureGroupKeys";
 
 const TOPIC_CONFIG = {
   name: "root",
