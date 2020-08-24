@@ -122,7 +122,7 @@
     "lerna": "lerna",
     "lint": "eslint . --max-warnings=0 && prettier -l '**/*.css' --ignore-path .eslintignore",
     "lint:fix": "eslint . --fix && prettier --write '**/*.css' --ignore-path .eslintignore",
-    "test": "set NODE_ENV=test&& jest --config jest/jest.config.js",
+    "test": "NODE_ENV=test jest --config jest/jest.config.js",
     "link": "lerna link --force-local",
     "flow": "flow",
     "flow-typed-rebuild": "rm -rf flow-typed/ && flow-typed install && flow-typed install --rootDir packages/@cruise-automation/hooks && flow-typed install --rootDir packages/@cruise-automation/button && flow-typed install --rootDir packages/@cruise-automation/tooltip && flow-typed install --rootDir packages/regl-worldview",
