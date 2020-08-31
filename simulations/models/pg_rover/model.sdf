@@ -17,14 +17,15 @@
         <mass>10</mass>
       </inertial>
       <visual name='visual'>
+      <pose>0 0 -0.1375 1.5707 0 0</pose>
         <geometry>
-          <box>
-            <size>0.5 0.44 0.275</size>
-          </box>
+          <mesh>
+            <uri>model://pg_rover/meshes/body.stl</uri>
+          </mesh>
         </geometry>
         <material>
           <script>
-            <name>Gazebo/Orange</name>
+            <name>Gazebo/Turquoise</name>
           </script>
         </material>
       </visual>
@@ -56,16 +57,16 @@
         <mass>0.25</mass>
       </inertial>
       <visual name="front_right_visual">
-      <pose>0 0 0 -1.5707 0 0</pose>
+      <pose>0 0 0 3.1415 0 0</pose>
         <geometry>
-          <cylinder>
-            <radius>0.11</radius>
-            <length>0.05</length>
-          </cylinder>
+          <mesh>
+            <uri>model://pg_rover/meshes/wheel.stl</uri>
+            <scale>0.6188 0.4374 0.6188</scale>
+          </mesh>
         </geometry>
         <material>
           <script>
-            <name>Gazebo/Lane_1</name>
+            <name>Gazebo/Grey</name>
           </script>
         </material>
       </visual>
@@ -113,16 +114,16 @@
         <mass>0.25</mass>
       </inertial>
       <visual name="rear_right_visual">
-      <pose>0 0 0 -1.5707 0 0</pose>
+      <pose>0 0 0 3.1415 0 0</pose>
         <geometry>
-          <cylinder>
-            <radius>.11</radius>
-            <length>.05</length>
-          </cylinder>
+          <mesh>
+            <uri>model://pg_rover/meshes/wheel.stl</uri>
+            <scale>0.6188 0.4374 0.6188</scale>
+          </mesh>
         </geometry>
         <material>
           <script>
-            <name>Gazebo/Lane_1</name>
+            <name>Gazebo/Grey</name>
           </script>
         </material>
       </visual>
@@ -170,16 +171,16 @@
         <mass>0.25</mass>
       </inertial>
       <visual name="front_left_visual">
-      <pose>0 0 0 -1.5707 0 0</pose>
+      <pose>0 0 0 3.1415 0 0</pose>
         <geometry>
-          <cylinder>
-            <radius>.11</radius>
-            <length>.05</length>
-          </cylinder>
+          <mesh>
+            <uri>model://pg_rover/meshes/wheel.stl</uri>
+            <scale>0.6188 0.4374 0.6188</scale>
+          </mesh>
         </geometry>
         <material>
           <script>
-            <name>Gazebo/Lane_1</name>
+            <name>Gazebo/Grey</name>
           </script>
         </material>
       </visual>
@@ -227,16 +228,16 @@
         <mass>0.25</mass>
       </inertial>
       <visual name="rear_left_visual">
-      <pose>0 0 0 -1.5707 0 0</pose>
+      <pose>0 0 0 3.1415 0 0</pose>
         <geometry>
-          <cylinder>
-            <radius>.11</radius>
-            <length>.05</length>
-          </cylinder>
+          <mesh>
+            <uri>model://pg_rover/meshes/wheel.stl</uri>
+            <scale>0.6188 0.4374 0.6188</scale>
+          </mesh>
         </geometry>
         <material>
           <script>
-            <name>Gazebo/Lane_1</name>
+            <name>Gazebo/Grey</name>
           </script>
         </material>
       </visual>
@@ -299,16 +300,13 @@
     </joint>
 
     <!-- lidar -->
-    <model name="lidar">
+    <include>
+      <uri>model://rplidar_s1</uri>
       <pose>0 0 0.253 0 0 </pose>
-      <include>
-        <uri>model://rplidar_s1</uri>
-        <pose>0 0 0 0 0 0</pose>
-      </include>
-    </model>
+    </include>
     <joint type="fixed" name="lidar_joint">
-      <child>rplidar_s1::link</child>
-      <parent>chassis</parent>
+      <parent>chassis</parent>      
+      <child>lidar_model::lidar_link</child>
       <axis>
         <xyz>0 0 1</xyz>
         <use_parent_model_frame>true</use_parent_model_frame>
