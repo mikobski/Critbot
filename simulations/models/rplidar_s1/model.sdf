@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
-  <model name="rplidar_s1">
-    <link name="link">
+  <model name="lidar_model">
+    <link name="lidar_link">
       <collision name='collision'>
         <geometry>
           <cylinder>
@@ -20,10 +20,15 @@
             <length>0.051</length>
           </cylinder>
         </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+          </script>
+        </material>
       </visual>
-      <sensor type="ray" name="laser">
+      <sensor type="ray" name="lidar_sensor">
         <pose>0 0 0.03 0 0 0</pose>
-        <visualize>true</visualize>
+        <visualize>false</visualize>
         <update_rate>40</update_rate>
         <ray>
           <scan>
@@ -49,7 +54,7 @@
             <stddev>0.01</stddev>
           </noise>
         </ray>
-        <plugin name="lidar" filename="libgazebo_ros_laser.so">
+        <plugin name="lidar_plugin" filename="libgazebo_ros_laser.so">
           <topicName>/rplidar/laser/scan</topicName>
           <frameName>base_link</frameName>
         </plugin>
