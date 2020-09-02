@@ -10,8 +10,22 @@
           </cylinder>
         </geometry>
       </collision>
-      <inertial>
-        <mass>0.105</mass>
+        <inertial>
+        <!-- Volume:  1.2197563200e-04 -->
+        <mass> 0.105 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00  0.0000000000e+00 -0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  4.2743270295e-05 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  4.2743270295e-05 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  3.9969045043e-05 </izz>
+        </inertia>
       </inertial>
       <visual name="visual">
         <geometry>
@@ -26,6 +40,7 @@
           </script>
         </material>
       </visual>
+
       <sensor type="ray" name="lidar_sensor">
         <pose>0 0 0.03 0 0 0</pose>
         <visualize>false</visualize>
@@ -59,6 +74,7 @@
           <frameName>base_link</frameName>
         </plugin>
       </sensor>
+
     </link>
   </model>
 </sdf>
