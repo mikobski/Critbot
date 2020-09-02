@@ -13,28 +13,28 @@ import validateVersions from "webviz-core/migrations/frozenHelpers/validateVersi
 const migrationsByVersion = {
   "001": [],
   "002": [
-    require("webviz-core/migrations/frozenMigrations/2020.05.06.00:00:02.migrateNodePlaygroundNodesToObjects").default,
-    require("webviz-core/migrations/frozenMigrations/2020.05.06.00:00:03.migrate3DPanel").default,
-    require("webviz-core/migrations/frozenMigrations/2020.05.06.00:00:04.migrateGlobalDataToGlobalVariables").default,
-    require("webviz-core/migrations/frozenMigrations/2020.05.06.00:00:05.migrateSourcePrefix").default,
+    require("webviz-core/migrations/frozenMigrations/2020.05.06.00-00-02.migrateNodePlaygroundNodesToObjects").default,
+    require("webviz-core/migrations/frozenMigrations/2020.05.06.00-00-03.migrate3DPanel").default,
+    require("webviz-core/migrations/frozenMigrations/2020.05.06.00-00-04.migrateGlobalDataToGlobalVariables").default,
+    require("webviz-core/migrations/frozenMigrations/2020.05.06.00-00-05.migrateSourcePrefix").default,
   ],
   "003": [
-    require("webviz-core/migrations/frozenMigrations/2020.05.14.13:39:17.migrate3DPanelFeatureGroupKeys").default,
+    require("webviz-core/migrations/frozenMigrations/2020.05.14.13-39-17.migrate3DPanelFeatureGroupKeys").default,
   ],
   "004": [
-    require("webviz-core/migrations/frozenMigrations/2020.06.02.11:27:59.addDefaultPlaybackConfig").default,
-    require("webviz-core/migrations/frozenMigrations/2020.06.01.11:34:51.migrate3DPanelPointCloudHexColors").default,
+    require("webviz-core/migrations/frozenMigrations/2020.06.02.11-27-59.addDefaultPlaybackConfig").default,
+    require("webviz-core/migrations/frozenMigrations/2020.06.01.11-34-51.migrate3DPanelPointCloudHexColors").default,
   ],
   "005": [
-    require("webviz-core/migrations/frozenMigrations/2020.06.02.13:56:52.migrate3DPanelUncategorizedNode").default,
-    require("webviz-core/migrations/frozenMigrations/2020.06.03.13:56:52.migrate3DPanelTopicSettingsToSettingsByKey")
+    require("webviz-core/migrations/frozenMigrations/2020.06.02.13-56-52.migrate3DPanelUncategorizedNode").default,
+    require("webviz-core/migrations/frozenMigrations/2020.06.03.13-56-52.migrate3DPanelTopicSettingsToSettingsByKey")
       .default,
   ],
   "006": [],
   "007": [],
-  "008": [require("webviz-core/migrations/frozenMigrations/2020.06.26.17:40:24.migrate3DPanelColorSettings").default],
+  "008": [require("webviz-core/migrations/frozenMigrations/2020.06.26.17-40-24.migrate3DPanelColorSettings").default],
   "009": [
-    require("webviz-core/migrations/frozenMigrations/2020.07.07.11:17:28.prefixCollapsedSectionsWithDiagnosticName.js")
+    require("webviz-core/migrations/frozenMigrations/2020.07.07.11-17-28.prefixCollapsedSectionsWithDiagnosticName.js")
       .default,
   ],
 };

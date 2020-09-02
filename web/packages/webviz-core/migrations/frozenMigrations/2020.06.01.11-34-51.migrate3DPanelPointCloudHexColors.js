@@ -8,7 +8,7 @@
 
 import tinyColor from "tinycolor2";
 
-import { migrate3DPanelSavedProps } from "webviz-core/migrations/frozenMigrations/2020.05.06.00:00:03.migrate3DPanel";
+import { migrate3DPanelSavedProps } from "webviz-core/migrations/frozenMigrations/2020.05.06.00-00-03.migrate3DPanel";
 
 type ThreeDimensionalVizConfig = any;
 
