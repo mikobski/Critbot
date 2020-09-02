@@ -2,25 +2,40 @@
 <sdf version='1.5'>
   <model name="pg_rover">
     <pose>0 0 0.5 0 0 0</pose>
-      
+
     <!-- chassis -->
     <link name='chassis'>
-      <pose>0 0 0.09 0 0 0</pose>
+      <pose>0 0 0 1.5707 0 0</pose>
+      <inertial>
+        <!-- Volume:  5.1700000000e-02 -->
+        <mass> 10.0 </mass>
+
+        <!-- Center of mass:  1.0000000000e-08  1.2317375000e-01  0.0000000000e+00 -->
+        <pose>  1.0000000000e-08  0.7567375000e-01  0.0000000000e+00 0 0 0 </pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  2.1855000000e-01 </ixx>
+          <ixy> -3.8894003868e-09 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  3.2977307544e-01 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  2.2565638298e-01 </izz>
+        </inertia>
+      </inertial>
       <collision name='collision'>
+        <pose>0 0.09 0 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.5 0.44 0.275</size>
+            <size>0.5 0.275 0.44</size>
           </box>
         </geometry>
       </collision>
-      <inertial>
-        <mass>10</mass>
-      </inertial>
       <visual name='visual'>
-      <pose>0 0 -0.1375 1.5707 0 0</pose>
+        <pose>0 -0.0475 0 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://pg_rover/meshes/body.stl</uri>
+            <uri>model://pg_rover/meshes/body.dae</uri>
           </mesh>
         </geometry>
         <material>
@@ -42,26 +57,48 @@
             <length>0.05</length>
           </cylinder>
         </geometry>
+        <max_contacts>1</max_contacts>
         <surface>
           <friction>
             <ode>
               <mu>100000.0</mu>
               <mu2>100000.0</mu2>
+              <fdir1>0 0 1</fdir1>
               <slip1>0.0</slip1>
               <slip2>0.0</slip2>
             </ode>
           </friction>
+          <contact>
+            <ode>
+              <min_depth>0.005</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
         </surface>
       </collision>
       <inertial>
-        <mass>0.25</mass>
+        <!-- Volume:  1.8790278320e-03 -->
+        <mass> 0.25 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00 -0.0000000000e+00  0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  7.9974445522e-04 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  1.4953222622e-03 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  7.9974445522e-04 </izz>
+        </inertia>
       </inertial>
       <visual name="front_right_visual">
       <pose>0 0 0 3.1415 0 0</pose>
         <geometry>
           <mesh>
-            <uri>model://pg_rover/meshes/wheel.stl</uri>
-            <scale>0.6188 0.4374 0.6188</scale>
+             <uri>model://pg_rover/meshes/wheel.stl</uri>
+             <scale>0.6188 0.4374 0.6188</scale>
           </mesh>
         </geometry>
         <material>
@@ -99,19 +136,41 @@
             <length>.05</length>
           </cylinder>
         </geometry>
+        <max_contacts>1</max_contacts>
         <surface>
           <friction>
             <ode>
               <mu>100000.0</mu>
               <mu2>100000.0</mu2>
+              <fdir1>0 0 1</fdir1>
               <slip1>0.0</slip1>
               <slip2>0.0</slip2>
             </ode>
           </friction>
+          <contact>
+            <ode>
+              <min_depth>0.005</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
         </surface>
       </collision>
-        <inertial>
-        <mass>0.25</mass>
+      <inertial>
+        <!-- Volume:  1.8790278320e-03 -->
+        <mass> 0.25 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00 -0.0000000000e+00  0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  7.9974445522e-04 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  1.4953222622e-03 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  7.9974445522e-04 </izz>
+        </inertia>
       </inertial>
       <visual name="rear_right_visual">
       <pose>0 0 0 3.1415 0 0</pose>
@@ -149,26 +208,48 @@
     <link name="front_left_wheel">
       <pose>0.12 0.25 0 0 0 0</pose>
       <collision name="front_left_collision">
-        <pose>0 0 0 -1.5707 0 0</pose>
+        <pose>0 0 0 1.5707 0 0</pose>
         <geometry>
           <cylinder>
             <radius>.11</radius>
             <length>.05</length>
           </cylinder>
         </geometry>
+        <max_contacts>1</max_contacts>
         <surface>
           <friction>
             <ode>
               <mu>100000.0</mu>
               <mu2>100000.0</mu2>
+              <fdir1>0 0 1</fdir1>
               <slip1>0.0</slip1>
               <slip2>0.0</slip2>
             </ode>
           </friction>
+          <contact>
+            <ode>
+              <min_depth>0.005</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
         </surface>
       </collision>
       <inertial>
-        <mass>0.25</mass>
+        <!-- Volume:  1.8790278320e-03 -->
+        <mass> 0.25 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00 -0.0000000000e+00  0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  7.9974445522e-04 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  1.4953222622e-03 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  7.9974445522e-04 </izz>
+        </inertia>
       </inertial>
       <visual name="front_left_visual">
       <pose>0 0 0 3.1415 0 0</pose>
@@ -206,26 +287,48 @@
     <link name="rear_left_wheel">
       <pose>-0.12 0.25 0 0 0 0</pose>
       <collision name="rear_left_collision">
-        <pose>0 0 0 -1.5707 0 0</pose>
+        <pose>0 0 0 1.5707 0 0</pose>
         <geometry>
           <cylinder>
             <radius>.11</radius>
             <length>.05</length>
           </cylinder>
         </geometry>
+        <max_contacts>1</max_contacts>
         <surface>
           <friction>
             <ode>
               <mu>100000.0</mu>
               <mu2>100000.0</mu2>
+              <fdir1>0 0 1</fdir1>
               <slip1>0.0</slip1>
               <slip2>0.0</slip2>
             </ode>
           </friction>
+          <contact>
+            <ode>
+              <min_depth>0.005</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
         </surface>
       </collision>
-        <inertial>
-        <mass>0.25</mass>
+      <inertial>
+        <!-- Volume:  1.8790278320e-03 -->
+        <mass> 0.25 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00 -0.0000000000e+00  0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  7.9974445522e-04 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  1.4953222622e-03 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  7.9974445522e-04 </izz>
+        </inertia>
       </inertial>
       <visual name="rear_left_visual">
       <pose>0 0 0 3.1415 0 0</pose>
