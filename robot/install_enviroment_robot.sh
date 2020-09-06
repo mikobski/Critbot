@@ -8,6 +8,8 @@
 ## Includes:
 ## - Common dependencies libraries and tools
 ## - MAVROS
+## - RPLiDAR
+## - Intel RealSense
 
 #############################################################################
 # 				Prepare
@@ -93,6 +95,22 @@ wget_return_code=$?
 if [[ $wget_return_code -ne 0 ]]; then echo "!  Error downloading 'install_geographiclib_datasets.sh'. Sorry but I cannot proceed further :("; exit 1; fi
 # Otherwise source the downloaded script.
 sudo bash -c "$install_geo"
+
+#############################################################################
+# 				RPLiDAR 
+#    https://github.com/robopeak/rplidar_ros
+#############################################################################
+## Clone RPLiDAR
+echo "!  Cloning RPLiDAR"
+git clone https://github.com/robopeak/rplidar_ros ~/catkin_ws/src/rplidar_ros
+
+#############################################################################
+# 				Intel RealSense
+#    https://github.com/IntelRealSense/realsense-ros
+#############################################################################
+## Install Intel RealSense
+echo "!  Installing Intel RealSense"
+sudo apt-get install ros-melodic-realsense2-camera
 
 #############################################################################
 #				Termination
