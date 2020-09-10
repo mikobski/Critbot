@@ -29,6 +29,8 @@ if [[ $(lsb_release -sc) != *"bionic"* ]]; then
 fi
 
 # Ubuntu Config
+echo "!  Remove modemmanager"
+sudo apt-get remove modemmanager -y
 echo "!  Add user to dialout group for serial port access (reboot required)"
 sudo usermod -a -G dialout $USER
 
@@ -149,8 +151,8 @@ make -j4
 sudo make install
 
 echo 'source /usr/share/gazebo/setup.sh' >> ~/.bashrc
-echo "export GAZEBO_MODEL_PATH=$SIM_DIR/external/ardupilot_gazebo/models" >> ~/.bashrc
-echo "export GAZEBO_RESOURCE_PATH=$SIM_DIR/external/ardupilot_gazebo/worlds:\${GAZEBO_RESOURCE_PATH}" >> ~/.bashrc
+echo "export GAZEBO_MODEL_PATH=$SIM_DIR/models" >> ~/.bashrc
+echo "export GAZEBO_RESOURCE_PATH=$SIM_DIR/worlds:\${GAZEBO_RESOURCE_PATH}" >> ~/.bashrc
 
 echo "!  Reload paths"
 . ~/.bashrc

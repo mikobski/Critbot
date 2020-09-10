@@ -27,6 +27,8 @@ if [[ $(lsb_release -sc) != *"bionic"* ]]; then
 fi
 
 # Ubuntu Config
+echo "!  Remove modemmanager"
+sudo apt-get remove modemmanager -y
 echo "!  Add user to dialout group for serial port access (reboot required)"
 sudo usermod -a -G dialout $USER
 
