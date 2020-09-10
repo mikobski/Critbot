@@ -146,8 +146,8 @@ make -j4
 sudo make install
 
 echo 'source /usr/share/gazebo/setup.sh' >> ~/.bashrc
-echo 'export GAZEBO_MODEL_PATH=~/ardupilot_gazebo/models' >> ~/.bashrc
-echo 'export GAZEBO_RESOURCE_PATH=~/ardupilot_gazebo/worlds:${GAZEBO_RESOURCE_PATH}' >> ~/.bashrc
+echo "export GAZEBO_MODEL_PATH=$SIM_DIR/external/ardupilot_gazebo/models" >> ~/.bashrc
+echo "export GAZEBO_RESOURCE_PATH=$SIM_DIR/external/ardupilot_gazebo/worlds:\${GAZEBO_RESOURCE_PATH}" >> ~/.bashrc
 
 echo "!  Reload paths"
 . ~/.bashrc
