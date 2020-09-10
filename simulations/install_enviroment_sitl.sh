@@ -134,6 +134,9 @@ sudo apt-get update
 sudo apt-get install gazebo9 libgazebo9-dev -y
 sudo apt upgrade libignition-math2 -y
 
+## Install some additional plugins
+sudo apt-get install ros-melodic-hector-gazebo-plugins -y
+
 ## Install Ardupilot Gazebo plugin
 echo "!  Installing Gazebo ardupilot plugin"
 #git clone https://github.com/khancyr/ardupilot_gazebo
