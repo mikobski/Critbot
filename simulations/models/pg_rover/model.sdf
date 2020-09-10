@@ -1,0 +1,508 @@
+<?xml version='1.0'?>
+<sdf version='1.5'>
+  <model name="pg_rover">
+    <pose>0 0 0.5 0 0 0</pose>
+
+    <!-- chassis -->
+    <link name='chassis'>
+      <pose>0 0 0 1.5707 0 0</pose>
+      <inertial>
+        <!-- Volume:  5.1700000000e-02 -->
+        <mass> 10.0 </mass>
+
+        <!-- Center of mass:  1.0000000000e-08  1.2317375000e-01  0.0000000000e+00 -->
+        <pose>  1.0000000000e-08  0.7567375000e-01  0.0000000000e+00 0 0 0 </pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  2.1855000000e-01 </ixx>
+          <ixy> -3.8894003868e-09 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  3.2977307544e-01 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  2.2565638298e-01 </izz>
+        </inertia>
+      </inertial>
+      <collision name='collision'>
+        <pose>0 0.09 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.5 0.275 0.44</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name='visual'>
+        <pose>0 -0.0475 0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://pg_rover/meshes/body.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Turquoise</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+
+    <!-- front right wheel -->
+    <link name="front_right_wheel">
+      <pose>0.12 -0.25 0 0 0 0</pose>
+      <collision name="front_right_collision">
+        <pose>0 0 0 -1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.11</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+        <max_contacts>1</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+              <fdir1>0 0 1</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <min_depth>0.005</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <inertial>
+        <!-- Volume:  1.8790278320e-03 -->
+        <mass> 0.25 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00 -0.0000000000e+00  0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  7.9974445522e-04 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  1.4953222622e-03 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  7.9974445522e-04 </izz>
+        </inertia>
+      </inertial>
+      <visual name="front_right_visual">
+      <pose>0 0 0 3.1415 0 0</pose>
+        <geometry>
+          <mesh>
+             <uri>model://pg_rover/meshes/wheel.stl</uri>
+             <scale>0.6188 0.4374 0.6188</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <joint type="revolute" name="front_right_joint">
+      <child>front_right_wheel</child>
+      <parent>chassis</parent>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <use_parent_model_frame>true</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0.000000</cfm>
+            <erp>0.900000</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+
+    <!-- rear right wheel -->
+    <link name="rear_right_wheel">
+      <pose>-0.12 -0.25 0 0 0 0</pose>
+      <collision name="rear_right_collision">
+        <pose>0 0 0 -1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>.11</radius>
+            <length>.05</length>
+          </cylinder>
+        </geometry>
+        <max_contacts>1</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+              <fdir1>0 0 1</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <min_depth>0.005</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <inertial>
+        <!-- Volume:  1.8790278320e-03 -->
+        <mass> 0.25 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00 -0.0000000000e+00  0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  7.9974445522e-04 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  1.4953222622e-03 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  7.9974445522e-04 </izz>
+        </inertia>
+      </inertial>
+      <visual name="rear_right_visual">
+      <pose>0 0 0 3.1415 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://pg_rover/meshes/wheel.stl</uri>
+            <scale>0.6188 0.4374 0.6188</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <joint type="revolute" name="rear_right_joint">
+      <child>rear_right_wheel</child>
+      <parent>chassis</parent>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <use_parent_model_frame>true</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0.000000</cfm>
+            <erp>0.900000</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+
+    <!-- front left wheel -->
+    <link name="front_left_wheel">
+      <pose>0.12 0.25 0 0 0 0</pose>
+      <collision name="front_left_collision">
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>.11</radius>
+            <length>.05</length>
+          </cylinder>
+        </geometry>
+        <max_contacts>1</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+              <fdir1>0 0 1</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <min_depth>0.005</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <inertial>
+        <!-- Volume:  1.8790278320e-03 -->
+        <mass> 0.25 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00 -0.0000000000e+00  0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  7.9974445522e-04 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  1.4953222622e-03 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  7.9974445522e-04 </izz>
+        </inertia>
+      </inertial>
+      <visual name="front_left_visual">
+      <pose>0 0 0 3.1415 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://pg_rover/meshes/wheel.stl</uri>
+            <scale>0.6188 0.4374 0.6188</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <joint type="revolute" name="front_left_joint">
+      <child>front_left_wheel</child>
+      <parent>chassis</parent>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <use_parent_model_frame>true</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0.000000</cfm>
+            <erp>0.900000</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+
+    <!-- rear left wheel -->
+    <link name="rear_left_wheel">
+      <pose>-0.12 0.25 0 0 0 0</pose>
+      <collision name="rear_left_collision">
+        <pose>0 0 0 1.5707 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>.11</radius>
+            <length>.05</length>
+          </cylinder>
+        </geometry>
+        <max_contacts>1</max_contacts>
+        <surface>
+          <friction>
+            <ode>
+              <mu>100000.0</mu>
+              <mu2>100000.0</mu2>
+              <fdir1>0 0 1</fdir1>
+              <slip1>0.0</slip1>
+              <slip2>0.0</slip2>
+            </ode>
+          </friction>
+          <contact>
+            <ode>
+              <min_depth>0.005</min_depth>
+              <kp>1e8</kp>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <inertial>
+        <!-- Volume:  1.8790278320e-03 -->
+        <mass> 0.25 </mass>
+
+        <!-- Center of mass:  0.0000000000e+00 -0.0000000000e+00  0.0000000000e+00 -->
+        <pose>0 0 0 0 0 0</pose>
+
+        <!-- Inertia matrix -->
+        <inertia>
+          <ixx>  7.9974445522e-04 </ixx>
+          <ixy>  0.0000000000e+00 </ixy>
+          <ixz>  0.0000000000e+00 </ixz>
+          <iyy>  1.4953222622e-03 </iyy>
+          <iyz>  0.0000000000e+00 </iyz>
+          <izz>  7.9974445522e-04 </izz>
+        </inertia>
+      </inertial>
+      <visual name="rear_left_visual">
+      <pose>0 0 0 3.1415 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://pg_rover/meshes/wheel.stl</uri>
+            <scale>0.6188 0.4374 0.6188</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Grey</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <joint type="revolute" name="rear_left_joint">
+      <child>rear_left_wheel</child>
+      <parent>chassis</parent>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <use_parent_model_frame>true</use_parent_model_frame>
+      </axis>
+      <physics>
+        <ode>
+          <limit>
+            <cfm>0.000000</cfm>
+            <erp>0.900000</erp>
+          </limit>
+        </ode>
+      </physics>
+    </joint>
+
+    <!-- IMU -->
+    <link name='imu'>
+      <!-- <pose>0 0 0 0 0 3.1415927</pose> -->
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>0.015</mass>
+        <inertia>
+          <ixx>1e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1e-05</iyy>
+          <iyz>0</iyz>
+          <izz>1e-05</izz>
+        </inertia>
+      </inertial>
+      <sensor name="imu_sensor" type="imu">
+        <pose>0 0 0 3.141593 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>1000.0</update_rate>
+      </sensor>
+    </link>
+    <joint name='imu_joint' type='revolute'>
+      <child>imu_link</child>
+      <parent>chassis</parent>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0</upper>
+          <effort>0</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.7</damping>
+        </dynamics>
+        <use_parent_model_frame>1</use_parent_model_frame>
+      </axis>
+    </joint>
+
+    <!-- lidar -->
+    <include>
+      <uri>model://rplidar_s1</uri>
+      <pose>0 0 0.253 0 0 </pose>
+    </include>
+    <joint type="fixed" name="lidar_joint">
+      <parent>chassis</parent>      
+      <child>lidar_model::lidar_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <use_parent_model_frame>true</use_parent_model_frame>
+      </axis>
+    </joint>
+
+    <!-- gps -->
+    <plugin name="gps" filename="libhector_gazebo_ros_gps.so">
+      <alwayson>true</alwayson>
+      <updaterate>1.0</updaterate>
+      <bodyname>base_link</bodyname>
+      <topicname>/fix</topicname>
+      <velocitytopicname>/fix_velocity</velocitytopicname>
+      <drift>5.0 5.0 5.0</drift>
+      <gaussiannoise>0.1 0.1 0.1</gaussiannoise>
+      <velocitydrift>0 0 0</velocitydrift>
+      <velocitygaussiannoise>0.1 0.1 0.1</velocitygaussiannoise>
+    </plugin>
+
+    <!-- ardupilot plugin -->
+    <plugin name="ArduCopter_Plugin" filename="libArduPilotPlugin.so">
+      <fdm_addr>127.0.0.1</fdm_addr>
+      <fdm_port_in>9012</fdm_port_in>
+      <fdm_port_out>9013</fdm_port_out>
+      <!--
+          Require by APM :
+          Only change model and gazebo from XYZ to XY-Z coordinates
+      -->
+      <!-- 3.141593 -->
+      <modelXYZToAirplaneXForwardZDown>0 0 0 3.141593 0 0</modelXYZToAirplaneXForwardZDown>
+      <gazeboXYZToNED>0 0 0 3.141593 0 0</gazeboXYZToNED>
+      <imuName>pg_rover::imu_link::imu_sensor</imuName>
+      <connectionTimeoutMaxCount>5</connectionTimeoutMaxCount>
+      <!--
+          incoming control command [0, 1]
+          so offset it by 0 to get [0, 1]
+          and divide max target by 1.
+          offset = 0
+          multiplier = 838 max rpm / 1 = 838
+        -->
+      <control channel="0">
+        <type>VELOCITY</type>
+        <offset>-0.5</offset>
+        <p_gain>1</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>10</cmd_max>
+        <cmd_min>-10</cmd_min>
+        <jointName>pg_rover::front_left_joint</jointName>
+        <multiplier>12.5</multiplier>
+      </control>
+      <control channel="2">
+        <type>VELOCITY</type>
+        <offset>-0.5</offset>
+        <p_gain>1</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>10</cmd_max>
+        <cmd_min>-10</cmd_min>
+        <jointName>pg_rover::front_right_joint</jointName>
+        <multiplier>12.5</multiplier>
+      </control>
+      <control channel="0">
+        <type>VELOCITY</type>
+        <offset>-0.5</offset>
+        <p_gain>1</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>10</cmd_max>
+        <cmd_min>-10</cmd_min>
+        <jointName>pg_rover::rear_left_joint</jointName>
+        <multiplier>12.5</multiplier>
+      </control>
+      <control channel="2">
+        <type>VELOCITY</type>
+        <offset>-0.5</offset>
+        <p_gain>1</p_gain>
+        <i_gain>0</i_gain>
+        <d_gain>0</d_gain>
+        <i_max>0</i_max>
+        <i_min>0</i_min>
+        <cmd_max>10</cmd_max>
+        <cmd_min>-10</cmd_min>
+        <jointName>pg_rover::rear_right_joint</jointName>
+        <multiplier>12.5</multiplier>
+      </control>
+    </plugin>
+
+  </model>
+</sdf>
