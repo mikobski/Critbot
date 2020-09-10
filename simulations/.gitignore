@@ -1,0 +1,11 @@
+# Ignore build directory
+build/
+# ignore devel directory
+devel/
+# Ignore src directory
+src/
+# Ignore external directory
+external/
+
+# Ignore catkin_workspace
+.catkin_workspace

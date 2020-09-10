@@ -26,15 +26,15 @@ if [[ $(lsb_release -sc) != *"bionic"* ]]; then
 fi
 
 ## Delete exisitng ROS
-echo "!  Remove existing ROS"
-sudo apt-get remove ros-* -y
-sudo apt-get autoremove -y
-sudo rm -r /etc/ros
-sudo rm -r ~/.ros
+#echo "!  Remove existing ROS"
+#sudo apt-get remove ros-* -y
+#sudo apt-get autoremove -y
+#sudo rm -r /etc/ros
+#sudo rm -r ~/.ros
 
 # Ubuntu Config
 echo "!  Remove modemmanager"
-sudo apt-get remove modemmanager -y
+#sudo apt-get remove modemmanager -y
 echo "!  Add user to dialout group for serial port access (reboot required)"
 sudo usermod -a -G dialout $USER
 
@@ -68,8 +68,9 @@ rosdep update
 
 ## Create catkin workspace
 echo "!  Creating workspace"
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws
+export WEB_DIR=$PWD
+mkdir -p $WEB_DIR/src
+cd $WEB_DIR
 #catkin init
 #wstool init src
 
@@ -78,7 +79,7 @@ cd ~/catkin_ws
 #############################################################################
 ## Build!
 echo "!  Build!"
-cd ~/catkin_ws
+cd $WEB_DIR
 catkin_make
 
 ## Setup environment variables
@@ -88,7 +89,7 @@ if grep -Fxq "$rossource" ~/.bashrc; then echo ROS setup.bash already in .bashrc
 else echo "$rossource" >> ~/.bashrc; fi
 eval $rossource
 
-wssource="source ~/catkin_ws/devel/setup.bash"
+wssource="source $WEB_DIR/devel/setup.bash"
 eval $wssource
 
 ## End of script

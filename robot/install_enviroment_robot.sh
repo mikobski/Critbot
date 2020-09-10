@@ -26,16 +26,7 @@ if [[ $(lsb_release -sc) != *"bionic"* ]]; then
   return 1;
 fi
 
-## Delete exisitng ROS
-echo "!  Remove existing ROS"
-sudo apt-get remove ros-* -y
-sudo apt-get autoremove -y
-sudo rm -r /etc/ros
-sudo rm -r ~/.ros
-
 # Ubuntu Config
-echo "!  Remove modemmanager"
-sudo apt-get remove modemmanager -y
 echo "!  Add user to dialout group for serial port access (reboot required)"
 sudo usermod -a -G dialout $USER
 
@@ -69,8 +60,9 @@ rosdep update
 
 ## Create catkin workspace
 echo "!  Creating workspace"
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws
+export ROBOT_DIR=$PWD
+mkdir -p $ROBOT_DIR/src
+#cd $PWD/robot
 #catkin init
 #wstool init src
 
@@ -99,7 +91,7 @@ sudo bash -c "$install_geo"
 #############################################################################
 ## Build!
 echo "!  Build!"
-cd ~/catkin_ws
+cd $ROBOT_DIR
 catkin_make
 
 ## Setup environment variables
@@ -109,7 +101,7 @@ if grep -Fxq "$rossource" ~/.bashrc; then echo ROS setup.bash already in .bashrc
 else echo "$rossource" >> ~/.bashrc; fi
 eval $rossource
 
-wssource="source ~/catkin_ws/devel/setup.bash"
+wssource="source $ROBOT_DIR/devel/setup.bash"
 eval $wssource
 
 ## End of script

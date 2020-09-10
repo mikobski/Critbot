@@ -28,16 +28,7 @@ if [[ $(lsb_release -sc) != *"bionic"* ]]; then
   return 1;
 fi
 
-## Delete exisitng ROS
-echo "!  Remove existing ROS"
-sudo apt-get remove ros-* -y
-sudo apt-get autoremove -y
-sudo rm -r /etc/ros
-sudo rm -r ~/.ros
-
 # Ubuntu Config
-echo "!  Remove modemmanager"
-sudo apt-get remove modemmanager -y
 echo "!  Add user to dialout group for serial port access (reboot required)"
 sudo usermod -a -G dialout $USER
 
@@ -75,8 +66,9 @@ rosdep update
 
 ## Create catkin workspace
 echo "!  Creating workspace"
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws
+export SIM_DIR=$PWD
+mkdir -p $SIM_DIR/src
+mkdir -p $SIM_DIR/external
 #catkin init
 #wstool init src
 
@@ -106,9 +98,9 @@ sudo bash -c "$install_geo"
 #############################################################################
 ## Clone ardupiltot from git
 echo "!  Cloning Ardupilot"
-cd ~/
+cd $SIM_DIR/external
 git clone https://github.com/ArduPilot/ardupilot.git
-cd ~/ardupilot
+cd ardupilot
 git submodule update --init --recursive
 
 ## Execute install-prereqs-ubuntu.sh script
@@ -127,7 +119,7 @@ echo "!  Build ardupilot SITL"
 
 ## Install APM Planner
 echo "!  Installing APM Planner"
-cd ~/
+cd $SIM_DIR/external
 wget https://firmware.ardupilot.org/Tools/APMPlanner/apm_planner_2.0.26_bionic64.deb
 sudo dpkg -i apm_planner_2.0.26_bionic64.deb
 sudo apt-get -f install -y
@@ -146,7 +138,7 @@ sudo apt upgrade libignition-math2 -y
 echo "!  Installing Gazebo ardupilot plugin"
 #git clone https://github.com/khancyr/ardupilot_gazebo
 git clone https://github.com/SwiftGust/ardupilot_gazebo
-cd ardupilot_gazebo
+cd ardupilot_gazebo 
 mkdir build
 cd build
 cmake ..
@@ -165,7 +157,7 @@ echo "!  Reload paths"
 #############################################################################
 ## Build!
 echo "!  Build!"
-cd ~/catkin_ws
+cd $SIM_DIR
 catkin_make
 
 ## Setup environment variables
@@ -175,7 +167,7 @@ if grep -Fxq "$rossource" ~/.bashrc; then echo ROS setup.bash already in .bashrc
 else echo "$rossource" >> ~/.bashrc; fi
 eval $rossource
 
-wssource="source ~/catkin_ws/devel/setup.bash"
+wssource="source $SIM_DIR/devel/setup.bash"
 eval $wssource
 
 ## End of script
