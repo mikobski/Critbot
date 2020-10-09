@@ -73,10 +73,7 @@ class App extends React.PureComponent<Props> {
               <Toolbar>
                 <div className={styles.left}>
                   <div className={styles.logoWrapper}>
-                    <a href="/">
-                      <Logo width={LOGO_SIZE} height={LOGO_SIZE} />
-                    </a>
-                    webviz
+                    critbot
                   </div>
                   <MessagePipelineConsumer>
                     {({ playerState, seekPlayback, pausePlayback }: MessagePipelineContext) => {

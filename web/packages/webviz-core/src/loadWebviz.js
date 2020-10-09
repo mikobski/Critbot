@@ -106,14 +106,6 @@ const defaultHooks = {
     return <Root store={store} />;
   },
   load: () => {
-    if (process.env.NODE_ENV === "production" && window.ga) {
-      window.ga("create", "UA-82819136-10", "auto");
-    } else {
-      window.ga = function(...args) {
-        console.log("[debug] ga:", ...args);
-      };
-    }
-    window.ga("send", "pageview");
   },
   getWorkerDataProviderWorker: () => {
     return require("webviz-core/src/dataProviders/WorkerDataProvider.worker");
