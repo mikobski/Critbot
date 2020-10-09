@@ -37,12 +37,19 @@ const config = {
 
 module.exports = {
   devtool: "cheap-module-eval-source-map",
-  entry: {
+  entry: STATIC_WEBVIZ
+    ? {
         webvizCoreBundle: "./packages/webviz-core/src/index.js",
-  },
+      }
+    : {
+        docs: "./docs/src/index.js",
+        webvizCoreBundle: "./packages/webviz-core/src/index.js",
+      },
   output: {
-    path: path.resolve(`${__dirname}/__static_webviz__`),
-    publicPath: "",
+    path: STATIC_WEBVIZ
+      ? path.resolve(`${__dirname}/__static_webviz__`)
+      : path.resolve(`${__dirname}/docs/public/dist`),
+    publicPath: STATIC_WEBVIZ ? "" : "/dist/",
     pathinfo: true,
     filename: "[name].js",
     devtoolModuleFilenameTemplate: (info) => path.resolve(info.absoluteResourcePath),
@@ -177,7 +184,12 @@ module.exports = {
     module: "empty",
     __filename: true,
   },
-  performance: { hints: false }
+  performance: { hints: false },
+  devServer: {
+    contentBase: path.resolve(`${__dirname}/docs/public`),
+    hot: true,
+    open: true,
+  }
 };
 
 if (process.env.NODE_ENV === "production") {
