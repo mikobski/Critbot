@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ABS_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd $ABS_PATH
 #############################################################################
 #
 #############################################################################
@@ -26,12 +28,12 @@ if [[ $(lsb_release -sc) != *"bionic"* ]]; then
   return 1;
 fi
 
-## Delete exisitng ROS
-echo "!  Remove existing ROS"
-sudo apt-get remove ros-* -y
-sudo apt-get autoremove -y
-sudo rm -r /etc/ros
-sudo rm -r ~/.ros
+### Delete exisitng ROS
+#echo "!  Remove existing ROS"
+#sudo apt-get remove ros-* -y
+#sudo apt-get autoremove -y
+#sudo rm -r /etc/ros
+#sudo rm -r ~/.ros
 
 # Ubuntu Config
 echo "!  Remove modemmanager"
@@ -67,10 +69,10 @@ echo "!  Initializing rosdep"
 sudo rosdep init
 rosdep update
 
-## Create catkin workspace
+### Create catkin workspace
 echo "!  Creating workspace"
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws
+mkdir -p $ABS_PATH/src
+cd $ABS_PATH
 #catkin init
 #wstool init src
 
@@ -99,7 +101,7 @@ sudo bash -c "$install_geo"
 #############################################################################
 ## Build!
 echo "!  Build!"
-cd ~/catkin_ws
+cd $ABS_PATH
 catkin_make
 
 ## Setup environment variables
@@ -109,7 +111,7 @@ if grep -Fxq "$rossource" ~/.bashrc; then echo ROS setup.bash already in .bashrc
 else echo "$rossource" >> ~/.bashrc; fi
 eval $rossource
 
-wssource="source ~/catkin_ws/devel/setup.bash"
+wssource="source $ABS_PATH/devel/setup.bash"
 eval $wssource
 
 ## End of script
