@@ -96,6 +96,42 @@ if [[ $wget_return_code -ne 0 ]]; then echo "!  Error downloading 'install_geogr
 # Otherwise source the downloaded script.
 sudo bash -c "$install_geo"
 
+
+#############################################################################
+# 			     Ardupilot Sitl 
+#	https://ardupilot.org/dev/docs/building-setup-linux.html
+#############################################################################
+## Clone ardupiltot from git
+echo "!  Cloning Ardupilot"
+cd $ABS_PATH/external
+git clone https://github.com/ArduPilot/ardupilot.git
+cd $ABS_PATH/external/ardupilot
+git submodule update --init --recursive
+
+## Execute install-prereqs-ubuntu.sh script
+echo "!  Install ardupilot prereqs"
+./Tools/environment_install/install-prereqs-ubuntu.sh -y
+
+## Reload Paths
+echo "!  Reload paths"
+. ~/.bashrc
+. ~/.profile
+
+## Build ardupilot
+echo "!  Build ardupilot SITL"
+./waf configure --board Pixhawk1
+./waf copter
+
+## Install APM Planner
+echo "!  Installing APM Planner"
+cd ~/
+wget https://firmware.ardupilot.org/Tools/APMPlanner/apm_planner_2.0.26_bionic64.deb
+sudo dpkg -i apm_planner_2.0.26_bionic64.deb
+sudo apt-get -f install -y
+sudo dpkg -i apm_planner_2.0.26_bionic64.deb
+rm apm_planner_2.0.26_bionic64.deb
+
+
 #############################################################################
 #				Termination
 #############################################################################
