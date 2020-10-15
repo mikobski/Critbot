@@ -2,6 +2,7 @@
 
 ABS_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd $ABS_PATH
+
 #############################################################################
 #
 #############################################################################
@@ -72,6 +73,7 @@ rosdep update
 ### Create catkin workspace
 echo "!  Creating workspace"
 mkdir -p $ABS_PATH/src
+mkdir -p $ABS_PATH/external
 cd $ABS_PATH
 #catkin init
 #wstool init src
