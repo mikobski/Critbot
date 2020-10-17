@@ -1,5 +1,8 @@
 #!/bin/bash
 
+ABS_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd $ABS_PATH
+
 #############################################################################
 #
 #############################################################################
@@ -26,12 +29,12 @@ if [[ $(lsb_release -sc) != *"bionic"* ]]; then
   return 1;
 fi
 
-## Delete exisitng ROS
-echo "!  Remove existing ROS"
-sudo apt-get remove ros-* -y
-sudo apt-get autoremove -y
-sudo rm -r /etc/ros
-sudo rm -r ~/.ros
+### Delete exisitng ROS
+#echo "!  Remove existing ROS"
+#sudo apt-get remove ros-* -y
+#sudo apt-get autoremove -y
+#sudo rm -r /etc/ros
+#sudo rm -r ~/.ros
 
 # Ubuntu Config
 echo "!  Remove modemmanager"
@@ -67,10 +70,11 @@ echo "!  Initializing rosdep"
 sudo rosdep init
 rosdep update
 
-## Create catkin workspace
+### Create catkin workspace
 echo "!  Creating workspace"
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws
+mkdir -p $ABS_PATH/src
+mkdir -p $ABS_PATH/external
+cd $ABS_PATH
 #catkin init
 #wstool init src
 
@@ -94,12 +98,48 @@ if [[ $wget_return_code -ne 0 ]]; then echo "!  Error downloading 'install_geogr
 # Otherwise source the downloaded script.
 sudo bash -c "$install_geo"
 
+
+#############################################################################
+# 			     Ardupilot Sitl 
+#	https://ardupilot.org/dev/docs/building-setup-linux.html
+#############################################################################
+## Clone ardupiltot from git
+echo "!  Cloning Ardupilot"
+cd $ABS_PATH/external
+git clone https://github.com/ArduPilot/ardupilot.git
+cd $ABS_PATH/external/ardupilot
+git submodule update --init --recursive
+
+## Execute install-prereqs-ubuntu.sh script
+echo "!  Install ardupilot prereqs"
+./Tools/environment_install/install-prereqs-ubuntu.sh -y
+
+## Reload Paths
+echo "!  Reload paths"
+. ~/.bashrc
+. ~/.profile
+
+## Build ardupilot
+echo "!  Build ardupilot SITL"
+./waf configure --board Pixhawk1
+./waf copter
+
+## Install APM Planner
+echo "!  Installing APM Planner"
+cd ~/
+wget https://firmware.ardupilot.org/Tools/APMPlanner/apm_planner_2.0.26_bionic64.deb
+sudo dpkg -i apm_planner_2.0.26_bionic64.deb
+sudo apt-get -f install -y
+sudo dpkg -i apm_planner_2.0.26_bionic64.deb
+rm apm_planner_2.0.26_bionic64.deb
+
+
 #############################################################################
 #				Termination
 #############################################################################
 ## Build!
 echo "!  Build!"
-cd ~/catkin_ws
+cd $ABS_PATH
 catkin_make
 
 ## Setup environment variables
@@ -109,7 +149,7 @@ if grep -Fxq "$rossource" ~/.bashrc; then echo ROS setup.bash already in .bashrc
 else echo "$rossource" >> ~/.bashrc; fi
 eval $rossource
 
-wssource="source ~/catkin_ws/devel/setup.bash"
+wssource="source $ABS_PATH/devel/setup.bash"
 eval $wssource
 
 ## End of script
