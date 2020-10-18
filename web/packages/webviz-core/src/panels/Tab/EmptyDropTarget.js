@@ -74,7 +74,6 @@ export const EmptyDropTarget = ({ mosaicId, tabId }: Props) => {
   const onPanelSelect = useCallback(
     ({ type, config, relatedConfigs }: PanelSelection) => {
       dispatch(addPanel({ tabId, type, layout: null, config, relatedConfigs }));
-      window.ga("send", "event", "Panel", "Select", type);
     },
     [dispatch, tabId]
   );
