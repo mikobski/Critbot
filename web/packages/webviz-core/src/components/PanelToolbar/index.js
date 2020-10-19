@@ -69,7 +69,6 @@ function StandardMenuItems({ tabId }: { tabId?: string }) {
 
   const close = useCallback(
     () => {
-      window.ga("send", "event", "Panel", "Close", getPanelType());
       actions.closePanel({ tabId, root: mosaicActions.getRoot(), path: mosaicWindowActions.getPath() });
     },
     [actions, getPanelType, mosaicActions, mosaicWindowActions, tabId]
@@ -81,7 +80,6 @@ function StandardMenuItems({ tabId }: { tabId?: string }) {
       if (!id || !type) {
         throw new Error("Trying to split unknown panel!");
       }
-      window.ga("send", "event", "Panel", "Split", type);
 
       const config = savedProps[id];
       actions.splitPanel({
@@ -98,7 +96,6 @@ function StandardMenuItems({ tabId }: { tabId?: string }) {
 
   const swap = useCallback(
     (id: ?string) => ({ type, config, relatedConfigs }: PanelSelection) => {
-      window.ga("send", "event", "Panel", "Swap", type);
       actions.swapPanel({
         tabId,
         originalId: id,

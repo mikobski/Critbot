@@ -42,16 +42,30 @@ const defaultHooks = {
     return {
       layout: {
         direction: "row",
-        first: "DiagnosticSummary!3edblo1",
-        second: {
-          direction: "row",
-          first: "RosOut!1f38b3d",
+        first: {
+          direction: "column",
+          first: "ImageViewPanel!3edblo1",
           second: "3D Panel!1my2ydk",
-          splitPercentage: 50,
+          splitPercentage: 66
         },
-        splitPercentage: 33.3333333333,
+        second: "RosOut!1f38b3d",
+        splitPercentage: 50
       },
-      savedProps: {},
+      savedProps: {
+        "ImageViewPanel!3edblo1": {
+            "cameraTopic": "/image_raw"
+          },
+          "3D Panel!1my2ydk": {
+            "checkedKeys": [
+              "name:Topics",
+              "t:/velodyne_points"
+            ],
+            "expandedKeys": [
+              "name:Topics"
+            ],
+            "followTf": "velodyne"
+          }
+      },
       globalVariables: {},
       userNodes: {},
       linkedGlobalVariables: [],
@@ -106,14 +120,6 @@ const defaultHooks = {
     return <Root store={store} />;
   },
   load: () => {
-    if (process.env.NODE_ENV === "production" && window.ga) {
-      window.ga("create", "UA-82819136-10", "auto");
-    } else {
-      window.ga = function(...args) {
-        console.log("[debug] ga:", ...args);
-      };
-    }
-    window.ga("send", "pageview");
   },
   getWorkerDataProviderWorker: () => {
     return require("webviz-core/src/dataProviders/WorkerDataProvider.worker");

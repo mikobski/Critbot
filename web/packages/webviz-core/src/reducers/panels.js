@@ -134,15 +134,8 @@ function getOldStorageAndRemoveKey() {
 let initialPanelsState;
 function getInitialPanelsState(): PanelsState {
   if (initialPanelsState == null) {
-    let newPanelsState = storage.get(GLOBAL_STATE_STORAGE_KEY);
-    if (newPanelsState) {
-      // use the new global state storage directly if it's present
-      setStorageStateAndFallbackToDefault(newPanelsState);
-      // don't use the old storage but simply remove the keys in case both new key and old keys are present
-      getOldStorageAndRemoveKey();
-    } else {
-      newPanelsState = getOldStorageAndRemoveKey();
-    }
+    // Always use default panel state
+    let newPanelsState = getOldStorageAndRemoveKey();
     initialPanelsState = getGlobalHooks().migratePanels(newPanelsState);
   }
   return initialPanelsState;

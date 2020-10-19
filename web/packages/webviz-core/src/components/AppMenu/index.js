@@ -30,7 +30,6 @@ function AppMenu(props: Props) {
   const onPanelSelect = useCallback(
     ({ type, config, relatedConfigs }: PanelSelection) => {
       dispatch(addPanel(({ type, layout, config, relatedConfigs, tabId: null }: AddPanelPayload)));
-      window.ga("send", "event", "Panel", "Select", type);
     },
     [dispatch, layout]
   );
