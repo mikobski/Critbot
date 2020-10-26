@@ -137,17 +137,19 @@ rm apm_planner_2.0.26_bionic64.deb
 #############################################################################
 #				Termination
 #############################################################################
-## Build!
-echo "!  Build!"
-cd $ABS_PATH
-catkin_make
-
 ## Setup environment variables
 echo "!  Setting up enviroment variables"
 rossource="source /opt/ros/melodic/setup.bash"
 if grep -Fxq "$rossource" ~/.bashrc; then echo ROS setup.bash already in .bashrc;
 else echo "$rossource" >> ~/.bashrc; fi
 eval $rossource
+
+source ~/.bashrc
+
+## Build!
+echo "!  Build!"
+cd $ABS_PATH
+catkin_make
 
 wssource="source $ABS_PATH/devel/setup.bash"
 eval $wssource
