@@ -1,5 +1,5 @@
-import React from 'react';
-import { Navbar, Badge } from 'react-bootstrap';
+import React from "react";
+import { Navbar, Badge } from "react-bootstrap";
 
 class Status extends React.Component {
   render () {
