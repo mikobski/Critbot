@@ -47,6 +47,15 @@ class Connection extends EventEmitter {
 			}
 		};	
 
+		this.getInstance = () => {
+			if(connected) {
+				return Promise.resolve(rosInstance);
+			}
+			return new Promise((resolve) => {
+				this.once(EVENT_CONNECTED, resolve);
+			});
+		};
+
 		this.getUrl = () => {
 			return options.url;
 		};

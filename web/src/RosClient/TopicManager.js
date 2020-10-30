@@ -17,7 +17,7 @@ class TopicManager {
                 messageType: messageType
             });
             registeredTopics[signature].listener = listener;
-            registeredTopics[signature].listener.subscribe(function(message) {
+            registeredTopics[signature].listener.subscribe((message) => {
                 let numHandlers = registeredTopics[signature].handlers.length;
                 for (let i = 0; i < numHandlers; i++) {
                     // Actually invoke topic handlers
@@ -27,13 +27,13 @@ class TopicManager {
         };
 
         let connectAndListen = (name, messageType, signature) => {
-            return connection.getInstance().then(function(ros) {
+            return connection.getInstance().then((ros) => {
                 listen(ros, name, messageType, signature);
             });
         };
 
         this.publish = (name, messageType, payload) => {
-            return connection.getInstance().then(function(ros) {
+            return connection.getInstance().then((ros) => {
                 let topic = new ROSLIB.Topic({
                     ros: ros,
                     name: name,
@@ -59,7 +59,7 @@ class TopicManager {
                 connectAndListen(name, messageType, signature);
             }
             return {
-                dispose: function() {
+                dispose: () => {
                     let index = registeredTopics[signature].handlers.indexOf(handler);
                     if (index !== -1) {
                         registeredTopics[signature].handlers.splice(index, 1);
@@ -73,7 +73,7 @@ class TopicManager {
             };
         };
 
-        connection.on(EVENT_DISCONNECTED, function() {
+        connection.on(EVENT_DISCONNECTED, () => {
             // Dispose all topic listeners (not handlers!)
             for (let signature in registeredTopics) {
                 let topic = registeredTopics[signature];
@@ -84,7 +84,7 @@ class TopicManager {
             }
         });
 
-        connection.on(EVENT_CONNECTED, function(ros) {
+        connection.on(EVENT_CONNECTED, (ros) => {
             // Reconnect disconnected handlers
             for (let signature in registeredTopics) {
                 let topic = registeredTopics[signature];
