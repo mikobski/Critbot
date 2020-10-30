@@ -31,25 +31,23 @@ class ManualControl extends React.PureComponent {
   };
   handleKeyDown = (e) => {
     let dir;
-    if(e.code == "ArrowUp") {
+    if(e.code === "ArrowUp") {
       dir = Direction.FORWARD;
-    } else if(e.code == "ArrowDown") {
+    } else if(e.code === "ArrowDown") {
       dir = Direction.BACKWARD;
-    } else if(e.code == "ArrowLeft") {
+    } else if(e.code === "ArrowLeft") {
       dir = Direction.LEFT;
-    } else if(e.code == "ArrowRight") {
+    } else if(e.code === "ArrowRight") {
       dir = Direction.RIGHT;
     }
     this.setState({
       direction: dir
     });
-    console.log("down");
   }
   handleKeyUp = (e) => {
     this.setState({
       direction: null
     });
-    console.log("up");
   }
 
   _moveCmd = () => {
@@ -77,11 +75,9 @@ class ManualControl extends React.PureComponent {
       msg.angular.z = -this.props.rotateStep;
     }
     this.props.ros.topic.publish(this.props.topic, messageType, msg);
-    console.log(new Date().getMilliseconds());
   };
 
   componentDidUpdate() {
-    console.log("state");
     const { direction } = this.state;
     if(direction == null) {
       if(this._intervalHandler != null) {

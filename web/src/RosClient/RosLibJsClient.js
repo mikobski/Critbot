@@ -1,10 +1,10 @@
+// Based on https://www.npmjs.com/package/roslibjs-client
 import Connection from "./Connection";
 import TopicManager from "./TopicManager";
 import ServiceManager from "./ServiceManager";
 
 const DEFAULT_OPTIONS = {
 	url: "ws://localhost:9090",
-	// Milliseconds before attempting another reconnect
 	reconnectInterval: 5000
 };
 
