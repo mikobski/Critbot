@@ -4,9 +4,9 @@ import RosClient from "./RosClient/RosLibJsClient";
 
 import StatusNavbar from "./components/Navbar/Status";
 import ModeSelectorNavbar from "./components/Navbar/ModeSelector";
-import Camera from "./components/Panel/Camera";
-import Lidar from "./components/Panel/Lidar";
-import ManualControl from "./components/Panel/ManualControl";
+import Camera from "./components/Camera";
+import Lidar from "./components/Lidar";
+import ManualControl from "./components/ManualControl/ManualControl";
 
 import VerticalContainer from "./helpers/VerticalContainer";
 import VerticalCol from "./helpers/VerticalRow";
@@ -55,7 +55,7 @@ class App extends React.Component {
                   </VerticalContainer>
                 </Col>
                 <Col>
-                  <ManualControl/>
+                  <ManualControl ros={ this.rosClient } topic="/turtle1/cmd_vel" />
                 </Col>
               </Row>
             </Container>
