@@ -47,10 +47,12 @@ class App extends React.Component {
                 <Col>
                   <VerticalContainer>
                     <VerticalCol basis="50%">
-                      <Camera/>
+                      <Camera ros={ this.rosClient } topic="/turtle1/pose"/>
                     </VerticalCol>
                     <VerticalCol basis="50%">
-                      <Lidar/>
+                      <Lidar ros={ this.rosClient } topic="/scan"
+                        physicalWidth="22" physicalHeight="22"
+                        gridMax="10" gridCount="4"/>
                     </VerticalCol>
                   </VerticalContainer>
                 </Col>
