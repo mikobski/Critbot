@@ -15,7 +15,7 @@ class Lidar extends React.Component {
   }
 
   topicListener = (message) => {
-    if(message.header.frame_id == "laser") {
+    if(message.header.frame_id === "laser") {
       this._data = [];
       let angle = message.angle_min;
       for(const range of message.ranges) {
@@ -32,7 +32,7 @@ class Lidar extends React.Component {
     const { width, height } = ctx.canvas;
     const { physicalWidth, physicalHeight } = this.props;
     let scale = 1;
-    if(physicalWidth == 0 || physicalHeight == 0) {
+    if(physicalWidth === 0 || physicalHeight === 0) {
       return scale;
     }
     return Math.min(width/physicalWidth, height/physicalHeight);
@@ -55,7 +55,7 @@ class Lidar extends React.Component {
     ctx.stroke();
 
     ctx.fillStyle = lineColour;
-    ctx.font = fontSize+"px -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\"";
+    ctx.font = `${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue"`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     const gridStep = this.props.gridMax/this.props.gridCount;

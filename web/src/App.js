@@ -57,6 +57,7 @@ class App extends React.Component {
                   </VerticalContainer>
                 </Col>
                 <Col>
+                  
                   <ManualControl ros={ this.rosClient } topic="/turtle1/cmd_vel" />
                 </Col>
               </Row>
