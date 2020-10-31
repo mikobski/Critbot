@@ -10,13 +10,17 @@ class TopicManager {
             return messageType + '/' + name;
         }
 
-        let listen = (ros, name, messageType, signature, compresion) => {
-            let listener = new ROSLIB.Topic({
+        let listen = (ros, name, messageType, signature, options) => {
+            let topicOptions = {
                 ros: ros,
                 name: name,
-                messageType: messageType,
-                compression: compresion
-            });
+                messageType: messageType
+            };
+            if(options.compresion) {
+                topicOptions.compression = options.compresion;
+            }
+            
+            let listener = new ROSLIB.Topic(topicOptions);
             registeredTopics[signature].listener = listener;
             registeredTopics[signature].listener.subscribe((message) => {
                 let numHandlers = registeredTopics[signature].handlers.length;
@@ -27,9 +31,9 @@ class TopicManager {
             });
         };
 
-        let connectAndListen = (name, messageType, signature, compresion) => {
+        let connectAndListen = (name, messageType, signature, options) => {
             return connection.getInstance().then((ros) => {
-                listen(ros, name, messageType, signature, compresion);
+                listen(ros, name, messageType, signature, options);
             });
         };
 
@@ -45,8 +49,7 @@ class TopicManager {
             });
         };
 
-        this.subscribe = (name, messageType, handler, compresion) => {
-            var compresion = compresion || "none";
+        this.subscribe = (name, messageType, handler, options = {}) => {
             let signature = getSignature(name, messageType);
             if (signature in registeredTopics) {
                 // Push to existing handlers
@@ -58,7 +61,7 @@ class TopicManager {
                     listener: undefined,
                     handlers: [handler]
                 };
-                connectAndListen(name, messageType, signature, compresion);
+                connectAndListen(name, messageType, signature, options);
             }
             return {
                 dispose: () => {

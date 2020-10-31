@@ -8,20 +8,18 @@ class Camera extends React.Component {
   componentDidMount() {
     const topicManager = this.props.ros.topic;
     const topicName = this.props.topic;
-    this._topic = topicManager.subscribe(topicName, "sensor_msgs/CompressedImage", this.topicListener, "cbor-raw");
+    this._topic = topicManager.subscribe(topicName, "sensor_msgs/CompressedImage", 
+      this.topicListener, { compresion: "cbor" });
   }
   componentWillUnmount() {
     this._topic.dispose();
   }
 
   topicListener = (message) => {
-    console.log(message);
-    //const rawData = new Blob([message.data], { type: `image/rgb8; jpeg compressed bgr8` });
-    //console.log(rawData)
-    //this._data = createImageBitmap(rawData).then((imageBitmap) => {
-      //this._data = imageBitmap;
-      //rawData.close();
-    //});
+    const rawData = new Blob([message.data], { type: `image/rgb8; jpeg compressed bgr8` });
+    createImageBitmap(rawData).then((imageBitmap) => {
+      this._data = imageBitmap;
+    });
   }
 
   draw = (ctx, frameCount) => {
