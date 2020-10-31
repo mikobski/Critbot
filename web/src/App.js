@@ -13,7 +13,7 @@ import VerticalCol from "./helpers/VerticalRow";
 import { Navbar } from "react-bootstrap";
 import { Container, Row, Col } from "react-bootstrap";
 
-const ROS_URI = "ws://localhost:9090";
+const ROS_URI = "ws://192.168.1.161:9090";
 
 const rosClient = new RosClient({
   url: ROS_URI
@@ -47,7 +47,7 @@ class App extends React.Component {
                 <Col>
                   <VerticalContainer>
                     <VerticalCol basis="50%">
-                      <Camera ros={ this.rosClient } topic="/turtle1/pose"/>
+                      <Camera ros={ this.rosClient } topic="/d400/color/image_raw/compressed"/>
                     </VerticalCol>
                     <VerticalCol basis="50%">
                       <Lidar ros={ this.rosClient } topic="/scan"

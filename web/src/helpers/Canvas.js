@@ -20,7 +20,7 @@ const Canvas = props => {
         const context = canvas.getContext("2d");
         canvas.width = width * ratio;
         canvas.height = height * ratio;
-        context.scale(ratio, ratio);
+        context.scale(1, 1);
         return true;
       }
       return false;
