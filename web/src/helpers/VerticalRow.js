@@ -1,4 +1,4 @@
-import "./VerticalRow.scss";
+import "helpers/VerticalRow.scss";
 
 function VerticalRow(props) {
     const stylesRow = {flexBasis: props.basis};

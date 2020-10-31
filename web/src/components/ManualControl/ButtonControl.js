@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { ArrowClockwise, ArrowCounterclockwise, ArrowDown, ArrowUp } from "react-bootstrap-icons";
-import { Direction } from "./Direction";
+import { Direction } from "components/ManualControl/Direction";
 
 class ButtonControl extends React.Component {
   render () {

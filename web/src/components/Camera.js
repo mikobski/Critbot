@@ -1,5 +1,5 @@
 import React from "react";
-import Canvas from "../helpers/Canvas";
+import Canvas from "helpers/Canvas";
 
 class Camera extends React.Component {
   _topic;

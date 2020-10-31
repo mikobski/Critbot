@@ -1,5 +1,5 @@
 import React from "react";
-import Canvas from "../helpers/Canvas";
+import Canvas from "helpers/Canvas";
 
 class Lidar extends React.Component {
   _topic;

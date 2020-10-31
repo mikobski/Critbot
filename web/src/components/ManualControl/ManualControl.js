@@ -1,6 +1,6 @@
 import React from "react";
-import ButtonControl from "./ButtonControl";
-import { Direction } from "./Direction";
+import ButtonControl from "components/ManualControl/ButtonControl";
+import { Direction } from "components/ManualControl/Direction";
 
 class ManualControl extends React.PureComponent {
   _intervalHandler;

@@ -1,4 +1,4 @@
-import "./VerticalContainer.scss";
+import "helpers/VerticalContainer.scss";
 
 function VerticalContainer(props) {
     return (
