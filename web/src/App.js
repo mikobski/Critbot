@@ -13,7 +13,8 @@ import VerticalCol from "./helpers/VerticalRow";
 import { Navbar } from "react-bootstrap";
 import { Container, Row, Col } from "react-bootstrap";
 
-const ROS_URI = "ws://192.168.1.161:9090";
+//const ROS_URI = "ws://192.168.1.161:9090";
+const ROS_URI = "ws://localhost:9090";
 
 const rosClient = new RosClient({
   url: ROS_URI

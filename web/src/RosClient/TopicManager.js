@@ -10,11 +10,12 @@ class TopicManager {
             return messageType + '/' + name;
         }
 
-        let listen = (ros, name, messageType, signature) => {
+        let listen = (ros, name, messageType, signature, compresion) => {
             let listener = new ROSLIB.Topic({
                 ros: ros,
                 name: name,
-                messageType: messageType
+                messageType: messageType,
+                compression: compresion
             });
             registeredTopics[signature].listener = listener;
             registeredTopics[signature].listener.subscribe((message) => {
@@ -26,9 +27,9 @@ class TopicManager {
             });
         };
 
-        let connectAndListen = (name, messageType, signature) => {
+        let connectAndListen = (name, messageType, signature, compresion) => {
             return connection.getInstance().then((ros) => {
-                listen(ros, name, messageType, signature);
+                listen(ros, name, messageType, signature, compresion);
             });
         };
 
@@ -44,7 +45,8 @@ class TopicManager {
             });
         };
 
-        this.subscribe = (name, messageType, handler) => {
+        this.subscribe = (name, messageType, handler, compresion) => {
+            var compresion = compresion || "none";
             let signature = getSignature(name, messageType);
             if (signature in registeredTopics) {
                 // Push to existing handlers
@@ -56,7 +58,7 @@ class TopicManager {
                     listener: undefined,
                     handlers: [handler]
                 };
-                connectAndListen(name, messageType, signature);
+                connectAndListen(name, messageType, signature, compresion);
             }
             return {
                 dispose: () => {

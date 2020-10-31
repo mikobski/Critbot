@@ -30,6 +30,11 @@ class Connection extends EventEmitter {
 			}
 			connected = true;
 			this.emit(EVENT_CONNECTED, rosInstance);
+			rosInstance.getTopics((result) => {
+				console.log(result);
+			}, (msg) => {
+				console.log(msg);
+			})
 		};
 		
 		this.connect = () => {
