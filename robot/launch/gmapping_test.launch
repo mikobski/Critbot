@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <launch> 
-  <arg name="scan_topic" default="/rplidar/laser/scan" /> 
+  <arg name="scan_topic" default="/scan" /> 
  
 <!-- Defining parameters for slam_gmapping node --> 
  
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen"> 
     <param name="base_frame" value="base_link"/> 
-    <param name="odom_frame" value="odom"/> 
+    <param name="odom_frame" value="t265_odom_frame"/> 
     <param name="map_update_interval" value="5.0"/> 
     <param name="maxUrange" value="6.0"/> 
     <param name="maxRange" value="8.0"/> 
@@ -39,6 +39,8 @@
     <param name="llsamplestep" value="0.01"/> 
     <param name="lasamplerange" value="0.005"/> 
     <param name="lasamplestep" value="0.005"/> 
-    <remap from="scan" to="$(arg scan_topic)"/> 
-  </node> 
+    <!--remap from="scan" to="$(arg scan_topic)"/--> 
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0 0 0 0 base_link scan 100" />
+  <node pkg="tf" type="static_transform_publisher" name="odom_to_base_broadcaster" args="0 0 0 0 0 0 t265_odom_frame base_link 100" />
 </launch>
