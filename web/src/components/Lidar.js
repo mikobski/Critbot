@@ -103,9 +103,7 @@ class Lidar extends React.Component {
 
   render () {
     return (
-      <div style={{ border: "1px solid red"}}>
-        <Canvas draw={ this.draw }/>
-      </div>
+      <Canvas draw={ this.draw }/>
     );
   }
 }

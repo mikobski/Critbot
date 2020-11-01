@@ -1,0 +1,21 @@
+.Panels {
+  height: 100%;
+}
+.Panels-container-col {
+  clear: both;
+  display: flex;
+  
+  .Panels-col {
+    flex-basis: 50%;
+  }
+}
+
+.Panels-container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  .Panels-panel {
+    border: 0px solid #f8f9fa;
+    overflow: hidden;
+  }
+}

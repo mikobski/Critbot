@@ -103,9 +103,7 @@ class ManualControl extends React.PureComponent {
     const { direction } = this.state;
     const stylesContainer = {
       display: "flex",
-      height: "100%",
-      paddingTop: "15px",
-      paddingBottom: "15px",
+      padding: "1rem 0",
       flexDirection: "column",
       justifyContent: "center",
       textAlign: "center"
