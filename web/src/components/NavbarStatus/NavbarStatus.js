@@ -1,10 +1,9 @@
 import React from "react";
 import { Navbar, Badge } from "react-bootstrap";
-import StatusConnection from "./StatusConnection";
+import StatusConnection from "components/NavbarStatus/StatusConnection";
 
-class Status extends React.Component {
+class NavbarStatus extends React.Component {
   render () {
-    console.log(this.props.ros);
     return (
       <div>
         <Navbar.Text>
@@ -23,4 +22,4 @@ class Status extends React.Component {
   }
 }
 
-export default Status;
+export default NavbarStatus;

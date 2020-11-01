@@ -1,14 +1,9 @@
-import "App.scss";
 import React from "react";
+import AppLayout from "components/AppLayout";
 import RosClient from "RosClient/RosLibJsClient";
 import { RosContext } from "utils/RosContext";
+import "App.scss";
 
-import StatusNavbar from "components/Navbar/Status";
-import ModeSelectorNavbar from "components/Navbar/ModeSelector";
-import VerticalContainer from "helpers/VerticalContainer";
-import VerticalCol from "helpers/VerticalRow";
-import { Navbar } from "react-bootstrap";
-import PanelsLayout from "components/PanelsLayout";
 
 class App extends React.Component {
   constructor(props) {
@@ -32,18 +27,7 @@ class App extends React.Component {
   render() {
     return (
       <RosContext.Provider value= { this.state.rosClient }>
-        <VerticalContainer>
-          <VerticalCol basis="auto">
-            <Navbar bg="dark" variant="dark">
-              <Navbar.Brand>Critbot</Navbar.Brand>
-              <StatusNavbar/>
-              <ModeSelectorNavbar/>
-            </Navbar>
-          </VerticalCol>
-          <VerticalCol basis="100%">
-            <PanelsLayout/>
-          </VerticalCol>
-        </VerticalContainer>
+        <AppLayout/>
       </RosContext.Provider>
     );
   }

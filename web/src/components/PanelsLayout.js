@@ -1,7 +1,11 @@
+import { Container, Row, Col } from "react-bootstrap";
 import Camera from "components/Camera";
 import Lidar from "components/Lidar";
 import ManualControl from "components/ManualControl/ManualControl";
-import { Container, Row, Col } from "react-bootstrap";
+import EmergencyStop from "./EmergencyStop";
+import StatusDetailed from "components/StatusDetailed/StatusDetailed";
+import Map from "components/Map/Map";
+import Measurements from "components/Measurements/Measurements";
 import VerticalContainer from "helpers/VerticalContainer";
 import VerticalCol from "helpers/VerticalRow";
 import { ROS_CONFIG } from "utils/RosConfig";
@@ -23,10 +27,15 @@ const PanelsLayout = (props) => {
           </VerticalContainer>
         </Col>
         <Col>
-          
+          <StatusDetailed/>
+          <EmergencyStop/>
           <ManualControl topic={ ROS_CONFIG.defaultTopics.manualControl } />
         </Col>
+        <Col>
+          <Map/>
+        </Col>
       </Row>
+      <Measurements/>
     </Container>
   );
 };

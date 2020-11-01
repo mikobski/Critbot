@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, ButtonGroup, Navbar } from 'react-bootstrap';
 
-class ModeSelector extends React.Component {
+class NavbarModeSelector extends React.Component {
   render () {
     return (
       <Navbar.Collapse className="justify-content-end">
@@ -14,4 +14,4 @@ class ModeSelector extends React.Component {
   }
 }
 
-export default ModeSelector;
+export default NavbarModeSelector;
