@@ -1,9 +1,12 @@
 import React from "react";
 import ButtonControl from "components/ManualControl/ButtonControl";
 import { Direction } from "components/ManualControl/Direction";
+import { RosContext } from "utils/RosContext";
 
 class ManualControl extends React.PureComponent {
+  static contextType = RosContext;
   _intervalHandler;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -74,7 +77,7 @@ class ManualControl extends React.PureComponent {
     } else if(direction === Direction.RIGHT) {
       msg.angular.z = -this.props.rotateStep;
     }
-    this.props.ros.topic.publish(this.props.topic, messageType, msg);
+    this.context.topic.publish(this.props.topic, messageType, msg);
   };
 
   componentDidUpdate() {

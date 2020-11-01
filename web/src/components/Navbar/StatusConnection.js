@@ -1,5 +1,6 @@
 import React from "react";
 import { Badge } from "react-bootstrap";
+import { RosContext } from "utils/RosContext";
 
 const ConectionStatus = {
     CONNECTED: "CONNECTED",
@@ -7,6 +8,7 @@ const ConectionStatus = {
 };
 
 class StatusConnection extends React.Component {
+    static contextType = RosContext;
     constructor(props) {
       super(props)
       this.state = {
@@ -14,12 +16,12 @@ class StatusConnection extends React.Component {
       };
     }
     componentDidMount() {
-        this.props.ros.connection.on("connected", this.handleConnected);
-        this.props.ros.connection.on("disconnected", this.handleDisconnected);
+        this.context.connection.on("connected", this.handleConnected);
+        this.context.connection.on("disconnected", this.handleDisconnected);
     }
     componentWillUnmount() {
-        this.props.ros.connection.removeListener("connected", this.handleConnected);
-        this.props.ros.connection.removeListener("disconnected", this.handleDisconnected);
+        this.context.connection.removeListener("connected", this.handleConnected);
+        this.context.connection.removeListener("disconnected", this.handleDisconnected);
     }
 
     handleConnected = () => {
@@ -38,7 +40,7 @@ class StatusConnection extends React.Component {
         if(this.state.connectionStatus === ConectionStatus.CONNECTED) {
             statusElement = <Badge variant="success">
                 OK &nbsp;
-                <i>({ this.props.ros.connection.getUrl() })</i>
+                <i>({ this.context.connection.getUrl() })</i>
             </Badge> ;
         } else if(this.state.connectionStatus === ConectionStatus.DISCONNECTED) {
             statusElement = <Badge variant="danger">Disconnected</Badge>;

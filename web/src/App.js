@@ -1,6 +1,7 @@
 import "App.scss";
 import React from "react";
 import RosClient from "RosClient/RosLibJsClient";
+import { RosContext } from "utils/RosContext";
 
 import StatusNavbar from "components/Navbar/Status";
 import ModeSelectorNavbar from "components/Navbar/ModeSelector";
@@ -9,32 +10,33 @@ import VerticalCol from "helpers/VerticalRow";
 import { Navbar } from "react-bootstrap";
 import PanelsLayout from "components/PanelsLayout";
 
-//const ROS_URI = "ws://192.168.1.161:9090";
-const ROS_URI = "ws://localhost:9090";
-
-const rosClient = new RosClient({
-  url: ROS_URI
-});
-
 class App extends React.Component {
   constructor(props) {
-    super(props)
-    this.rosClient = rosClient;
+    super(props);
+
+    this.state = {
+      rosClient: new RosClient({
+        url: "ws://localhost:9090",
+        // url: "ws://192.168.1.161:9090"
+      })
+    }
   }
+
   componentDidMount() {
-    this.rosClient.connection.connect();
+    this.state.rosClient.connection.connect();
   }
   componentWillUnmount() {
-    this.rosClient.connection.close();
+    this.state.rosClient.connection.close();
   }
 
   render() {
     return (
+      <RosContext.Provider value= { this.state.rosClient }>
         <VerticalContainer>
           <VerticalCol basis="auto">
             <Navbar bg="dark" variant="dark">
               <Navbar.Brand>Critbot</Navbar.Brand>
-              <StatusNavbar ros={ this.rosClient }/>
+              <StatusNavbar/>
               <ModeSelectorNavbar/>
             </Navbar>
           </VerticalCol>
@@ -42,6 +44,7 @@ class App extends React.Component {
             <PanelsLayout/>
           </VerticalCol>
         </VerticalContainer>
+      </RosContext.Provider>
     );
   }
 }

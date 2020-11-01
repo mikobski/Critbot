@@ -1,12 +1,14 @@
 import React from "react";
 import Canvas from "helpers/Canvas";
+import { RosContext } from "utils/RosContext";
 
 class Lidar extends React.Component {
+  static contextType = RosContext;
   _topic;
   _data = [];
 
   componentDidMount() {
-    const topicManager = this.props.ros.topic;
+    const topicManager = this.context.topic;
     const topicName = this.props.topic;
     this._topic = topicManager.subscribe(topicName, "sensor_msgs/LaserScan", this.topicListener);
   }

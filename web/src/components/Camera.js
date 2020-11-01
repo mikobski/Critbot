@@ -1,12 +1,14 @@
 import React from "react";
 import Canvas from "helpers/Canvas";
+import { RosContext } from "utils/RosContext";
 
 class Camera extends React.Component {
+  static contextType = RosContext;
   _topic;
   _data = null;
 
   componentDidMount() {
-    const topicManager = this.props.ros.topic;
+    const topicManager = this.context.topic;
     const topicName = this.props.topic;
     this._topic = topicManager.subscribe(topicName, "sensor_msgs/CompressedImage", 
       this.topicListener, { compresion: "cbor" });
