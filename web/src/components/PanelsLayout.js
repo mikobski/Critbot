@@ -17,7 +17,7 @@ const PanelsLayout = (props) => {
         <Col>
           <VerticalContainer>
             <VerticalCol basis="50%">
-            <Camera topic={ ROS_CONFIG.defaultTopics.camera }/> 
+              <Camera topic={ ROS_CONFIG.defaultTopics.camera }/> 
             </VerticalCol>
             <VerticalCol basis="50%">
               <Lidar topic={ ROS_CONFIG.defaultTopics.lidar }

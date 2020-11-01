@@ -4,6 +4,12 @@ import { RosContext } from "utils/RosContext";
 
 class Lidar extends React.Component {
   static contextType = RosContext;
+  static defaultProps = {
+    physicalWidth: 12,
+    physicalHeight: 12,
+    gridMax: 10,
+    gridCount: 4
+  };
   _topic;
   _data = [];
 
@@ -102,12 +108,6 @@ class Lidar extends React.Component {
       </div>
     );
   }
-}
-Lidar.defaultProps = {
-  physicalWidth: 12,
-  physicalHeight: 12,
-  gridMax: 10,
-  gridCount: 4
 }
 
 export default Lidar;
