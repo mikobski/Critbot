@@ -14,8 +14,9 @@
   display: flex;
   height: 100%;
   flex-direction: column;
-  .Panels-panel {
-    border: 0px solid #f8f9fa;
-    overflow: hidden;
-  }
+}
+.Panels-panel {
+  border: 0px solid #f8f9fa;
+  overflow: hidden;
+  box-sizing: content-box;
 }
