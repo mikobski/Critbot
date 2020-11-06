@@ -26,7 +26,30 @@ class Camera extends React.Component {
 
   draw = (ctx, frameCount) => {
     if(this._data) {
-      ctx.drawImage(this._data, 0, 0);
+      const imgDim = {
+        height: this._data.height,
+        width: this._data.width,
+        ratio: this._data.width/this._data.height
+      }
+      const canvasDim = {
+        height: ctx.canvas.height,
+        width: ctx.canvas.width,
+        ratio: ctx.canvas.width/ctx.canvas.height
+      }
+
+      let scale = 1;
+      if(imgDim.ratio < canvasDim.ratio) {
+        scale = canvasDim.height/imgDim.height;
+      } else {
+        scale = canvasDim.width/imgDim.width;        
+      }
+
+      const width = imgDim.width*scale;
+      const height = imgDim.height*scale;
+      const dx = (canvasDim.width - width)/2;
+      const dy = (canvasDim.height - height)/2
+      console.log({scale: scale, width: width, height: height});
+      ctx.drawImage(this._data, dx, dy, width, height);
     }
   }
 
