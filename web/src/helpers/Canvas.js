@@ -3,23 +3,28 @@ import React, { useRef, useEffect } from "react"
 
 const Canvas = props => {
 
-  const { draw, ...rest } = props
-  const canvasRef = useRef(null)
+  const { draw, ...rest } = props;  
+  const refCanvasContainer = useRef(null);
+  const refCanvas = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current
+    const canvasContainer = refCanvasContainer.current;
+    const canvas = refCanvas.current;
     const context = canvas.getContext("2d");
     let frameCount = 0;
     let animationFrameId;
 
-    function resizeCanvas(canvas) {
-      const { width, height } = canvas.getBoundingClientRect();
-
+    function resizeCanvas(canvasContainer, canvas) {
+      const containerDim = canvasContainer.getBoundingClientRect();
+      const width = Math.floor(containerDim.width);
+      const height = Math.floor(containerDim.height);
       if (canvas.width !== width || canvas.height !== height) {
         const { devicePixelRatio: ratio = 1 } = window;
         const context = canvas.getContext("2d");
         canvas.width = width * ratio;
         canvas.height = height * ratio;
+        canvas.style.maxWidth = `${canvas.width}px`;
+        canvas.style.maxHeight = `${canvas.height}px`;
         context.scale(1, 1);
         return true;
       }
@@ -27,8 +32,8 @@ const Canvas = props => {
     };
 
     const render = () => {
-      frameCount++
-      resizeCanvas(canvas);
+      frameCount++;
+      resizeCanvas(canvasContainer, canvas);
       const { width, height } = context.canvas;
       context.clearRect(0, 0, width, height);
       draw(context, frameCount);
@@ -51,10 +56,10 @@ const Canvas = props => {
   };
 
   return (
-    <div style={stylesCanvasCntainer}>
-      <canvas ref={canvasRef} style={stylesCanvas} {...rest} />
+    <div ref={ refCanvasContainer } style={ stylesCanvasCntainer }>
+      <canvas ref={ refCanvas } style={ stylesCanvas } { ...rest } />
     </div>
   );
 }
 
-export default Canvas
+export default Canvas;
