@@ -105,19 +105,22 @@ class ManualControl extends React.PureComponent {
       display: "flex",
       padding: "1rem 0",
       flexDirection: "column",
-      justifyContent: "center",
-      textAlign: "center"
+      justifyContent: "center"
+    };
+    const stylesBtnsRow = {
+      display: "flex",
+      justifyContent: "center"
     };
     return (
       <div style={ stylesContainer }>
-        <div>
+        <div style={ stylesBtnsRow }>
           <ButtonControl 
             onStartCmd={ this.handleStartCmd } 
             onStopCmd={ this.handleStopCmd } 
             dir={ Direction.FORWARD }
             active={ direction === Direction.FORWARD }/>
         </div>
-        <div>
+        <div style={ stylesBtnsRow }>
           <ButtonControl 
             onStartCmd={ this.handleStartCmd } 
             onStopCmd={ this.handleStopCmd }  
