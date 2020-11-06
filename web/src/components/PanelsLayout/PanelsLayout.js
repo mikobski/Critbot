@@ -23,16 +23,19 @@ class PanelsLayout extends React.Component {
     window.addEventListener("resize", this.resizeLayout);
   }
   componentDidUpdate() {
-    this.resizeLayout();
+    this.resizeLayout();    
+  }
+  componentWillUnmount() {
     window.removeEventListener("resize", this.resizeLayout);
   }
+
   resizeLayout = () => {
     const containerDim = this.panelsContainer.current.getBoundingClientRect();
     const cameraPanelRatio = 16/9;
-    let cameraWidth = containerDim.width/2;
-    let cameraHeight = cameraWidth/cameraPanelRatio;
-    this.columnLeft.current.style.flexBasis = `${cameraWidth}px`;
-    this.cameraPanel.current.style.flexBasis = `${cameraHeight}px`;
+    let cameraWidth = Math.ceil(containerDim.width/2);
+    let cameraHeight = Math.ceil(cameraWidth/cameraPanelRatio);
+    this.columnLeft.current.style.minWidth = `${cameraWidth}px`;
+    this.cameraPanel.current.style.minHeight = `${cameraHeight}px`;
   };
   
   render() {
@@ -43,7 +46,8 @@ class PanelsLayout extends React.Component {
           <div ref={ this.cameraPanel } className="Panels-panel" style={{ flexBasis: "50%" }}>
             <Camera topic={ ROS_CONFIG.defaultTopics.camera }/> 
           </div>  
-          <div className="Panels-panel Panels-brd-top">
+          <div className="Panels-panel Panels-brd-top"
+            style={{flexBasis: "50%" }}>
             <Lidar topic={ ROS_CONFIG.defaultTopics.lidar }
               physicalWidth="22" physicalHeight="22"
               gridMax="10" gridCount="4"/>
