@@ -4,10 +4,6 @@
 .Panels-container-col {
   clear: both;
   display: flex;
-  
-  .Panels-col {
-    flex-basis: 50%;
-  }
 }
 
 .Panels-container {
@@ -16,7 +12,21 @@
   flex-direction: column;
 }
 .Panels-panel {
-  border: 0px solid #f8f9fa;
   overflow: hidden;
+}
+.Panels-col, .Panels-panel {
+  border: 0px solid #f8f9fa;
   box-sizing: content-box;
+  &.Panels-brd-top {
+    border-top-width: 0.3rem;
+  }
+  &.Panels-brd-left {
+    border-left-width: 0.3rem;
+  }
+  &.Panels-brd-bottom {
+    border-bottom-width: 0.3rem;
+  }
+  &.Panels-brd-right {
+    border-right-width: 0.3rem;
+  }
 }
