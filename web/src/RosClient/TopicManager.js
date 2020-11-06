@@ -94,7 +94,7 @@ class TopicManager {
             for (let signature in registeredTopics) {
                 let topic = registeredTopics[signature];
                 if (topic.listener === null && topic.handlers.length) {
-                    listen(ros, topic.options.name, topic.options.messageType, signature);
+                    listen(ros, topic.options.name, topic.options.messageType, signature, topic.options);
                     topic.listener = null;
                 }
             }
