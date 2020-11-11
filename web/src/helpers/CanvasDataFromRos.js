@@ -13,7 +13,6 @@ class CanvasDataFromRos extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    console.log(this.props);
     this.state = {
       isReceiving: false
     };

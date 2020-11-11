@@ -61,7 +61,7 @@ class PanelsLayout extends React.Component {
                   <StatusDetailed/>
                   <EmergencyStop/>
                     {
-                      this.props.mode === Mode.manual && 
+                      this.props.mode === Mode.MANUAL && 
                       <ManualControl topic={ ROS_CONFIG.defaultTopics.manualControl } /> 
                     }
                 </div>
