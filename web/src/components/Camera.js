@@ -3,14 +3,12 @@ import CanvasDataFromRos from "helpers/CanvasDataFromRos";
 import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
 
-class Camera extends React.PureComponent {
+class Camera extends React.Component {
   static contextType = RosContext;
   static defaultProps = {
     noDataTimeout: 500
   };
-  _noDataTimeoutHandler = null;
   _topic;
-  _data = null;
 
   constructor(props, context) {
     super(props, context);

@@ -7,7 +7,7 @@ import StatusDetailed from "components/StatusDetailed/StatusDetailed";
 import Map from "components/Map/Map";
 import Measurements from "components/Measurements/Measurements";
 import { ROS_CONFIG } from "utils/RosConfig";
-import { MODE } from "utils/Mode";
+import { Mode } from "utils/Mode";
 import "components/PanelsLayout/PanelsLayout.scss";
 
 class PanelsLayout extends React.Component {
@@ -61,7 +61,7 @@ class PanelsLayout extends React.Component {
                   <StatusDetailed/>
                   <EmergencyStop/>
                     {
-                      this.props.mode === MODE.manual && 
+                      this.props.mode === Mode.manual && 
                       <ManualControl topic={ ROS_CONFIG.defaultTopics.manualControl } /> 
                     }
                 </div>

@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react"
 
 const Canvas = props => {
 
-  const { draw, ...rest } = props;  
+  const { onDraw, ...propsRest } = props;  
   const refCanvasContainer = useRef(null);
   const refCanvas = useRef(null);
 
@@ -36,16 +36,15 @@ const Canvas = props => {
       resizeCanvas(canvasContainer, canvas);
       const { width, height } = context.canvas;
       context.clearRect(0, 0, width, height);
-      draw(context, frameCount);
+      onDraw(context, frameCount);
       animationFrameId = window.requestAnimationFrame(render);
     }
-
     render()
 
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     }
-  }, [draw])
+  }, [onDraw])
 
   const stylesCanvasCntainer = {
     height: "100%"
@@ -57,7 +56,7 @@ const Canvas = props => {
 
   return (
     <div ref={ refCanvasContainer } style={ stylesCanvasCntainer }>
-      <canvas ref={ refCanvas } style={ stylesCanvas } { ...rest } />
+      <canvas ref={ refCanvas } style={ stylesCanvas } { ...propsRest } />
     </div>
   );
 }
