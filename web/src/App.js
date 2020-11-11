@@ -1,6 +1,6 @@
 import React from "react";
 import AppLayout from "components/AppLayout";
-import RosClient from "RosClient/RosLibJsClient";
+import RosClient from "RosClient";
 import { RosContext } from "utils/RosContext";
 import "App.scss";
 
@@ -10,24 +10,29 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      rosClient: new RosClient({
-        url: "ws://localhost:9090",
-        // url: "ws://192.168.1.161:9090"
-      })
-    }
+      rosClient: new RosClient()
+    };
+    console.log(this.state.rosClient);
+    this.state.rosClient.on("error", () => {
+      console.info(`[Critbot] Websocket connection to '${this.state.rosClient.socket.url}' is refused`);
+    });
   }
 
   componentDidMount() {
-    this.state.rosClient.connection.connect();
+    const rosURL = "ws://localhost:9090";
+    // const rosURL = "ws://192.168.1.161:9090";
+    this.state.rosClient.connect(rosURL);
   }
   componentWillUnmount() {
-    this.state.rosClient.connection.close();
+    this.state.rosClient.close();
   }
 
   render() {
     return (
       <RosContext.Provider value= { this.state.rosClient }>
-        <AppLayout/>
+        {
+         <AppLayout/> 
+        }
       </RosContext.Provider>
     );
   }

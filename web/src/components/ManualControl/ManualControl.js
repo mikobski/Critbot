@@ -2,9 +2,11 @@ import React from "react";
 import ButtonControl from "components/ManualControl/ButtonControl";
 import { Direction } from "components/ManualControl/Direction";
 import { RosContext } from "utils/RosContext";
+import RosTopic from "RosClient/Topic";
 
 class ManualControl extends React.PureComponent {
   static contextType = RosContext;
+  _topic;
   _intervalHandler;
 
   constructor(props) {
@@ -14,6 +16,14 @@ class ManualControl extends React.PureComponent {
     }
   }
   componentDidMount(){
+    const rosClient = this.context;
+    const topicName = this.props.topic;
+    this._topic = new RosTopic({
+      ros: rosClient,
+      name: topicName,
+      messageType: "geometry_msgs/Twist", 
+    });
+    this._topic.advertise();
     document.addEventListener("keydown", this.handleKeyDown, false);
     document.addEventListener("keyup", this.handleKeyUp, false);
   }
@@ -54,7 +64,6 @@ class ManualControl extends React.PureComponent {
   }
 
   _moveCmd = () => {
-    const messageType = "geometry_msgs/Twist"
     const { direction } = this.state;
     let msg = {
       "linear": {
@@ -77,7 +86,7 @@ class ManualControl extends React.PureComponent {
     } else if(direction === Direction.RIGHT) {
       msg.angular.z = -this.props.rotateStep;
     }
-    this.context.topic.publish(this.props.topic, messageType, msg);
+    this._topic.publish(msg);
   };
 
   componentDidUpdate() {

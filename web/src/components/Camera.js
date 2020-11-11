@@ -1,5 +1,6 @@
 import React from "react";
 import Canvas from "helpers/Canvas";
+import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
 
 class Camera extends React.Component {
@@ -8,19 +9,26 @@ class Camera extends React.Component {
   _data = null;
 
   componentDidMount() {
-    const topicManager = this.context.topic;
+    const rosClient = this.context;
     const topicName = this.props.topic;
-    this._topic = topicManager.subscribe(topicName, "sensor_msgs/CompressedImage", 
-      this.topicListener, { compresion: "cbor" });
+    this._topic = new RosTopic({
+      ros: rosClient,
+      name: topicName,
+      messageType: "sensor_msgs/CompressedImage", 
+      compression: "cbor"
+    });
+    this._topic.subscribe(this.topicListener);
   }
   componentWillUnmount() {
-    this._topic.dispose();
+    this._topic.unsubscribe(this.topicListener);
   }
 
   topicListener = (message) => {
     const rawData = new Blob([message.data], { type: `image/rgb8; jpeg compressed bgr8` });
     createImageBitmap(rawData).then((imageBitmap) => {
       this._data = imageBitmap;
+    }).catch((error) => {
+      console.error(`[Critbot] Incorrect format of camera messeages on topic ${this.props.topic}`);
     });
   }
 
@@ -48,7 +56,6 @@ class Camera extends React.Component {
       const height = imgDim.height*scale;
       const dx = (canvasDim.width - width)/2;
       const dy = (canvasDim.height - height)/2
-      console.log({scale: scale, width: width, height: height});
       ctx.drawImage(this._data, dx, dy, width, height);
     }
   }

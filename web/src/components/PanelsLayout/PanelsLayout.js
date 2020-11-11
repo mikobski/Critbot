@@ -50,7 +50,7 @@ class PanelsLayout extends React.Component {
             style={{flexBasis: "50%" }}>
             <Lidar topic={ ROS_CONFIG.defaultTopics.lidar }
               physicalWidth="22" physicalHeight="22"
-              gridMax="10" gridCount="4"/>
+    gridMax="10" gridCount="4"/>
           </div>
         </div>
         <div className="Panels-col" style={{flexBasis: "50%" }}>

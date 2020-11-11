@@ -1,7 +1,5 @@
 import React from "react";
-import RosClient from "RosClient/RosLibJsClient";
+import RosClient from "RosClient";
 
-export const RosContext = React.createContext(new RosClient({
-  url: "ws://localhost:9090"
-}));
+export const RosContext = React.createContext(new RosClient());
 RosContext.displayName = "RosContext";

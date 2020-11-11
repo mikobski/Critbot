@@ -1,5 +1,6 @@
 import React from "react";
 import Canvas from "helpers/Canvas";
+import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
 
 class Lidar extends React.Component {
@@ -14,12 +15,17 @@ class Lidar extends React.Component {
   _data = [];
 
   componentDidMount() {
-    const topicManager = this.context.topic;
+    const rosClient = this.context;
     const topicName = this.props.topic;
-    this._topic = topicManager.subscribe(topicName, "sensor_msgs/LaserScan", this.topicListener);
+    this._topic = new RosTopic({
+      ros: rosClient,
+      name: topicName,
+      messageType: "sensor_msgs/LaserScan"
+    });
+    this._topic.subscribe(this.topicListener);
   }
   componentWillUnmount() {
-    this._topic.dispose();
+    this._topic.unsubscribe(this.topicListener);
   }
 
   topicListener = (message) => {

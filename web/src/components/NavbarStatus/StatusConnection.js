@@ -16,12 +16,16 @@ class StatusConnection extends React.Component {
       };
     }
     componentDidMount() {
-        this.context.connection.on("connected", this.handleConnected);
-        this.context.connection.on("disconnected", this.handleDisconnected);
+        const rosClient = this.context;
+        rosClient.on("connection", this.handleConnected);
+        rosClient.on("close", this.handleDisconnected);
+        rosClient.on("error", this.handleDisconnected);
     }
     componentWillUnmount() {
-        this.context.connection.removeListener("connected", this.handleConnected);
-        this.context.connection.removeListener("disconnected", this.handleDisconnected);
+        const rosClient = this.context;
+        rosClient.removeListener("close", this.handleDisconnected);
+        rosClient.removeListener("connection", this.handleConnected);
+        rosClient.removeListener("error", this.handleDisconnected);
     }
 
     handleConnected = () => {
@@ -36,11 +40,12 @@ class StatusConnection extends React.Component {
     };
 
     render() {
+        const rosClient = this.context;
         let statusElement;
         if(this.state.connectionStatus === ConectionStatus.CONNECTED) {
             statusElement = <Badge variant="success">
                 OK &nbsp;
-                <i>({ this.context.connection.getUrl() })</i>
+                <i>({ rosClient.socket.url })</i>
             </Badge> ;
         } else if(this.state.connectionStatus === ConectionStatus.DISCONNECTED) {
             statusElement = <Badge variant="danger">Disconnected</Badge>;
