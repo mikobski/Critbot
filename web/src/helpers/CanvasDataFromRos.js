@@ -57,7 +57,7 @@ class CanvasDataFromRos extends React.PureComponent {
     this._noDataTimeoutHandler = setTimeout(this.onReceivingError, this.props.noDataTimeout);
   }
 
-  draw = (ctx, frameCount) => {
+  handleDraw = (ctx, frameCount) => {
     this.props.onDraw(this._data, ctx, frameCount);
   }
 
@@ -67,7 +67,7 @@ class CanvasDataFromRos extends React.PureComponent {
       statusMsg = this.props.onReceivingError();
     }
     return (
-      <CanvasWithStatus draw={ this.draw }
+      <CanvasWithStatus onDraw={ this.handleDraw }
         statusMsg={ statusMsg } statusVariant="danger"/>
     );
   }

@@ -10,23 +10,23 @@ class RosClient extends ROSLIB.Ros {
     this.Param = undefined;
     this._reconnectTimeout = options.reconnectTimeout || 0;
 
-    const onConnectionFail = () => {
+    const handleConnectionFail = () => {
       if(this._reconnectTimeoutHandler == null) {
-        const onReconnect = () => {
+        const handleReconnect = () => {
           if(!this.isConnected) {
             this.connect(this.socket.url);
             this.emit("startReconnecting"); 
           }
           this._reconnectTimeoutHandler = null;
         };
-        this._reconnectTimeoutHandler = setTimeout(onReconnect, this._reconnectTimeout);
+        this._reconnectTimeoutHandler = setTimeout(handleReconnect, this._reconnectTimeout);
         this.emit("startReconnectingTimeout", this._reconnectTimeout); 
       }
     };
 
     if(this._reconnectTimeout) {
-      this.on("close", onConnectionFail);
-      this.on("error", onConnectionFail);
+      this.on("close", handleConnectionFail);
+      this.on("error", handleConnectionFail);
     }
   }
 

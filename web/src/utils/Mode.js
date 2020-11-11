@@ -1,4 +1,4 @@
-export const MODE = {
-  manual: "manual",
-  auto: "auto"
+export const Mode = {
+  MANUAL: "manual",
+  AUTO: "auto"
 };

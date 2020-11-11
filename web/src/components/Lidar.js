@@ -42,7 +42,7 @@ class Lidar extends React.Component {
     });
   }
 
-  calcScale(ctx) {
+  _calcScale(ctx) {
     const { width, height } = ctx.canvas;
     const { physicalWidth, physicalHeight } = this.props;
     let scale = 1;
@@ -52,7 +52,7 @@ class Lidar extends React.Component {
     return Math.min(width/physicalWidth, height/physicalHeight);
   }
 
-  drawGrid(ctx, scale, center) {
+  _drawGrid(ctx, scale, center) {
     const lineWidth = 1;
     const lineColour = "#6c757d";
     const crosshairSize = 10;
@@ -84,7 +84,7 @@ class Lidar extends React.Component {
     }
   }
 
-  drawPoints(data, ctx, scale, center) {
+  _drawPoints(data, ctx, scale, center) {
     const circleDim = 2;
     const color = "rgba(0, 120, 255, 0.8)";
     ctx.fillStyle = color;
@@ -97,15 +97,15 @@ class Lidar extends React.Component {
   }
 
   handleDraw = (data,ctx, frameCount) => {
-    const scale = this.calcScale(ctx);
+    const scale = this._calcScale(ctx);
     const center = {
       x: ctx.canvas.width/2,
       y: ctx.canvas.height/2
     }
 
-    this.drawGrid(ctx, scale, center);
+    this._drawGrid(ctx, scale, center);
     if(data !== null) {
-      this.drawPoints(data, ctx, scale, center);
+      this._drawPoints(data, ctx, scale, center);
     }
   }
   
