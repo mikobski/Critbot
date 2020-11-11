@@ -1,14 +1,19 @@
 import React from "react";
-import Canvas from "helpers/Canvas";
+import CanvasDataFromRos from "helpers/CanvasDataFromRos";
 import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
 
-class Camera extends React.Component {
+class Camera extends React.PureComponent {
   static contextType = RosContext;
+  static defaultProps = {
+    noDataTimeout: 500
+  };
+  _noDataTimeoutHandler = null;
   _topic;
   _data = null;
 
-  componentDidMount() {
+  constructor(props, context) {
+    super(props, context);
     const rosClient = this.context;
     const topicName = this.props.topic;
     this._topic = new RosTopic({
@@ -17,27 +22,26 @@ class Camera extends React.Component {
       messageType: "sensor_msgs/CompressedImage", 
       compression: "cbor"
     });
-    this._topic.subscribe(this.topicListener);
-  }
-  componentWillUnmount() {
-    this._topic.unsubscribe(this.topicListener);
   }
 
-  topicListener = (message) => {
-    const rawData = new Blob([message.data], { type: `image/rgb8; jpeg compressed bgr8` });
-    createImageBitmap(rawData).then((imageBitmap) => {
-      this._data = imageBitmap;
-    }).catch((error) => {
-      console.error(`[Critbot] Incorrect format of camera messeages on topic ${this.props.topic}`);
+  promiseNewData = (message) => {
+    return new Promise((resolve, reject) => {
+      const rawData = new Blob([message.data], { type: `image/rgb8; jpeg compressed bgr8` });
+      createImageBitmap(rawData).then((imageBitmap) => {
+        resolve(imageBitmap);
+      }).catch((error) => {
+        console.error(`[Critbot] Incorrect format of camera messeages on topic ${this.props.topic}`);
+        reject();
+      });
     });
   }
 
-  draw = (ctx, frameCount) => {
-    if(this._data) {
+  handleDraw = (data, ctx, frameCount) => {
+    if(data) {
       const imgDim = {
-        height: this._data.height,
-        width: this._data.width,
-        ratio: this._data.width/this._data.height
+        height: data.height,
+        width: data.width,
+        ratio: data.width/data.height
       }
       const canvasDim = {
         height: ctx.canvas.height,
@@ -56,13 +60,19 @@ class Camera extends React.Component {
       const height = imgDim.height*scale;
       const dx = (canvasDim.width - width)/2;
       const dy = (canvasDim.height - height)/2
-      ctx.drawImage(this._data, dx, dy, width, height);
+      ctx.drawImage(data, dx, dy, width, height);
     }
   }
 
+  handleReceivingError = () => {
+    return  "No data received from camera";
+  }
+  
   render () {
     return (
-      <Canvas draw={ this.draw }/>
+      <CanvasDataFromRos topic={ this._topic } promiseNewData={ this.promiseNewData }
+        onDraw={ this.handleDraw } 
+        onReceivingError={ this.handleReceivingError }/>
     );
   }
 }
