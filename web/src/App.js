@@ -8,11 +8,11 @@ import "App.scss";
 class App extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      rosClient: new RosClient()
+      rosClient: new RosClient({
+        reconnectTimeout: 3000
+      })
     };
-    console.log(this.state.rosClient);
     this.state.rosClient.on("error", () => {
       console.info(`[Critbot] Websocket connection to '${this.state.rosClient.socket.url}' is refused`);
     });
