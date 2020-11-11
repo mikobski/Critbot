@@ -91,7 +91,7 @@ class ManualControl extends React.PureComponent {
 
   componentDidUpdate() {
     const { direction } = this.state;
-    if(direction == Direction.STOP) {
+    if(direction === Direction.STOP) {
       if(this._intervalHandler != null) {
         clearInterval(this._intervalHandler);
         this._intervalHandler = null;
