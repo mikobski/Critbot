@@ -1,5 +1,5 @@
 import React from "react";
-import Canvas from "helpers/Canvas";
+import CanvasDataFromRos from "helpers/CanvasDataFromRos";
 import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
 
@@ -12,34 +12,34 @@ class Lidar extends React.Component {
     gridCount: 4
   };
   _topic;
-  _data = [];
 
-  componentDidMount() {
+  constructor(props, context) {
+    super(props, context);
     const rosClient = this.context;
     const topicName = this.props.topic;
     this._topic = new RosTopic({
       ros: rosClient,
       name: topicName,
-      messageType: "sensor_msgs/LaserScan"
+      messageType: "sensor_msgs/LaserScan", 
+      compression: "cbor"
     });
-    this._topic.subscribe(this.topicListener);
-  }
-  componentWillUnmount() {
-    this._topic.unsubscribe(this.topicListener);
   }
 
-  topicListener = (message) => {
-    if(message.header.frame_id === "laser") {
-      this._data = [];
-      let angle = message.angle_min;
-      for(const range of message.ranges) {
-        this._data.push([
-          Math.cos(angle+Math.PI/2)*range,
-          Math.sin(angle+Math.PI/2)*range
-        ]);
-        angle += message.angle_increment;
+  promiseNewData = (message) => {
+    return new Promise((resolve, reject) => {
+      if(message.header.frame_id === "laser") {
+        let data = [];
+        let angle = message.angle_min;
+        for(const range of message.ranges) {
+          data.push([
+            Math.cos(angle+Math.PI/2)*range,
+            Math.sin(angle+Math.PI/2)*range
+          ]);
+          angle += message.angle_increment;
+        }
+        resolve(data);
       }
-    }
+    });
   }
 
   calcScale(ctx) {
@@ -84,19 +84,19 @@ class Lidar extends React.Component {
     }
   }
 
-  drawPoints(ctx, scale, center) {
+  drawPoints(data, ctx, scale, center) {
     const circleDim = 2;
     const color = "rgba(0, 120, 255, 0.8)";
     ctx.fillStyle = color;
-    for(let i = 0; i < this._data.length; i++) {
-      const point = this._data[i];
+    for(let i = 0; i < data.length; i++) {
+      const point = data[i];
       ctx.beginPath()
       ctx.arc(center.x + point[0]*scale, center.y + point[1]*scale, circleDim, 0, 2*Math.PI)
       ctx.fill()
     }
   }
 
-  draw = (ctx, frameCount) => {
+  handleDraw = (data,ctx, frameCount) => {
     const scale = this.calcScale(ctx);
     const center = {
       x: ctx.canvas.width/2,
@@ -104,12 +104,20 @@ class Lidar extends React.Component {
     }
 
     this.drawGrid(ctx, scale, center);
-    this.drawPoints(ctx, scale, center);
+    if(data !== null) {
+      this.drawPoints(data, ctx, scale, center);
+    }
+  }
+  
+  handleReceivingError = () => {
+    return  "No data received from LIDAR";
   }
 
   render () {
     return (
-      <Canvas draw={ this.draw }/>
+      <CanvasDataFromRos topic={ this._topic } promiseNewData={ this.promiseNewData }
+        onDraw={ this.handleDraw } 
+        onReceivingError={ this.handleReceivingError }/>
     );
   }
 }

@@ -9,9 +9,8 @@ const CanvasWithStatus = props => {
     const stylesContainer = {
       width: "100%",
       position: "absolute",
-      top: "50%",
+      top: "0",
       left: "0",
-      transform: "translate(0, -50%)",
       padding: "1rem"
     }
     statusAlert = <div style={ stylesContainer }>
