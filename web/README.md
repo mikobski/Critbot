@@ -4,21 +4,12 @@
 #### Linux
 Uruchom `./install_environment_web.sh`.
 #### Windows
-Zainstaluj z linku dla [x64](https://nodejs.org/dist/latest-v10.x/node-v10.22.0-x64.msi) lub [x86](https://nodejs.org/dist/latest-v10.x/node-v10.22.0-x86.msi).
+Też powinno działać, choć nie testowałem. Wystarczy zainstalować Node.js w wersji 14.
 
-Może być konieczne ponowne odpalenie konsoli lub reset, aby zaciągnęło nowe zmienne środowiskowe. Dla sprawdzenia można uruchomić komendy:
-* `node -v` powinna wypluć `v10.22.0`
-*  `npm -v` powinna wypluć `6.14.6`
-
-## Budowanie Webviz
+## Uruchomienie Webviz
 Uruchom w folderze *web/*:
-* `npm run bootstrap` - dociąganie zależności
-* `npm run build` - budowanie pakietów
-* `npm run build-static-webviz` - budowanie plików strony internetowej
-* `npm run serve-static-webviz` - uruchomienie testowego serwera
+* `npm install` - dociąganie zależności
+* `npm start` - budowanie (ze śledzeniem zmian na żywo) oraz uruchomienie serwera pod adresem `http://localhost:3000/`
 
-Wszystkie powyższe komendy są konieczne do wykonania w celu uruchomienia Webviz. Oczywiście pierwsze 3 komendy trzeba uruchomić tylko w przypadku zmian w kodzie strony.
-* `npm run clean` - usuwanie zbudowanych plików
-
-## Używanie Webviz
-Domyślnie Webviz jest dostępny pod adresem `http://localhost:8080/`, a źródło danych to `ws://localhost:9090`, więc ma taki sam port jak domyślny dla uruchomionego *ros_bridge*.
+Budowanie w pełni zoptymalizowanej wersji odbywa się poprzez komendę 
+* `npm build` - budowanie
