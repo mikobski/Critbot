@@ -2,5 +2,6 @@ export const Direction = {
     FORWARD: "FW",
     BACKWARD: "BW",
     LEFT: "L",
-    RIGHT: "R"
+    RIGHT: "R",
+    STOP: "S"
   }

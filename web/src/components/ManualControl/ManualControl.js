@@ -12,7 +12,7 @@ class ManualControl extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      direction: null
+      direction: Direction.STOP
     }
   }
   componentDidMount(){
@@ -39,7 +39,7 @@ class ManualControl extends React.PureComponent {
   };
   handleStopCmd = (dir) => {
     this.setState({
-      direction: null
+      direction: Direction.STOP
     });
   };
   handleKeyDown = (e) => {
@@ -59,7 +59,7 @@ class ManualControl extends React.PureComponent {
   }
   handleKeyUp = (e) => {
     this.setState({
-      direction: null
+      direction: Direction.STOP
     });
   }
 
@@ -91,10 +91,11 @@ class ManualControl extends React.PureComponent {
 
   componentDidUpdate() {
     const { direction } = this.state;
-    if(direction == null) {
+    if(direction == Direction.STOP) {
       if(this._intervalHandler != null) {
         clearInterval(this._intervalHandler);
         this._intervalHandler = null;
+        this._moveCmd(direction)
       }
     } else {
       if(this._intervalHandler == null) {
@@ -103,7 +104,7 @@ class ManualControl extends React.PureComponent {
         clearInterval(this._intervalHandler);
       }
       this._intervalHandler = setInterval(() => {
-        this._moveCmd(direction)
+        this._moveCmd(direction);
       }, this.props.repeatingTime);
     }
   }
