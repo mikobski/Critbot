@@ -18,49 +18,39 @@ def check_if_script_running(mode):
     splitted_output = output.split()
     print(splitted_output)
     if splitted_output[2] == mode:
-        print('istnieje')
         return psutil.Process(int(splitted_output[0]))
-        #p.terminate()
     else:
-        print('That script is not running')
         return None
 
 def handle_mode_changes(req):
-    global manual_script
+    autonomous_check = check_if_script_running(AUTONOMOUS_MODE_SCRIPT)
+    manual_check = check_if_script_running(MANUAL_MODE_SCRIPT)
     mode_type = re.search('\"(.+?)\"', str(req)).group(1)
     if mode_type in ['autonomous']:
-        try:
-            check_if_script_running(MANUAL_MODE_SCRIPT).terminate()
-        except:
-            #print('That script is not running')
-            pass
-        try:
-            check_if_script_running(AUTONOMOUS_MODE_SCRIPT).pid()
-            return ModeChangesResponse('Mode already changed to autonomous')
-        except:
+        if manual_check is None:
+            print('That script is not running')
+        else:
+            manual_check.terminate()
+        if autonomous_check is None:
             print('That script is not running')
             script = subprocess.Popen([sys.executable, AUTONOMOUS_MODE_SCRIPT], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return ModeChangesResponse('Mode changed to autonomous')
+        else:
+            return ModeChangesResponse('Mode autonomous already running') 
              
     elif mode_type in ['manual']:
-        try:
-            check_if_script_running(AUTONOMOUS_MODE_SCRIPT).terminate()
-        except:
+        if autonomous_check is None:
             print('That script is not running')
-        try:
-            check_if_script_running(MANUAL_MODE_SCRIPT).pid()
-            return ModeChangesResponse('Mode already changed to manual')
-        except:
+        else:
+            autonomous_check.terminate()
+        if manual_check is None:
             print('That script is not running')
             script = subprocess.Popen([sys.executable, MANUAL_MODE_SCRIPT], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return ModeChangesResponse('Mode changed to manual')
+        else:
+            return ModeChangesResponse('Mode autonomous already running') 
     else:
-        try:
-            check_if_script_running(AUTONOMOUS_MODE_SCRIPT).terminate()
-            check_if_script_running(MANUAL_MODE_SCRIPT).terminate()
-        except:
-            print('That script is not running')
-        return ModeChangesResponse('this kind of mode does not exist')
+        return ModeChangesResponse('This kind of mode does not exist')
     
 
 def mode_changes_server():
