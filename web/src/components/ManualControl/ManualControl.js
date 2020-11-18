@@ -3,17 +3,29 @@ import ButtonControl from "components/ManualControl/ButtonControl";
 import { Direction } from "components/ManualControl/Direction";
 import { RosContext } from "utils/RosContext";
 import RosTopic from "RosClient/Topic";
+import { Form } from "react-bootstrap";
 
 class ManualControl extends React.PureComponent {
   static contextType = RosContext;
+  static defaultProps = {
+    repeatingTime: 300,
+    moveSpeed: 1,
+    rotateSpeed: 1,
+    speedPercentMin: 10,
+    speedPercentMax: 100,
+    speedPercentStep: 5,
+  };
+
   _topic;
   _intervalHandler;
 
   constructor(props) {
     super(props);
     this.state = {
-      direction: Direction.STOP
+      direction: Direction.STOP,
+      speedPercent: this.props.speedPercentMax
     }
+    this.refSlider = React.createRef();
   }
   componentDidMount(){
     const rosClient = this.context;
@@ -43,7 +55,7 @@ class ManualControl extends React.PureComponent {
     });
   };
   handleKeyDown = (e) => {
-    let dir;
+    let dir = null;
     if(e.code === "ArrowUp") {
       dir = Direction.FORWARD;
     } else if(e.code === "ArrowDown") {
@@ -53,11 +65,14 @@ class ManualControl extends React.PureComponent {
     } else if(e.code === "ArrowRight") {
       dir = Direction.RIGHT;
     }
+
     this.setState({
       direction: dir
     });
   }
   handleKeyUp = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
     this.setState({
       direction: Direction.STOP
     });
@@ -77,19 +92,28 @@ class ManualControl extends React.PureComponent {
         "z": 0
       }
     }
+    const moveSpeed = this.props.moveSpeed*this.state.speedPercent/100;
+    const rotateSpeed = this.props.rotateSpeed*this.state.speedPercent/100;
     if(direction === Direction.FORWARD) {
-      msg.linear.x = this.props.moveStep;
+      msg.linear.x = moveSpeed;
     } else if(direction === Direction.BACKWARD) {
-      msg.linear.x = -this.props.moveStep;
+      msg.linear.x = -moveSpeed;
     } else if(direction === Direction.LEFT) {
-      msg.angular.z = this.props.rotateStep;
+      msg.angular.z = rotateSpeed;
     } else if(direction === Direction.RIGHT) {
-      msg.angular.z = -this.props.rotateStep;
+      msg.angular.z = -rotateSpeed;
     }
     this._topic.publish(msg);
   };
 
-  componentDidUpdate() {
+  handlePercenteChange = (e) => {
+    this.setState({
+      speedPercent: e.target.value
+    });
+    this.refSlider.current.blur();
+  };
+
+  componentDidUpdate(prevProps, prevState) {
     const { direction } = this.state;
     if(direction === Direction.STOP) {
       if(this._intervalHandler != null) {
@@ -97,7 +121,7 @@ class ManualControl extends React.PureComponent {
         this._intervalHandler = null;
         this._moveCmd(direction)
       }
-    } else {
+    } else if(prevState !== this.state) {
       if(this._intervalHandler == null) {
         this._moveCmd(direction);
       } else {
@@ -117,20 +141,31 @@ class ManualControl extends React.PureComponent {
       flexDirection: "column",
       justifyContent: "center"
     };
-    const stylesBtnsRow = {
+    const stylesRow = {
       display: "flex",
       justifyContent: "center"
     };
     return (
       <div style={ stylesContainer }>
-        <div style={ stylesBtnsRow }>
+        <div style={{ ...stylesRow, justifyContent: "space-between" }}>
+          <div className="text-muted"><small>10%</small></div>
+          <div className="text-primary">{ this.state.speedPercent }%</div>
+          <div className="text-muted"><small>100%</small></div>
+        </div>
+        <div style={{ padding: "0 0 1rem 0", ...stylesRow }}>
+          <Form.Control type="range" ref={ this.refSlider }
+            value={ this.state.speedPercent } onChange={ this.handlePercenteChange }
+            min={ this.props.speedPercentMin } max={ this.props.speedPercentMax }
+            step={ this.props.speedPercentStep }/>
+        </div>
+        <div style={ stylesRow }>
           <ButtonControl 
             onStartCmd={ this.handleStartCmd } 
             onStopCmd={ this.handleStopCmd } 
             dir={ Direction.FORWARD }
             active={ direction === Direction.FORWARD }/>
         </div>
-        <div style={ stylesBtnsRow }>
+        <div style={ stylesRow }>
           <ButtonControl 
             onStartCmd={ this.handleStartCmd } 
             onStopCmd={ this.handleStopCmd }  
@@ -151,10 +186,5 @@ class ManualControl extends React.PureComponent {
     );
   }
 }
-ManualControl.defaultProps = {
-  repeatingTime: 300,
-  moveStep: 1,
-  rotateStep: 1
-};
 
 export default ManualControl;
