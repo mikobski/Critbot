@@ -71,8 +71,6 @@ class ManualControl extends React.PureComponent {
     });
   }
   handleKeyUp = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
     this.setState({
       direction: Direction.STOP
     });
