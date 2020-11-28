@@ -66,7 +66,7 @@ def handle_mode_changes(req):
             rospy.wait_for_service('set_mode')        
             try:
                 manual_srv = rospy.ServiceProxy('set_mode', SetMode)
-                base_mode = 192
+                base_mode = 216
                 resp = manual_srv(base_mode)
                 return resp
             except rospy.ServiceException as e:
