@@ -2,6 +2,8 @@
 
 from __future__ import print_function
 from web_robot_communication.srv import ModeChanges,ModeChangesResponse
+from mavros_msgs.srv import SetMode,CommandBool
+from mavros_msgs.msg import State
 import rospy
 import std_msgs.msg
 import sys
@@ -12,6 +14,17 @@ import psutil
 MANUAL_MODE_SCRIPT = 'manual_mode.py'
 AUTONOMOUS_MODE_SCRIPT = 'autonomous_mode.py'
 PGREP_CMD = 'pgrep -af '
+
+#def manual_callback(data):
+#     rospy.loginfo(data.armed)
+#     rospy.loginfo(data.mode)
+#     rospy.Service('mode_changes', ModeChanges, handle_mode_changes)
+#     if 
+#     if not data.armed:
+#         try:
+
+
+
 
 def check_if_script_running(mode):
     output = subprocess.check_output(PGREP_CMD+mode, shell=True)
@@ -45,10 +58,30 @@ def handle_mode_changes(req):
             autonomous_check.terminate()
         if manual_check is None:
             print('That script is not running')
+            #rospy.Subscriber("mavros/state", State, manual_callback)
+            #try:
+                #subprocess.run(['rosrun mavros mavsys mode -c 15'])
+                #subprocess.run(['rosrun mavros mavsafety arm'])
+                    #
+            rospy.wait_for_service('set_mode')        
+            try:
+                manual_srv = rospy.ServiceProxy('set_mode', SetMode)
+                base_mode = 192
+                resp = manual_srv(base_mode)
+                return resp
+            except rospy.ServiceException as e:
+                print("Service call failed: %s"%e)
+            #except:
+                #print('Could not change mode or arm')
             script = subprocess.Popen([sys.executable, MANUAL_MODE_SCRIPT], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return ModeChangesResponse('Mode changed to manual')
         else:
-            return ModeChangesResponse('Mode autonomous already running') 
+            return ModeChangesResponse('Mode manual already running') 
+    elif mode_type in ['emergency_stop']:
+        try:
+            subprocess.run(['rosrun mavros mavsafety disarm'])
+        except:
+            print('Could not disarm, probably already disarm')
     else:
         return ModeChangesResponse('This kind of mode does not exist')
     
