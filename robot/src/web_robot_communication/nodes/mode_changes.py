@@ -63,11 +63,11 @@ def handle_mode_changes(req):
                 #subprocess.run(['rosrun mavros mavsys mode -c 15'])
                 #subprocess.run(['rosrun mavros mavsafety arm'])
                     #
-            rospy.wait_for_service('set_mode')        
+            rospy.wait_for_service('/mavros/set_mode')        
             try:
-                manual_srv = rospy.ServiceProxy('set_mode', SetMode)
+                manual_srv = rospy.ServiceProxy('/mavros/set_mode', SetMode)
                 base_mode = 216
-                resp = manual_srv(base_mode)
+                resp = manual_srv(base_mode,'')
                 return resp
             except rospy.ServiceException as e:
                 print("Service call failed: %s"%e)
