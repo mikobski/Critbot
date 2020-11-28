@@ -1,0 +1,7 @@
+<launch>
+    
+    <include file="$(find lab_pkg)/launch/cameras.launch"/>
+    <include file="$(find lab_pkg)/launch/rplidar_s1.launch"/>
+    <!--<node name="filter_scan" pkg="lab_pkg" type="scan_filter.py"/>-->
+    <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find lab_pkg)/config/my_lidar_rviz_config.rviz"/>-->
+</launch>

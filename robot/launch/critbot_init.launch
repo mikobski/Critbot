@@ -1,0 +1,5 @@
+<launch>
+    <include file="apm.launch"/>
+    <include file="cameras.launch"/>
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+</launch>
