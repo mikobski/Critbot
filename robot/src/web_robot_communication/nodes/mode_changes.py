@@ -54,10 +54,14 @@ def handle_mode_changes(req):
             autonomous_check.terminate()
         if manual_check is None:
             print('That script is not running')
-            rospy.wait_for_service('set_mode')        
+            rospy.wait_for_service('/mavros/set_mode')
+            print('1')
             try:
-                manual_srv = rospy.ServiceProxy('set_mode', SetMode)
+                print('2')
+                manual_srv = rospy.ServiceProxy('/mavros/set_mode', SetMode)
+                print('3')
                 resp = manual_srv(base_mode=216, custom_mode='')
+                print('4')
                 script = subprocess.Popen([sys.executable, MANUAL_MODE_SCRIPT], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 return ModeChangesResponse('Mode changed to manual')
             except rospy.ServiceException as e:
