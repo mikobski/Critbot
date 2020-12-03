@@ -1,4 +1,5 @@
 export const Mode = {
   MANUAL: "manual",
-  AUTO: "auto"
+  AUTO: "auto",
+  DISARMED: "disarmed"
 };
