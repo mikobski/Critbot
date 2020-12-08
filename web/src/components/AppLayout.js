@@ -24,7 +24,7 @@ class AppLayout extends React.Component {
           </Navbar>
         </div>
         <div style={{ flexBasis: "100%", overflow: "hidden" }}>
-          <PanelsLayout mode={ Mode.MANUAL }/>
+          <PanelsLayout mode={ this.props.mode }/>
         </div>
       </div>
     );
