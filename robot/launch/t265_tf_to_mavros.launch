@@ -27,7 +27,9 @@
     <param name="yaw_cam"           value="0" />
     <param name="gamma_world"       value="-1.5707963" />
 
-    <node pkg="vision_to_mavros" type="vision_to_mavros_node" name="t265_to_mavros" output="screen" >
+    <arg name="node_start_delay" default="8" />  
+
+    <node pkg="vision_to_mavros" type="vision_to_mavros_node" name="t265_to_mavros" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' ">
         <remap from="vision_pose" to="/mavros/vision_pose/pose" />
 	<!-- <remap from="t265/odom/sample" to="camera/odom/sample" /> -->
     </node>

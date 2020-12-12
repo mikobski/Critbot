@@ -1,5 +1,6 @@
 <launch>
     <include file="apm.launch"/>
-    <include file="cameras.launch"/>
+    <include file="sensors.launch"/>
+    <include file="t265_tf_to_mavros.launch"/>
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
 </launch>
