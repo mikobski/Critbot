@@ -9,6 +9,7 @@
   <arg name="tf_prefix_camera2"         default="$(arg camera2)"/>
   <arg name="initial_reset"             default="false"/>
   <arg name="enable_fisheye"            default="true"/>
+  <!-- change to 16/9 -->
   <arg name="color_width"               default="640"/>
   <arg name="color_height"              default="480"/>
   <arg name="depth_width"               default="640"/>
@@ -18,6 +19,8 @@
   <arg name="calib_odom_file"           default=""/>
   <arg name="enable_pose_jumping"       default="false"/>
   <arg name="enable_relocalization"     default="false"/>
+  <!-- color image fps? -->
+  <!--<arg name="color_fps"           default="30"/>-->
  
 
 

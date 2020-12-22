@@ -1,7 +1,7 @@
 <launch>
-    <node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 20 0 0 0 base_link scan 100" />
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser_broadcaster" args="0 0 0 0 0 0 base_link laser 100" />
     <!-- FILL -->
-    <node pkg="tf" type="static_transform_publisher" name="base_to_t265_broadcaster" args="0 0 20 0 0 0 base_link scan 100" />
+    <node pkg="tf" type="static_transform_publisher" name="t265_to_base_broadcaster" args="0 0 0 0 0 0 t265_pose_frame base_link 100" />
     <!-- FILL -->
-    <node pkg="tf" type="static_transform_publisher" name="base_to_d435_broadcaster" args="0 0 20 0 0 0 base_link scan 100" />
+    <!--node pkg="tf" type="static_transform_publisher" name="base_to_d435_broadcaster" args="0 0 20 0 0 0 base_link scan 100" /-->
 </launch>
