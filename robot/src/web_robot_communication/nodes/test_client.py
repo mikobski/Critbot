@@ -8,9 +8,9 @@ import std_msgs.msg
 from web_robot_communication.srv import *
 
 def mode_changes_client(mode):
-    rospy.wait_for_service('mode_changes')
+    rospy.wait_for_service('critbot/mode_changes')
     try:
-        mode_changes = rospy.ServiceProxy('mode_changes', ModeChanges)
+        mode_changes = rospy.ServiceProxy('critbot/mode_changes', ModeChanges)
         resp = mode_changes(mode)
         return resp
     except rospy.ServiceException as e:
