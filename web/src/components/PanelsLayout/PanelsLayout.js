@@ -75,7 +75,7 @@ class PanelsLayout extends React.Component {
               <div className="Panels-col Panels-container" style={{ flexBasis: "0px" }}>
                 <div className="Panels-panel Panels-container Panels-brd-right" style={{ flexBasis: "100%", padding: "0 1rem" }}>
                   <StatusDetailed/>
-                  <EmergencyStop/>
+                  <EmergencyStop onModeChange={ this.props.onModeChange }/>
                     {
                       this.props.mode === Mode.MANUAL && 
                       <ManualControl topic={ ROS_CONFIG.defaultTopics.manualControl } /> 

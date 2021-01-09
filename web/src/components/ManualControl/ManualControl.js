@@ -93,9 +93,9 @@ class ManualControl extends React.PureComponent {
     const moveSpeed = this.props.moveSpeed*this.state.speedPercent/100;
     const rotateSpeed = this.props.rotateSpeed*this.state.speedPercent/100;
     if(direction === Direction.FORWARD) {
-      msg.linear.x = moveSpeed;
+      msg.linear.y = moveSpeed;
     } else if(direction === Direction.BACKWARD) {
-      msg.linear.x = -moveSpeed;
+      msg.linear.y = -moveSpeed;
     } else if(direction === Direction.LEFT) {
       msg.angular.z = rotateSpeed;
     } else if(direction === Direction.RIGHT) {
