@@ -48,19 +48,15 @@ class StatusWifi extends React.Component {
   };
 
   render() {
-    const nameCol = <td>WiFi:</td>
-    let wifiVal;
-    let tdClass;
+    let wifiVal = "--";
+    let tdClass = "text-danger";
     if(this.state.valid) {
       tdClass = "text-success";
       wifiVal = this.state.data;
-    } else {
-      tdClass = "text-danger";
-      wifiVal = "--";
     }
     return (
       <tr> 
-        { nameCol }
+        <td>WiFi:</td>
         <td className={ tdClass }>{ wifiVal }</td>
       </tr>
     );

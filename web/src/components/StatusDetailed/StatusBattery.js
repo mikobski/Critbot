@@ -50,19 +50,15 @@ class StatusBattery extends React.Component {
   };
 
   render() {
-    const nameCol = <td>Battery:</td>
-    let batVal;
-    let tdClass;
+    let batVal = "--";
+    let tdClass = "text-danger";
     if(this.state.valid) {
       tdClass = "text-success";
       batVal = this.state.data;
-    } else {
-      tdClass = "text-danger";
-      batVal = "--";
     }
     return (
       <tr> 
-        { nameCol }
+        <td>Battery:</td>
         <td className={ tdClass }>{ batVal }</td>
       </tr>
     );
