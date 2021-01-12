@@ -74,7 +74,8 @@ class PanelsLayout extends React.Component {
             <div className="Panels-container-col">
               <div className="Panels-col Panels-container" style={{ flexBasis: "0px" }}>
                 <div className="Panels-panel Panels-container Panels-brd-right" style={{ flexBasis: "100%", padding: "0 1rem" }}>
-                  <StatusDetailed/>
+                  <StatusDetailed topicBattery={ ROS_CONFIG.defaultTopics.battery }
+                    topicWifi={ ROS_CONFIG.defaultTopics.wifi }/>
                   <EmergencyStop onModeChange={ this.props.onModeChange }/>
                     {
                       this.props.mode === Mode.MANUAL && 
