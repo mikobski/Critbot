@@ -9,14 +9,6 @@ class NavbarStatus extends React.Component {
         <Navbar.Text>
           <StatusConnection ros={ this.props.ros }/>
         </Navbar.Text>
-        <Navbar.Text style={{marginLeft: "5px"}}>
-          <span>Battery: </span>
-          <Badge variant="success">100%</Badge>
-        </Navbar.Text>
-        <Navbar.Text style={{marginLeft: "5px"}}>
-          <span>Radio: </span>
-          <Badge variant="success">100%</Badge>
-        </Navbar.Text>
       </div>
     );
   }

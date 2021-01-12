@@ -9,7 +9,8 @@ class Lidar extends React.Component {
     physicalWidth: 12,
     physicalHeight: 12,
     gridMax: 10,
-    gridCount: 4
+    gridCount: 4,
+    noDataTimeout: 1000
   };
   _topic;
 
@@ -21,7 +22,8 @@ class Lidar extends React.Component {
       ros: rosClient,
       name: topicName,
       messageType: "sensor_msgs/LaserScan", 
-      compression: "cbor"
+      compression: "cbor",
+      timeout: this.props.noDataTimeout
     });
   }
 

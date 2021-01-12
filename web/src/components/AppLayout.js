@@ -3,7 +3,6 @@ import { Navbar } from "react-bootstrap";
 import NavbarStatus from "components/NavbarStatus/NavbarStatus";
 import NavbarModeSelector from "components/NavbarModeSelector";
 import PanelsLayout from "components/PanelsLayout/PanelsLayout";
-import { Mode } from "utils/Mode";
 
 class AppLayout extends React.Component {
 

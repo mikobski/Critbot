@@ -4,65 +4,46 @@ import { RosContext } from "utils/RosContext";
 
 class CanvasDataFromRos extends React.PureComponent {
   static contextType = RosContext;
-  static defaultProps = {
-    noDataTimeout: 500
-  };
-  _noDataTimeoutHandler = null;
-  _topic;
   _data = null;
 
   constructor(props) {
     super(props);
     this.state = {
-      isReceiving: false
+      dataValid: false
     };
   }
 
   componentDidMount() {
-    const topic = this.props.topic;
-    topic.subscribe(this.topicListener);
-    topic.ros.on("close", this.onReceivingError);
-    topic.ros.on("error", this.onReceivingError);
+    this.props.topic.subscribe(this.topicListener, this.errorListener);
   }
   componentWillUnmount() {
-    const topic = this.props.topic;
-    topic.unsubscribe(this.topicListener);
-    topic.ros.off("close", this.onReceivingError);
-    topic.ros.off("error", this.onReceivingError);
-    if(this._noDataTimeoutHandler != null) {
-      clearTimeout(this._noDataTimeoutHandler);
-    }
+    this.props.topic.unsubscribe(this.topicListener, this.errorListener);
   }
-
-  onReceivingError = () => {
-    this.setState({
-      isReceiving: false
-    });
-  };
-
   topicListener = (message) => {
     this.props.promiseNewData(message).then((data) => {
       this._data = data;
+      this.setState({
+        dataValid: true
+      });
     }).catch(() => {
       this._data = null;
-      this.onReceivingError();
+      this.setState({
+        dataValid: false
+      });
     })
-    this.setState({
-      isReceiving: true
-    });
-    if(this._noDataTimeoutHandler != null) {
-      clearTimeout(this._noDataTimeoutHandler);
-    }
-    this._noDataTimeoutHandler = setTimeout(this.onReceivingError, this.props.noDataTimeout);
   }
+  errorListener = () => {
+    this.setState({
+      dataValid: false
+    });
+  };
 
   handleDraw = (ctx, frameCount) => {
     this.props.onDraw(this._data, ctx, frameCount);
   }
-
   render () {
     let statusMsg = null;
-    if(!this.state.isReceiving) {
+    if(!this.state.dataValid) {
       statusMsg = this.props.onReceivingError();
     }
     return (

@@ -18,7 +18,8 @@ class Camera extends React.Component {
       ros: rosClient,
       name: topicName,
       messageType: "sensor_msgs/CompressedImage", 
-      compression: "cbor"
+      compression: "cbor",
+      timeout: this.props.noDataTimeout
     });
   }
 
