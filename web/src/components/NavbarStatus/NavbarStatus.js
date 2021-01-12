@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Badge } from "react-bootstrap";
+import { Navbar } from "react-bootstrap";
 import StatusConnection from "components/NavbarStatus/StatusConnection";
 
 class NavbarStatus extends React.Component {
