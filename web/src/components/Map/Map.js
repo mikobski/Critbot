@@ -4,13 +4,16 @@ import "leaflet/dist/leaflet.css";
 import "components/Map/Map.scss";
 import "components/Map/fixLeaflet.js";
 import { Button } from "react-bootstrap";
-import { TrashFill } from "react-bootstrap-icons";
+import { TrashFill, PlusCircle } from "react-bootstrap-icons";
 
 class Map extends React.Component {
   render() {
     return (
       <div className="Map-container">
         <div className="Map-header">
+          <Button variant="secondary">
+            <PlusCircle/>
+          </Button>
           <Button variant="secondary">
             <TrashFill/>
           </Button>
