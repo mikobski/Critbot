@@ -5,7 +5,7 @@ class Topic extends ROSLIB.Topic {
   constructor(options) {
     super(options);
     this.ros.on("close", this._onError);
-    this.ros.on("error", this._onError);
+    this.ros.on("topic-error", this._onError);
     if(options && options.timeout) {
       this.timeout = options.timeout;
       this.on("message", this._handleMessage);
@@ -15,14 +15,14 @@ class Topic extends ROSLIB.Topic {
   subscribe(callback, errorCallback) {
     super.subscribe(callback);
     if(typeof errorCallback === "function") {
-      this.on("error", errorCallback);
+      this.on("topic-error", errorCallback);
       this.on("timeout", errorCallback);
     }
   }
   unsubscribe(callback, errorCallback) {
     super.unsubscribe(callback);
     if(typeof errorCallback === "function") {
-      this.off("error", errorCallback);
+      this.off("topic-error", errorCallback);
       this.off("timeout", errorCallback);
       if(this.listeners("timeout").length) {
         return;
@@ -34,7 +34,7 @@ class Topic extends ROSLIB.Topic {
   }
 
   _onError = () => {
-    this.emit("error");
+    this.emit("topic-error");
   }
   _onTimeout = () => {
     this.emit("timeout");
