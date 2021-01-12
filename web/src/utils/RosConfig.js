@@ -6,5 +6,8 @@ export const ROS_CONFIG = {
     modeSelect: "/critbot/mode_changes",
     statusBattery: "/mavros/battery",
     statusWifi: "/wifi_status"
-  }
+  },
+  defaultURL: "ws://localhost:9090"
+  // defaultURL: "ws://192.168.1.161:9090"
+  // defaultURL: "ws://rosnuc:9090"
 };

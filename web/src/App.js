@@ -17,7 +17,7 @@ class App extends React.Component {
       reconnectTimeout: 3000
     });
     this.state = {
-      mode: Mode.DISARMED
+      mode: Mode.MANUAL
     };
     this._rosClient.on("error", () => {
       console.info(`[Critbot] Websocket connection to '${this._rosClient.socket.url}' is refused`);
@@ -28,15 +28,12 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // const rosURL = "ws://localhost:9090";
-    // const rosURL = "ws://192.168.1.161:9090";
-    const rosURL = "ws://rosnuc:9090";
     this._modeSelectService = new Service({
       ros: this._rosClient,
       name: ROS_CONFIG.defaultTopics.modeSelect,
       type: "ModeChanges"
     });
-    this._rosClient.connect(rosURL);
+    this._rosClient.connect(ROS_CONFIG.defaultURL);
   }
   componentWillUnmount() {
     this._rosClient.close();
@@ -44,19 +41,19 @@ class App extends React.Component {
 
   handleModeChanged = (mode, btn) => {
     let rosMode = "emergency_stop";
-    if(mode == Mode.MANUAL) {
+    if(mode === Mode.MANUAL) {
       rosMode = "manual";
-    } else if(mode == Mode.AUTO) {
+    } else if(mode === Mode.AUTO) {
       rosMode = "autonomic";
     }
     this._modeSelectService.callService([rosMode], (msg, btn) => {
       let mode = Mode.DISARMED;
       if(msg) {
-        if(msg.message == "emergency_stop") {
+        if(msg.message === "emergency_stop") {
           mode = Mode.DISARMED;
-        } else if(msg.message == "autonomic") {
+        } else if(msg.message === "autonomic") {
           mode = Mode.AUTO;
-        } else if(msg.message == "manual") {
+        } else if(msg.message === "manual") {
           mode = Mode.MANUAL;
         } else {
           console.error("Changing mode (to '"+mode+"') failed!");
