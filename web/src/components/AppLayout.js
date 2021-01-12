@@ -22,7 +22,7 @@ class AppLayout extends React.Component {
             <NavbarModeSelector mode={ this.props.mode } onModeChange={ this.props.onModeChange }/>
           </Navbar>
         </div>
-        <div style={{ flexBasis: "100%", overflow: "hidden" }}>
+        <div style={{ flexBasis: "100%", overflow: "hidden", position: "relative" }}>
           <PanelsLayout mode={ this.props.mode } onModeChange={ this.props.onModeChange }/>
         </div>
       </div>

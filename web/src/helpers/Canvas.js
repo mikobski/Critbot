@@ -22,7 +22,7 @@ const Canvas = props => {
         const { devicePixelRatio: ratio = 1 } = window;
         const context = canvas.getContext("2d");
         canvas.width = width * ratio;
-        canvas.height = height * ratio;
+        canvas.height = height * ratio ;
         canvas.style.maxWidth = `${canvas.width}px`;
         canvas.style.maxHeight = `${canvas.height}px`;
         context.scale(1, 1);
@@ -47,7 +47,9 @@ const Canvas = props => {
   }, [onDraw])
 
   const stylesCanvasCntainer = {
-    height: "100%"
+    height: "100%",
+    width: "100%",
+    overflow: "hidden"
   };
   const stylesCanvas = {
     height: "100%",
