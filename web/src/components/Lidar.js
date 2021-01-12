@@ -2,6 +2,7 @@ import React from "react";
 import CanvasDataFromRos from "helpers/CanvasDataFromRos";
 import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
+import { ROS_CONFIG } from "utils/RosConfig";
 
 class Lidar extends React.Component {
   static contextType = RosContext;
@@ -10,7 +11,8 @@ class Lidar extends React.Component {
     physicalHeight: 12,
     gridMax: 10,
     gridCount: 4,
-    noDataTimeout: 1000
+    noDataTimeout: 1000,
+    topic: ROS_CONFIG.defaultTopics.lidar
   };
   _topic;
 

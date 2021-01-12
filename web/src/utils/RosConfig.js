@@ -4,7 +4,7 @@ export const ROS_CONFIG = {
     lidar: "/scan",
     manualControl: "/critbot/manual_control",
     modeSelect: "/critbot/mode_changes",
-    battery: "/mavros/battery",
-    wifi: "/wifi_status"
+    statusBattery: "/mavros/battery",
+    statusWifi: "/wifi_status"
   }
 };

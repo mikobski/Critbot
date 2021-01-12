@@ -1,11 +1,13 @@
 import React from "react";
 import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
+import { ROS_CONFIG } from "utils/RosConfig";
 
 class StatusWifi extends React.Component {
   static contextType = RosContext;
   static defaultProps = {
-		noDataTimeout: 2000
+		noDataTimeout: 2000,
+    topic: ROS_CONFIG.defaultTopics.statusWifi
 	};
   _topic;
 

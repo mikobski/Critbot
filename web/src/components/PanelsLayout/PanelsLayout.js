@@ -44,7 +44,7 @@ class PanelsLayout extends React.Component {
     const keyMap = "map-0";
     const elementMap = <Map key={ keyMap }/>;
     const elementCamera = <div ref={ this.cameraPanel } className="Panels-panel" >
-        <Camera key={ keyCamera } topic={ ROS_CONFIG.defaultTopics.camera }/>;
+        <Camera key={ keyCamera }/>;
       </div>
     let colLeft;
     let colRightTop;
@@ -53,8 +53,7 @@ class PanelsLayout extends React.Component {
           { elementCamera }       
           <div className="Panels-panel Panels-brd-top"
             style={{flexBasis: "50%" }}>
-            <Lidar topic={ ROS_CONFIG.defaultTopics.lidar }
-              physicalWidth="22" physicalHeight="22" gridMax="10" gridCount="4"/>
+            <Lidar physicalWidth="22" physicalHeight="22" gridMax="10" gridCount="4"/>
           </div>
         </>
       colRightTop = elementMap;
@@ -74,12 +73,11 @@ class PanelsLayout extends React.Component {
             <div className="Panels-container-col">
               <div className="Panels-col Panels-container" style={{ flexBasis: "0px" }}>
                 <div className="Panels-panel Panels-container Panels-brd-right" style={{ flexBasis: "100%", padding: "0 1rem" }}>
-                  <StatusDetailed topicBattery={ ROS_CONFIG.defaultTopics.battery }
-                    topicWifi={ ROS_CONFIG.defaultTopics.wifi }/>
+                  <StatusDetailed/>
                   <EmergencyStop onModeChange={ this.props.onModeChange }/>
                     {
                       this.props.mode === Mode.MANUAL && 
-                      <ManualControl topic={ ROS_CONFIG.defaultTopics.manualControl } /> 
+                      <ManualControl/> 
                     }
                 </div>
               </div>

@@ -7,7 +7,7 @@ class NavbarStatus extends React.Component {
     return (
       <div>
         <Navbar.Text>
-          <StatusConnection ros={ this.props.ros }/>
+          <StatusConnection/>
         </Navbar.Text>
       </div>
     );

@@ -4,6 +4,7 @@ import { Direction } from "components/ManualControl/Direction";
 import { RosContext } from "utils/RosContext";
 import RosTopic from "RosClient/Topic";
 import { Form } from "react-bootstrap";
+import { ROS_CONFIG } from "utils/RosConfig";
 
 class ManualControl extends React.PureComponent {
   static contextType = RosContext;
@@ -14,8 +15,8 @@ class ManualControl extends React.PureComponent {
     speedPercentMin: 10,
     speedPercentMax: 100,
     speedPercentStep: 5,
+    topic: ROS_CONFIG.defaultTopics.manualControl
   };
-
   _topic;
   _intervalHandler;
 
@@ -29,10 +30,9 @@ class ManualControl extends React.PureComponent {
   }
   componentDidMount(){
     const rosClient = this.context;
-    const topicName = this.props.topic;
     this._topic = new RosTopic({
       ros: rosClient,
-      name: topicName,
+      name: this.props.topic,
       messageType: "geometry_msgs/Twist", 
     });
     this._topic.advertise();
