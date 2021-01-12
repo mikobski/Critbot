@@ -5,7 +5,8 @@ export const ROS_CONFIG = {
     manualControl: "/critbot/manual_control",
     modeSelect: "/critbot/mode_changes",
     statusBattery: "/mavros/battery",
-    statusWifi: "/wifi_status"
+    statusWifi: "/wifi_status",
+    statusGps: "mavros/global_position/global"
   },
   defaultURL: "ws://localhost:9090"
   // defaultURL: "ws://192.168.1.161:9090"

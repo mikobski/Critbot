@@ -3,11 +3,11 @@ import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
 import { ROS_CONFIG } from "utils/RosConfig";
 
-class StatusBattery extends React.Component {
+class StatusGps extends React.Component {
   static contextType = RosContext;
   static defaultProps = {
     noDataTimeout: 2000,
-    topic: ROS_CONFIG.defaultTopics.statusBattery
+    topic: ROS_CONFIG.defaultTopics.statusGps
 	};
   _topic;
 
@@ -21,7 +21,7 @@ class StatusBattery extends React.Component {
     this._topic = new RosTopic({
       ros: rosClient,
       name: this.props.topic,
-      messageType: "sensor_msgs/BatteryState",
+      messageType: "sensor_msgs/NavSatFix",
       timeout: this.props.noDataTimeout
     });
   }
@@ -32,10 +32,9 @@ class StatusBattery extends React.Component {
     this._topic.unsubscribe(this.topicListener, this.errorListener);
   }
   topicListener = (message) => {
-    if(message && message.cell_voltage && message.cell_voltage.length) {
-      const voltage = parseFloat(message.cell_voltage[0]);
+    if(message && message.status) {
       this.setState({
-        data: `${voltage.toFixed(1)} V`,
+        data: message.status.status,
         valid: true
       });
     } else {
@@ -49,19 +48,24 @@ class StatusBattery extends React.Component {
   };
 
   render() {
-    let batVal = "--";
+    let gpsVal = "--";
     let tdClass = "text-danger";
     if(this.state.valid) {
-      tdClass = "text-success";
-      batVal = this.state.data;
+      if(this.state.data >= 0) {
+        tdClass = "text-success";
+        gpsVal = "Fixed";
+      } else if(this.state.data < 0) {
+        tdClass = "text-warning";
+        gpsVal = "Not fixed";
+      }
     }
     return (
       <tr> 
-        <td>Battery:</td>
-        <td className={ tdClass }>{ batVal }</td>
+        <td>GPS:</td>
+        <td className={ tdClass }>{ gpsVal }</td>
       </tr>
     );
   }
 }
 
-export default StatusBattery;
+export default StatusGps;

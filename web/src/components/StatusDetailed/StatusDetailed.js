@@ -2,6 +2,7 @@ import React from "react";
 import { Table } from "react-bootstrap";
 import StatusWifi from "components/StatusDetailed/StatusWifi";
 import StatusBattery from "components/StatusDetailed/StatusBattery";
+import StatusGps from "components/StatusDetailed/StatusGps";
 import "components/StatusDetailed/StatusDetailed.scss"
 
 class StatusDetailed extends React.Component {
@@ -10,12 +11,9 @@ class StatusDetailed extends React.Component {
       <div>
         <Table size="sm" className="StatusDetailed-table">
           <tbody>
-            <StatusWifi topic={ this.props.topicWifi }/>
-            <tr>
-              <td>GPS:</td>
-              <td className="text-danger">Error</td>
-            </tr>
-            <StatusBattery topic={ this.props.topicBattery }/>
+            <StatusWifi/>
+            <StatusGps/>
+            <StatusBattery/>
           </tbody>
         </Table>
       </div>
