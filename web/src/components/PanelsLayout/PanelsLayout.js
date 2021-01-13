@@ -45,7 +45,7 @@ class PanelsLayout extends React.Component {
               </div>
         </div>
         <div className="Panels-col" style={{flexBasis: "50%" }}>
-          <div className="Panels-row" style={{ flexGrow: "1", height: "auto" }}>
+          <div className="Panels-row Panels-brd-bottom" style={{ flexGrow: "1", height: "auto" }}>
             <div className="Panels-panel Panels-brd-right" style={{ flexBasis: "223px", padding: "1rem 1rem" }}>
               <StatusDetailed/>
               <EmergencyStop onModeChange={ this.props.onModeChange }/>
@@ -58,7 +58,7 @@ class PanelsLayout extends React.Component {
               <Lidar physicalWidth="22" physicalHeight="22" gridMax="10" gridCount="4"/>
             </div>
           </div>
-          <div className="Panels-panel Panels-brd-top" style={{ flexBasis: "540px" }} >
+          <div className="Panels-panel" style={{ flexBasis: "540px", minHeight: "540px"}} >
             <Camera/>
           </div>
         </div>
