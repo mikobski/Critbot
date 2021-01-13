@@ -8,7 +8,7 @@ export const ROS_CONFIG = {
     statusWifi: "/wifi_status",
     statusGps: "mavros/global_position/global"
   },
-  defaultURL: "ws://localhost:9090"
-  // defaultURL: "ws://192.168.1.161:9090"
+  //defaultURL: "ws://localhost:9090"
+  defaultURL: "ws://10.42.0.1:9090"
   // defaultURL: "ws://rosnuc:9090"
 };
