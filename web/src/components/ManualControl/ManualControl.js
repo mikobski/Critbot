@@ -5,8 +5,9 @@ import { RosContext } from "utils/RosContext";
 import RosTopic from "RosClient/Topic";
 import { Form } from "react-bootstrap";
 import { ROS_CONFIG } from "utils/RosConfig";
+import DirectionsMap from "./DirectionsMap";
 
-class ManualControl extends React.PureComponent {
+class ManualControl extends React.Component {
   static contextType = RosContext;
   static defaultProps = {
     repeatingTime: 300,
@@ -18,15 +19,26 @@ class ManualControl extends React.PureComponent {
     topic: ROS_CONFIG.defaultTopics.manualControl
   };
   _topic;
-  _intervalHandler;
+  _btnsDirs;
+  _keyDirs;
+  _drivingVel;
+  _stop;
+  _timeoutHandler = null;
 
   constructor(props) {
     super(props);
     this.state = {
-      direction: Direction.STOP,
-      speedPercent: this.props.speedPercentMax
+      drivingDirs: new DirectionsMap(),
+      speedPercent: this.props.speedPercentMax,
     }
     this.refSlider = React.createRef();
+    this._btnsDirs = new DirectionsMap();
+    this._keyDirs = new DirectionsMap();
+    this._drivingVel = {
+      lin: 0,
+      ang: 0
+    };
+    this._stop = true;
   }
   componentDidMount(){
     const rosClient = this.context;
@@ -38,46 +50,81 @@ class ManualControl extends React.PureComponent {
     this._topic.advertise();
     document.addEventListener("keydown", this.handleKeyDown, false);
     document.addEventListener("keyup", this.handleKeyUp, false);
+    window.addEventListener("blur", this.handleClearAndStop);
   }
   componentWillUnmount(){
+    this._topic.unadvertise();
+    if(this._timeoutHandler !== null) {
+      clearTimeout(this._timeoutHandler);
+    }
     document.removeEventListener("keydown", this.handleKeyDown, false);
     document.removeEventListener("keyup", this.handleKeyUp, false);
+    window.removeEventListener("blur", this.handleClearAndStop);
   }
-
-  handleStartCmd = (dir) => {
-    this.setState({
-      direction: dir
-    });
+  handleClearAndStop = () => {
+    this._btnsDirs.clearAll();
+    this._keyDirs.clearAll();
+    this._updateDrivingVel();
   };
-  handleStopCmd = (dir) => {
-    this.setState({
-      direction: Direction.STOP
-    });
-  };
+  _keyCodeToDir(code) {
+    if(code === "ArrowUp")
+      return Direction.FORWARD;
+    if(code === "ArrowDown")
+      return Direction.BACKWARD;
+    if(code === "ArrowLeft")
+      return Direction.LEFT;
+    if(code === "ArrowRight")
+      return Direction.RIGHT;
+    return null;
+  }
   handleKeyDown = (e) => {
-    let dir = null;
-    if(e.code === "ArrowUp") {
-      dir = Direction.FORWARD;
-    } else if(e.code === "ArrowDown") {
-      dir = Direction.BACKWARD;
-    } else if(e.code === "ArrowLeft") {
-      dir = Direction.LEFT;
-    } else if(e.code === "ArrowRight") {
-      dir = Direction.RIGHT;
+    let dir = this._keyCodeToDir(e.code);
+    if(dir) {
+      this._keyDirs.setDir(dir);
+      this._updateDrivingVel();
     }
-
-    this.setState({
-      direction: dir
-    });
   }
   handleKeyUp = (e) => {
-    this.setState({
-      direction: Direction.STOP
-    });
+    let dir = this._keyCodeToDir(e.code);
+    if(dir) {
+      this._keyDirs.clearDir(dir);
+      this._updateDrivingVel();
+    }
   }
+  handleBtnPush = (dir) => {
+    this._btnsDirs.setDir(dir);
+    this._updateDrivingVel();
+  };
+  handleBtnPull = (dir) => {
+    this._btnsDirs.clearDir(dir);
+    this._updateDrivingVel();
+  };
 
-  _moveCmd = () => {
-    const { direction } = this.state;
+  _updateDrivingVel() {
+    let vel = {lin: 0, ang: 0};
+    let stop = true;
+    if(this._keyDirs.anyDir()) {
+      vel = this._dirsToVel(this._keyDirs);
+      stop = false;
+    } else if(this._btnsDirs.anyDir()) {
+      vel = this._dirsToVel(this._btnsDirs);
+      stop = false;
+    }
+    if(!(this._stop && stop)) {
+      this._stop = stop;
+      this._drivingVel = vel;
+      this.moveCmd();
+    }
+
+    let newDirs = new DirectionsMap();
+    if(!stop) {
+      newDirs = this._velToDirs(vel);
+    }
+    this.setState({
+      drivingDirs: newDirs
+    });
+  };
+  moveCmd = () => {
     let msg = {
       "linear": {
         "x": 0,
@@ -92,47 +139,54 @@ class ManualControl extends React.PureComponent {
     }
     const moveSpeed = this.props.moveSpeed*this.state.speedPercent/100;
     const rotateSpeed = this.props.rotateSpeed*this.state.speedPercent/100;
-    if(direction === Direction.FORWARD) {
-      msg.linear.y = moveSpeed;
-    } else if(direction === Direction.BACKWARD) {
-      msg.linear.y = -moveSpeed;
-    } else if(direction === Direction.LEFT) {
-      msg.angular.z = rotateSpeed;
-    } else if(direction === Direction.RIGHT) {
-      msg.angular.z = -rotateSpeed;
+    if(this._timeoutHandler !== null) {
+      clearTimeout(this._timeoutHandler)
+    }
+    if(!this._stop) {
+      msg.linear.y = this._drivingVel.lin*moveSpeed;
+      msg.angular.z = this._drivingVel.ang*rotateSpeed;    
+      this._timeoutHandler = setTimeout(this.moveCmd, this.props.repeatingTime);
     }
     this._topic.publish(msg);
   };
-
+  _dirsToVel(dirs) {
+    let vel = { lin: 0, ang: 0 };
+    if(dirs.getDir(Direction.FORWARD))
+      vel.lin += 1;
+    if(dirs.getDir(Direction.BACKWARD))
+      vel.lin -= 1;
+    if(dirs.getDir(Direction.RIGHT))
+      vel.ang += 1;
+    if(dirs.getDir(Direction.LEFT))
+      vel.ang -= 1;
+    return vel;
+  }
+  _velToDirs(vel) {
+    let dirs = new DirectionsMap();
+    if(vel.lin > 0) {
+      dirs.setDir(Direction.FORWARD);
+    } else if(vel.lin < 0) {
+      dirs.setDir(Direction.BACKWARD);
+    }
+    if(vel.ang > 0) {
+      dirs.setDir(Direction.RIGHT);      
+    } else if(vel.ang < 0) {
+      dirs.setDir(Direction.LEFT);
+    }
+    return dirs;
+  }
   handlePercenteChange = (e) => {
     this.setState({
       speedPercent: e.target.value
     });
     this.refSlider.current.blur();
   };
-
-  componentDidUpdate(prevProps, prevState) {
-    const { direction } = this.state;
-    if(direction === Direction.STOP) {
-      if(this._intervalHandler != null) {
-        clearInterval(this._intervalHandler);
-        this._intervalHandler = null;
-        this._moveCmd(direction)
-      }
-    } else if(prevState !== this.state) {
-      if(this._intervalHandler == null) {
-        this._moveCmd(direction);
-      } else {
-        clearInterval(this._intervalHandler);
-      }
-      this._intervalHandler = setInterval(() => {
-        this._moveCmd(direction);
-      }, this.props.repeatingTime);
-    }
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.speedPercent !== nextState.speedPercent ||
+      !this.state.drivingDirs.compare(nextState.drivingDirs);
   }
-
   render () {
-    const { direction } = this.state;
+    const showedDirs = this.state.drivingDirs;
     const stylesContainer = {
       display: "flex",
       padding: "1rem 0",
@@ -158,27 +212,27 @@ class ManualControl extends React.PureComponent {
         </div>
         <div style={ stylesRow }>
           <ButtonControl 
-            onStartCmd={ this.handleStartCmd } 
-            onStopCmd={ this.handleStopCmd } 
+            onPush={ this.handleBtnPush } 
+            onPull={ this.handleBtnPull } 
             dir={ Direction.FORWARD }
-            active={ direction === Direction.FORWARD }/>
-        </div>
-        <div style={ stylesRow }>
+            active={ showedDirs.getDir(Direction.FORWARD)}/>
+          </div>
+          <div style={ stylesRow }>
           <ButtonControl 
-            onStartCmd={ this.handleStartCmd } 
-            onStopCmd={ this.handleStopCmd }  
+            onPush={ this.handleBtnPush } 
+            onPull={ this.handleBtnPull } 
             dir={ Direction.LEFT }
-            active={ direction === Direction.LEFT }/>
+            active={ showedDirs.getDir(Direction.LEFT)}/>
           <ButtonControl 
-            onStartCmd={ this.handleStartCmd } 
-            onStopCmd={ this.handleStopCmd }  
+            onPush={ this.handleBtnPush } 
+            onPull={ this.handleBtnPull } 
             dir={ Direction.BACKWARD }
-            active={ direction === Direction.BACKWARD }/>
+            active={ showedDirs.getDir(Direction.BACKWARD)}/>
           <ButtonControl 
-            onStartCmd={ this.handleStartCmd } 
-            onStopCmd={ this.handleStopCmd }  
+            onPush={ this.handleBtnPush } 
+            onPull={ this.handleBtnPull } 
             dir={ Direction.RIGHT }
-            active={ direction === Direction.RIGHT }/>
+            active={ showedDirs.getDir(Direction.RIGHT)}/>
         </div>
       </div>
     );
