@@ -11,6 +11,14 @@
   }
   .Map-header {
     background: #f8f9fa;
-    padding: 5px 10px;
+    padding: 5px 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .btn-group > .btn-primary {
+    border-left: 1px solid #0062cc;
+    :first-child {
+      border-left-width: 0;
+    }
   }
 }

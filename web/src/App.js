@@ -46,6 +46,9 @@ class App extends React.Component {
     } else if(mode === Mode.AUTO) {
       rosMode = "autonomic";
     }
+    this.setState({
+      mode: mode
+    });
     this._modeSelectService.callService([rosMode], (msg, btn) => {
       let mode = Mode.DISARMED;
       if(msg) {
@@ -68,7 +71,7 @@ class App extends React.Component {
       if(btn) {
         btn.blur();
       }
-    }, function() {
+    }, (mode) => {
       console.error("Changing mode (to '"+mode+"') failed!");
     });
   };
