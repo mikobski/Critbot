@@ -15,23 +15,31 @@ import Goal from "RosClient/Goal";
 import { RosContext } from "utils/RosContext";
 import { ROS_CONFIG } from "utils/RosConfig";
 import { Mode } from "utils/Mode";
+import qte from "quaternion-to-euler";
 
 class Map extends React.Component {
   static contextType = RosContext;
   static defaultProps = {
     noDataTimeout: 2000,
-    odomTopic: ROS_CONFIG.defaultTopics.mapOdom
+    odomTopic: ROS_CONFIG.defaultTopics.mapOdom,
+    navSatTopic: ROS_CONFIG.defaultTopics.mapNavSat
 	};
   _odomTopic;
+  _navSatTopic;
   _actionClient;
   _mapRef;
+  _mapCenter;
   constructor(props, context) {
     super(props, context);
     const rosClient = this.context;
     this.state = {
-      geoHome: [54.37137110207873, 18.613119721412662, 0],
-      odom: [0, 0, 0],
-      odomAvailable: false,
+      geo: {
+        lat: 54.37137110207873, 
+        lng: 18.613119721412662,
+        yaw: 0,
+        posAvailable: false,
+        yawAvailable: false
+      },
       waypoints: [],
       isDriving: false
     }
@@ -39,6 +47,12 @@ class Map extends React.Component {
       ros: rosClient,
       name: this.props.odomTopic,
       messageType: "nav_msgs/Odometry",
+      timeout: this.props.noDataTimeout
+    });
+    this._navSatTopic = new RosTopic({
+      ros: rosClient,
+      name: this.props.navSatTopic,
+      messageType: "sensor_msgs/NavSatFix",
       timeout: this.props.noDataTimeout
     });
     this._actionClient = new ActionClient({
@@ -50,9 +64,11 @@ class Map extends React.Component {
       omitResult: false
     });
     this._mapRef = createRef();
+    this._mapCenter = null;
   }
   componentDidMount() {
     this._odomTopic.subscribe(this.odomListener, this.odomErrorListener);
+    this._navSatTopic.subscribe(this.navSatListener, this.navSatErrorListener);
     this._actionClient.cancel();
   }
   componentDidUpdate(prevProps) {
@@ -63,62 +79,57 @@ class Map extends React.Component {
   }
   componentWillUnmount() {
     this._odomTopic.unsubscribe(this.odomListener, this.odomErrorListener);
+    this._navSatTopic.unsubscribe(this.navSatListener, this.navSatErrorListener);
   }
   odomListener = (message) => {
     if(message && message.pose) {
-      this.setState({
-        odomAvailable: true,
-        odom: [message.pose.pose.position.x, message.pose.pose.position.y, message.pose.pose.orientation.z],
+      this.setState((prevState) => {
+        let geo = Object.assign({}, prevState.geo);
+        const qa = message.pose.pose.orientation;
+        const euler = qte([qa.x, qa.y, qa.z, qa.w]);
+        geo.yaw = -euler[0]*180/Math.PI + 180;
+        geo.yawAvailable = true;
+        return {geo: geo};
       });
     } else {
-      this.setState({odomAvailable: false});
+      this.setState((prevState) => {
+        let geo = Object.assign({}, prevState.geo);
+        geo.yawAvailable = false;
+        return {geo: geo};
+      });
     }
   };
   odomErrorListener = () => {
-    this.setState({odomAvailable: false});
+    this.setState((prevState) => {
+      let geo = Object.assign({}, prevState.geo);
+      geo.yawAvailable = false;
+      return {geo: geo};
+    });
   };
-  _geoToOdom(geo, origin) {    
-    const origAng = origin[2]*Math.PI/180;
-    let odom = [0, 0, 0];
-    if(this._mapRef.current) {
-      const magicScale = 5/2.909385959752482720;
-      const leaflet = this._mapRef.current.leafletElement;
-      const projection = leaflet.options.crs.projection;
-      const geoProj = projection.project({lat: geo[0], lng: geo[1]});
-      const origProj = projection.project({lat: origin[0], lng: origin[1]});
-      const proj = {
-        x: geoProj.x - origProj.x, 
-        y: geoProj.y - origProj.y
-      };   
-      odom[0] = (Math.cos(-origAng)*proj.x - Math.sin(-origAng)*proj.y)/magicScale;
-      odom[1] = (Math.cos(-origAng)*proj.y + Math.sin(-origAng)*proj.x)/magicScale;
+  navSatListener = (message) => {
+    if(message) {
+      this.setState((prevState) => {
+        let geo = Object.assign({}, prevState.geo);
+        geo.lat = message.latitude;
+        geo.lng = message.longitude;
+        geo.posAvailable = true;
+        return {geo: geo};
+      });
+    } else {
+      this.setState((prevState) => {
+        let geo = Object.assign({}, prevState.geo);
+        geo.posAvailable = false;
+        return {geo: geo};
+      });
     }
-    odom[2] = (geo[2] - origin[2])/180;
-    return odom;
-  }
-  _odomToGeo(odom, origin) {    
-    const origAng = origin[2]*Math.PI/180;
-    const odomRotated = [
-      Math.cos(origAng)*odom[0] - Math.sin(origAng)*odom[1],
-      Math.cos(origAng)*odom[1] + Math.sin(origAng)*odom[0]
-    ];
-    let geo = [origin[0], origin[1], origin[2]];
-    if(this._mapRef.current) {
-      const magicScale = 5/2.909385959752482720;
-      const leaflet = this._mapRef.current.leafletElement;
-      const projection = leaflet.options.crs.projection;
-      const geoProj = projection.project({lat: geo[0], lng: geo[1]});
-      const proj = {
-        x: geoProj.x + odomRotated[0]*magicScale, 
-        y: geoProj.y + odomRotated[1]*magicScale
-      };
-      let geoUnproj = projection.unproject(proj);      
-      geo[0] = geoUnproj.lat;
-      geo[1] = geoUnproj.lng;
-    }
-    geo[2] += odom[2]*180;
-    return geo;
-  }
+  };
+  navSatErrorListener = () => {
+    this.setState((prevState) => {
+      let geo = Object.assign({}, prevState.geo);
+      geo.posAvailable = false;
+      return {geo: geo};
+    });
+  };
   handleStart = () => {
     this.setState(() => {
       console.log("start gola");
@@ -189,7 +200,16 @@ class Map extends React.Component {
     });    
   };
   render() { 
-    const robotGeo = this._odomToGeo(this.state.odom, this.state.geoHome);
+    let mapCenter = [0, 0];
+    if(this._mapCenter == null) {
+      if(this.state.geo.posAvailable) {
+        this._mapCenter = [this.state.geo.lat, this.state.geo.lng];
+        mapCenter = this._mapCenter;
+      }
+    } else {
+      mapCenter = this._mapCenter;
+    }
+    console.log();
     return (
       <div className="Map-container">
         <div className="Map-header" style={{ paddingRight: "0"}}>
@@ -209,7 +229,7 @@ class Map extends React.Component {
             </ButtonGroup>
           }
         </div>
-        <MapLeaf ref={ this._mapRef }center={this.state.geoHome.slice(0, 2)} zoom={19} scrollWheelZoom={true} onClick={ this.handleMapClick }>
+        <MapLeaf ref={ this._mapRef } center={ mapCenter } zoom={ 18 } scrollWheelZoom={true} onClick={ this.handleMapClick }>
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -218,8 +238,8 @@ class Map extends React.Component {
           />
           <WaypointMarkers waypoints={ this.state.waypoints } editable={ !this.state.isDriving }
             onMarkerDrag={ this.handleMarkerDrag } onMarkerClick={ this.handleMarkerClick }/>
-            { this.state.odomAvailable &&
-              <RotatedMarker icon={ CritbotIcon } position={ robotGeo.slice(0, 2) } rotationAngle={ robotGeo[2] }/>
+            { this.state.geo.yawAvailable && this.state.geo.posAvailable &&
+              <RotatedMarker icon={ CritbotIcon } position={ this.state.geo } rotationAngle={ this.state.geo.yaw }/>
             }
         </MapLeaf>
       </div>
