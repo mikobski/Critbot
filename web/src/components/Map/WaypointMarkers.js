@@ -11,7 +11,7 @@ class WaypointMarkers extends React.Component {
       } else if(index === array.length-1) {
         tooltipText = "End waypoint";
       }
-      return <Marker key={ index.toString() } position={waypoint.pos} draggable={ true } onDrag={ (e) => {
+      return <Marker key={ index.toString() } position={waypoint.pos} draggable={ this.props.editable } onDrag={ (e) => {
         this.props.onMarkerDrag(e, index);
       }} onClick={ (e) => {
         this.props.onMarkerClick(e, index);

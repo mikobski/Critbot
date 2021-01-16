@@ -1,11 +1,12 @@
 import React, { createRef } from "react";
 import { Map as MapLeaf, TileLayer, Marker, Tooltip, Polyline } from "react-leaflet";
-import "leaflet-rotatedmarker";
+
 import "leaflet/dist/leaflet.css";
 import "components/Map/Map.scss";
 import "components/Map/fixLeaflet.js";
 import WaypointMarkers from "components/Map/WaypointMarkers";
 import { CritbotIcon } from "components/Map/CritbotIcon";
+import RotatedMarker from "components/Map/RotatedMarker";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { PlayFill, PauseFill } from "react-bootstrap-icons";
 import RosTopic from "RosClient/Topic";
@@ -13,6 +14,7 @@ import ActionClient from "RosClient/ActionClient";
 import Goal from "RosClient/Goal";
 import { RosContext } from "utils/RosContext";
 import { ROS_CONFIG } from "utils/RosConfig";
+import { Mode } from "utils/Mode";
 
 class Map extends React.Component {
   static contextType = RosContext;
@@ -43,14 +45,21 @@ class Map extends React.Component {
       ros: rosClient,
       serverName: ROS_CONFIG.defaultActionServers.mapWaypoints.server,
       actionName: ROS_CONFIG.defaultActionServers.mapWaypoints.action,
-      omitStatus: true,
-      omitFeedback: false,
+      omitStatus: false,
+      omitFeedback: true,
       omitResult: false
     });
     this._mapRef = createRef();
   }
   componentDidMount() {
     this._odomTopic.subscribe(this.odomListener, this.odomErrorListener);
+    this._actionClient.cancel();
+  }
+  componentDidUpdate(prevProps) {
+    if(this.props.mode !== Mode.AUTO && prevProps.mode === Mode.AUTO) {
+      console.log("cancel");
+      this._actionClient.cancel();
+    }
   }
   componentWillUnmount() {
     this._odomTopic.unsubscribe(this.odomListener, this.odomErrorListener);
@@ -112,6 +121,7 @@ class Map extends React.Component {
   }
   handleStart = () => {
     this.setState(() => {
+      console.log("start gola");
       const waypoint = this.state.waypoints[0];
       const pos = this._geoToOdom([...waypoint.pos, 0], this.state.geoHome);
       let goal = new Goal({
@@ -135,12 +145,20 @@ class Map extends React.Component {
           }
         }
       });
+      goal.on('result', function(result) {
+        console.log(this);
+        console.log(result);
+      });
+      goal.on('status', (status) => {
+        //console.log(status);
+      });
       goal.send();
       return { isDriving: true }
     });
   };
   handlePause = () => {
     this.setState(() => {
+      this._actionClient.cancel();
       return { isDriving: false }
     });
   };
@@ -175,14 +193,21 @@ class Map extends React.Component {
     return (
       <div className="Map-container">
         <div className="Map-header" style={{ paddingRight: "0"}}>
-          <ButtonGroup className="Map-mission-btns">
-            <Button variant="primary" disabled={ this.state.isDriving } onClick={ this.handleStart }>
-              <PlayFill/> Start mission
+          <div>
+            <Button variant="primary" onClick={ () => {} }>
+              Follow robot
             </Button>
-            <Button variant="primary" disabled={ !this.state.isDriving } onClick={ this.handlePause }>
-              <PauseFill/> Pause mission
-            </Button>
-          </ButtonGroup>
+          </div>
+          { this.props.mode == Mode.AUTO &&
+            <ButtonGroup>
+              <Button variant="primary" disabled={ this.state.isDriving } onClick={ this.handleStart }>
+                <PlayFill/> Start mission
+              </Button>
+              <Button variant="primary" disabled={ !this.state.isDriving } onClick={ this.handlePause }>
+                <PauseFill/> Pause mission
+              </Button>
+            </ButtonGroup>
+          }
         </div>
         <MapLeaf ref={ this._mapRef }center={this.state.geoHome.slice(0, 2)} zoom={19} scrollWheelZoom={true} onClick={ this.handleMapClick }>
           <TileLayer
@@ -191,10 +216,10 @@ class Map extends React.Component {
             maxZoom={21}
             maxNativeZoom={19}
           />
-          <WaypointMarkers waypoints={ this.state.waypoints } 
+          <WaypointMarkers waypoints={ this.state.waypoints } editable={ !this.state.isDriving }
             onMarkerDrag={ this.handleMarkerDrag } onMarkerClick={ this.handleMarkerClick }/>
             { this.state.odomAvailable &&
-              <Marker icon={ CritbotIcon } position={ robotGeo.slice(0, 2) } rotationAngle={ robotGeo[2] }/>
+              <RotatedMarker icon={ CritbotIcon } position={ robotGeo.slice(0, 2) } rotationAngle={ robotGeo[2] }/>
             }
         </MapLeaf>
       </div>
