@@ -6,9 +6,16 @@ export const ROS_CONFIG = {
     modeSelect: "/critbot/mode_changes",
     statusBattery: "/mavros/battery",
     statusWifi: "/wifi_status",
-    statusGps: "mavros/global_position/global"
+    statusGps: "mavros/global_position/global",
+    mapOdom: "/odometry/filtered"
   },
-  //defaultURL: "ws://localhost:9090"
-  defaultURL: "ws://10.42.0.1:9090"
+  defaultActionServers: {
+    mapWaypoints: {
+      server: "move_base",
+      action: "move_base_msgs/MoveBaseAction"
+    }
+  },
+  defaultURL: "ws://localhost:9090"
+  //defaultURL: "ws://10.42.0.1:9090"
   // defaultURL: "ws://rosnuc:9090"
 };
