@@ -1,5 +1,6 @@
 import React from "react";
-import { Marker, Tooltip, Polyline } from "react-leaflet";
+import { Marker, Tooltip } from "react-leaflet";
+import Polyline from 'react-leaflet-arrowheads'
 
 class WaypointMarkers extends React.Component {
   render() {
@@ -23,9 +24,9 @@ class WaypointMarkers extends React.Component {
       if(index === 0)
         return null;
       const options = {
-        opacity: 0.5
+        opacity: 0.7
       };
-      return <Polyline key={ index.toString() } positions={[waypoint.pos, array[index-1].pos]} pathOptions={ options }/>
+      return <Polyline key={ index.toString() } positions={[array[index-1].pos, waypoint.pos]} { ...options } arrowheads={{size: '20px'}}/>
     });
 
     return (

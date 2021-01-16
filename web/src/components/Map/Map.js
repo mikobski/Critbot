@@ -1,5 +1,6 @@
 import React, { createRef } from "react";
-import { Map as MapLeaf, TileLayer, Marker, Tooltip, Polyline } from "react-leaflet";
+import { Map as MapLeaf, TileLayer, Marker, Tooltip } from "react-leaflet";
+import Polyline from 'react-leaflet-arrowheads'
 
 import "leaflet/dist/leaflet.css";
 import "components/Map/Map.scss";
@@ -209,15 +210,14 @@ class Map extends React.Component {
     } else {
       mapCenter = this._mapCenter;
     }
-    console.log();
+    const curPosLineOptions = {
+      opacity: 0.3,
+      color: "#6c757d",
+      dashArray: [4]
+    };
     return (
       <div className="Map-container">
-        <div className="Map-header" style={{ paddingRight: "0"}}>
-          <div>
-            <Button variant="primary" onClick={ () => {} }>
-              Follow robot
-            </Button>
-          </div>
+        <div className="Map-header">
           { this.props.mode == Mode.AUTO &&
             <ButtonGroup>
               <Button variant="primary" disabled={ this.state.isDriving } onClick={ this.handleStart }>
@@ -229,7 +229,8 @@ class Map extends React.Component {
             </ButtonGroup>
           }
         </div>
-        <MapLeaf ref={ this._mapRef } center={ mapCenter } zoom={ 18 } scrollWheelZoom={true} onClick={ this.handleMapClick }>
+        <MapLeaf ref={ this._mapRef } center={ mapCenter } zoom={ 18 } scrollWheelZoom={true} onClick={ this.handleMapClick }
+          zoomAnimation={ false } markerZoomAnimation={ false }>
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -238,8 +239,14 @@ class Map extends React.Component {
           />
           <WaypointMarkers waypoints={ this.state.waypoints } editable={ !this.state.isDriving }
             onMarkerDrag={ this.handleMarkerDrag } onMarkerClick={ this.handleMarkerClick }/>
-            { this.state.geo.yawAvailable && this.state.geo.posAvailable &&
-              <RotatedMarker icon={ CritbotIcon } position={ this.state.geo } rotationAngle={ this.state.geo.yaw }/>
+            { //this.state.geo.yawAvailable && this.state.geo.posAvailable &&
+
+              <RotatedMarker icon={ CritbotIcon } position={ this.state.geo } rotationAngle={ this.state.geo.yaw }/>              
+              
+            }
+            { //this.state.geo.yawAvailable && this.state.geo.posAvailable && 
+              this.state.waypoints.length > 0 &&
+              <Polyline positions={[[this.state.geo.lat, this.state.geo.lng], this.state.waypoints[0].pos]} { ...curPosLineOptions } arrowheads={{size: '20px'}}/>
             }
         </MapLeaf>
       </div>
