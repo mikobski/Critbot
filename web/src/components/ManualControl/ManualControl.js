@@ -17,6 +17,7 @@ class ManualControl extends React.Component {
     speedPercentMax: 100,
     speedPercentStep: 5,
     gamepadTickInterval: 300,
+    gamepadMin: 0.15,
     topic: ROS_CONFIG.defaultTopics.manualControl
   };
   _topic;
@@ -151,13 +152,29 @@ class ManualControl extends React.Component {
     }
     this._updateDrivingVel();
   };
+  _scaleVel(vel, min) {
+    let velScaled;
+    velScaled = Math.abs(vel);
+    velScaled = (velScaled - min)/(1 - min);
+    if(vel < 0) {
+      velScaled *= -1;
+    }
+    return velScaled;
+  }
   _updateDrivingVel() {
     let vel = {lin: 0, ang: 0};
     let stop = true;
     const gp = this._gamepadVel;
+    const gpMin = this.props.gamepadMin;
     if(gp !== null 
-      && Math.sqrt(Math.pow(gp.lin, 2) + Math.pow(gp.ang, 2)) > 0.25 ) {
-      vel = this._gamepadVel;
+      && (Math.abs(gp.lin) > gpMin || Math.abs(gp.ang) > gpMin)) {
+      vel = gp;
+      if(Math.abs(gp.lin) > gpMin) {
+        vel.lin = this._scaleVel(gp.lin, gpMin);
+      }
+      if(Math.abs(gp.ang) > gpMin) {
+        vel.ang = this._scaleVel(gp.ang, gpMin);
+      }
       stop = false;
     } else if(this._keyDirs.anyDir()) {
       vel = this._dirsToVel(this._keyDirs);
@@ -171,7 +188,6 @@ class ManualControl extends React.Component {
       this._drivingVel = vel;
       this.moveCmd();
     }
-
     let newDirs = new DirectionsMap();
     if(!stop) {
       newDirs = this._velToDirs(vel);
