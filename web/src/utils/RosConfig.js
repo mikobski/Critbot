@@ -8,7 +8,8 @@ export const ROS_CONFIG = {
     statusWifi: "/wifi_status",
     statusGps: "mavros/global_position/global",
     mapOdom: "/odometry/filtered",
-    mapNavSat: "/navsat/fix"
+    mapNavSat: "/navsat/fix",
+    measPlot: "/odometry/local"
   },
   defaultActionServers: {
     mapWaypoints: {
@@ -16,7 +17,7 @@ export const ROS_CONFIG = {
       action: "move_base_msgs/MoveBaseAction"
     }
   },
-  ///defaultURL: "ws://localhost:9090"
-  defaultURL: "ws://10.42.0.1:9090"
+  defaultURL: "ws://localhost:9090"
+  //defaultURL: "ws://10.42.0.1:9090"
   //defaultURL: "ws://rosnuc:9090"
 };

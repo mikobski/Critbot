@@ -18,7 +18,9 @@
     "react-leaflet": "^2.8",
     "leaflet-rotatedmarker": "*",
     "quaternion-to-euler": "*",
-    "react-leaflet-arrowheads": "*"
+    "react-leaflet-arrowheads": "*",
+    "react-plotly.js": "*",
+    "plotly.js": "*"
   },
   "devDependencies": {
     "node-sass": "^4.14.1"
