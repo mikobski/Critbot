@@ -22,6 +22,7 @@ class StatusBattery extends React.Component {
       ros: rosClient,
       name: this.props.topic,
       messageType: "sensor_msgs/BatteryState",
+      throttle_rate: 500,
       timeout: this.props.noDataTimeout
     });
   }

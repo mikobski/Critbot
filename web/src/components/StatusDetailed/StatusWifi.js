@@ -22,6 +22,7 @@ class StatusWifi extends React.Component {
       ros: rosClient,
       name: this.props.topic,
       messageType: "std_msgs/String",
+      throttle_rate: 500,
       timeout: this.props.noDataTimeout
     });
   }

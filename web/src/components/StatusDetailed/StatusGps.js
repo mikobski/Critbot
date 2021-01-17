@@ -22,6 +22,7 @@ class StatusGps extends React.Component {
       ros: rosClient,
       name: this.props.topic,
       messageType: "sensor_msgs/NavSatFix",
+      throttle_rate: 500,
       timeout: this.props.noDataTimeout
     });
   }
