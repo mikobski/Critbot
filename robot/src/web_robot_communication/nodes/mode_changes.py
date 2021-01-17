@@ -39,8 +39,6 @@ def handle_mode_changes(req):
     if mode_type in ['manual']:
         if actual_mode != 'manual':
             try:
-                resp = mode_change_srv(base_mode=0, custom_mode='GUIDED')
-                arm_srv(value=True)
                 actual_mode = 'manual'
                 manual_mode()
                 return ModeChangesResponse('manual')
@@ -52,8 +50,6 @@ def handle_mode_changes(req):
     elif mode_type in ['autonomic']:
         if actual_mode != 'autonomic':
             try:
-                resp = mode_change_srv(base_mode=0, custom_mode='GUIDED')
-                arm_srv(value=True)
                 actual_mode = 'autonomic'
                 autonomic_mode()
                 return ModeChangesResponse('autonomic')
@@ -64,8 +60,6 @@ def handle_mode_changes(req):
             return ModeChangesResponse('autonomic')
     elif mode_type in ['emergency_stop']:
         try:
-            arm_srv(value=False)
-            resp = mode_change_srv(base_mode=0, custom_mode='HOLD')
             actual_mode = 'hold'
             return ModeChangesResponse('emergency_stop')
         except rospy.ServiceException as e:
