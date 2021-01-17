@@ -17,7 +17,7 @@ class App extends React.Component {
       reconnectTimeout: 3000
     });
     this.state = {
-      mode: Mode.DISARMED
+      mode: Mode.MANUAL
     };
     this._rosClient.on("error", () => {
       console.info(`[Critbot] Websocket connection to '${this._rosClient.socket.url}' is refused`);

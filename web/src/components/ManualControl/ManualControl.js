@@ -11,11 +11,12 @@ class ManualControl extends React.Component {
   static contextType = RosContext;
   static defaultProps = {
     repeatingTime: 300,
-    moveSpeed: 1,
-    rotateSpeed: 1,
+    moveSpeed: 1.5,
+    rotateSpeed: 4,
     speedPercentMin: 10,
     speedPercentMax: 100,
     speedPercentStep: 5,
+    gamepadTickInterval: 300,
     topic: ROS_CONFIG.defaultTopics.manualControl
   };
   _topic;
@@ -24,6 +25,7 @@ class ManualControl extends React.Component {
   _drivingVel;
   _stop;
   _timeoutHandler = null;
+  _gamepadIntervalHandler = null;
 
   constructor(props) {
     super(props);
@@ -34,6 +36,7 @@ class ManualControl extends React.Component {
     this.refSlider = React.createRef();
     this._btnsDirs = new DirectionsMap();
     this._keyDirs = new DirectionsMap();
+    this._gamepadVel = null;
     this._drivingVel = {
       lin: 0,
       ang: 0
@@ -51,15 +54,26 @@ class ManualControl extends React.Component {
     document.addEventListener("keydown", this.handleKeyDown, false);
     document.addEventListener("keyup", this.handleKeyUp, false);
     window.addEventListener("blur", this.handleClearAndStop);
+    window.addEventListener("gamepadconnected", this.handleGamepadConnected);
+    window.addEventListener("gamepaddisconnected", this.handleGamepadDisconnected);
+    let gamepads = navigator.getGamepads();
+    if(gamepads.length > 0 && gamepads[0] !== null) {
+      this.handleGamepad(gamepads[0]);
+    }
   }
   componentWillUnmount(){
     this._topic.unadvertise();
     if(this._timeoutHandler !== null) {
       clearTimeout(this._timeoutHandler);
     }
+    if(this._gamepadIntervalHandler !== null) {
+      clearInterval(this._gamepadIntervalHandler);
+    }
     document.removeEventListener("keydown", this.handleKeyDown, false);
     document.removeEventListener("keyup", this.handleKeyUp, false);
     window.removeEventListener("blur", this.handleClearAndStop);
+    window.removeEventListener("gamepadconnected", this.handleGamepadConnected);
+    window.removeEventListener("gamepaddisconnected", this.handleGamepadDisconnected);
   }
   handleClearAndStop = () => {
     this._btnsDirs.clearAll();
@@ -99,11 +113,53 @@ class ManualControl extends React.Component {
     this._btnsDirs.clearDir(dir);
     this._updateDrivingVel();
   };
-
+  handleGamepadConnected = (e) => {
+    console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+      e.gamepad.index, e.gamepad.id,
+      e.gamepad.buttons.length, e.gamepad.axes.length);
+    this.handleGamepad(e.gamepad);
+  };
+  handleGamepad = (gamepad) => {
+    if(this._gamepadIntervalHandler !== null) {
+      clearInterval(this._gamepadIntervalHandler);
+    }
+    this._gamepadVel = null;
+    this._gamepadIntervalHandler = setInterval(this.handleGamepadTick, this.props.gamepadTickInterval);
+  }
+  handleGamepadDisconnected = (e) => {
+    console.log("Gamepad disconnected at index %d: %s. %d buttons, %d axes.",
+      e.gamepad.index, e.gamepad.id,
+      e.gamepad.buttons.length, e.gamepad.axes.length);
+    if(this._gamepadIntervalHandler !== null) {
+      clearInterval(this._gamepadIntervalHandler);
+    }
+    this._gamepadVel = null;
+  };
+  handleGamepadTick = (e) => {
+    let gamepads = navigator.getGamepads();
+    if(gamepads.length > 0) {
+      const gp = gamepads[0];
+      this._gamepadVel = {
+        lin: -gp.axes[3],
+        ang: gp.axes[2]
+      }
+    } else {
+      if(this._gamepadIntervalHandler !== null) {
+        clearInterval(this._gamepadIntervalHandler);
+      }
+      this._gamepadVel = null;
+    }
+    this._updateDrivingVel();
+  };
   _updateDrivingVel() {
     let vel = {lin: 0, ang: 0};
     let stop = true;
-    if(this._keyDirs.anyDir()) {
+    const gp = this._gamepadVel;
+    if(gp !== null 
+      && Math.sqrt(Math.pow(gp.lin, 2) + Math.pow(gp.ang, 2)) > 0.25 ) {
+      vel = this._gamepadVel;
+      stop = false;
+    } else if(this._keyDirs.anyDir()) {
       vel = this._dirsToVel(this._keyDirs);
       stop = false;
     } else if(this._btnsDirs.anyDir()) {
@@ -143,8 +199,8 @@ class ManualControl extends React.Component {
       clearTimeout(this._timeoutHandler)
     }
     if(!this._stop) {
-      msg.linear.y = this._drivingVel.lin*moveSpeed;
-      msg.angular.z = this._drivingVel.ang*rotateSpeed;    
+      msg.linear.x = this._drivingVel.lin*moveSpeed;
+      msg.angular.z = -this._drivingVel.ang*rotateSpeed;    
       this._timeoutHandler = setTimeout(this.moveCmd, this.props.repeatingTime);
     }
     this._topic.publish(msg);
@@ -163,14 +219,14 @@ class ManualControl extends React.Component {
   }
   _velToDirs(vel) {
     let dirs = new DirectionsMap();
-    if(vel.lin > 0) {
+    if(vel.lin > 0.35) {
       dirs.setDir(Direction.FORWARD);
-    } else if(vel.lin < 0) {
+    } else if(vel.lin < -0.35) {
       dirs.setDir(Direction.BACKWARD);
     }
-    if(vel.ang > 0) {
+    if(vel.ang > 0.35) {
       dirs.setDir(Direction.RIGHT);      
-    } else if(vel.ang < 0) {
+    } else if(vel.ang < -0.35) {
       dirs.setDir(Direction.LEFT);
     }
     return dirs;

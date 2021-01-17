@@ -239,12 +239,10 @@ class Map extends React.Component {
           />
           <WaypointMarkers waypoints={ this.state.waypoints } editable={ !this.state.isDriving }
             onMarkerDrag={ this.handleMarkerDrag } onMarkerClick={ this.handleMarkerClick }/>
-            { //this.state.geo.yawAvailable && this.state.geo.posAvailable &&
-
+            { this.state.geo.yawAvailable && this.state.geo.posAvailable &&
               <RotatedMarker icon={ CritbotIcon } position={ this.state.geo } rotationAngle={ this.state.geo.yaw }/>              
-              
             }
-            { //this.state.geo.yawAvailable && this.state.geo.posAvailable && 
+            { this.state.geo.yawAvailable && this.state.geo.posAvailable && 
               this.state.waypoints.length > 0 &&
               <Polyline positions={[[this.state.geo.lat, this.state.geo.lng], this.state.waypoints[0].pos]} { ...curPosLineOptions } arrowheads={{size: '20px'}}/>
             }
