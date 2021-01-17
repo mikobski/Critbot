@@ -1,14 +1,12 @@
 import React from 'react';
-import { Button, ButtonGroup, Navbar } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
+import ModeSelector from './ModeSelector/ModeSelector';
 
 class NavbarModeSelector extends React.Component {
   render () {
     return (
       <Navbar.Collapse className="justify-content-end">
-        <ButtonGroup>
-            <Button variant="primary">Manual</Button>
-            <Button variant="secondary">Autonomic</Button>
-        </ButtonGroup>
+        <ModeSelector {... this.props} />
       </Navbar.Collapse>
     );
   }

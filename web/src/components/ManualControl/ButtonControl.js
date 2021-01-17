@@ -4,6 +4,10 @@ import { ArrowClockwise, ArrowCounterclockwise, ArrowDown, ArrowUp } from "react
 import { Direction } from "components/ManualControl/Direction";
 
 class ButtonControl extends React.Component {
+
+  handlePull = () => {
+    this.props.onPull(this.props.dir) 
+  };
   render () {
     const stylesBtn = {
       margin: "3px",
@@ -12,7 +16,6 @@ class ButtonControl extends React.Component {
       padding: "0"
     }
     const iconSize = 36;
-
     let icon;
     if(this.props.dir === Direction.FORWARD) {
       icon = <ArrowUp size={ iconSize }/>;
@@ -23,25 +26,20 @@ class ButtonControl extends React.Component {
     } else if(this.props.dir === Direction.RIGHT) {
       icon = <ArrowClockwise size={ iconSize }/>;
     }
-    
-
     return (
       <Button variant="primary" size="lg" style={ stylesBtn } 
         active={ this.props.active }
         className={ this.props.active ? "focus" : null }
         onMouseDown={ (e) => { 
-          this.props.onStartCmd(this.props.dir);
+          this.props.onPush(this.props.dir);
           e.preventDefault();
         }}
         onDrag={ (e) => { 
           e.preventDefault();
         }}
-        onMouseLeave={ () => { 
-          this.props.onStopCmd(this.props.dir) 
-        }}
-        onMouseUp={ () => { 
-          this.props.onStopCmd(this.props.dir) 
-        }}>
+        onMouseLeave={ this.handlePull }
+        onMouseUp={ this.handlePull }
+        onBlur={ this.handlePull }>        
         { icon }
       </Button>
     );

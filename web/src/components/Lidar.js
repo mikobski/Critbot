@@ -2,6 +2,8 @@ import React from "react";
 import CanvasDataFromRos from "helpers/CanvasDataFromRos";
 import RosTopic from "RosClient/Topic";
 import { RosContext } from "utils/RosContext";
+import { ROS_CONFIG } from "utils/RosConfig";
+import ICON_IMAGE from "assets/critbot_icon.png";
 
 class Lidar extends React.Component {
   static contextType = RosContext;
@@ -9,7 +11,9 @@ class Lidar extends React.Component {
     physicalWidth: 12,
     physicalHeight: 12,
     gridMax: 10,
-    gridCount: 4
+    gridCount: 4,
+    noDataTimeout: 1000,
+    topic: ROS_CONFIG.defaultTopics.lidar
   };
   _topic;
 
@@ -21,7 +25,8 @@ class Lidar extends React.Component {
       ros: rosClient,
       name: topicName,
       messageType: "sensor_msgs/LaserScan", 
-      compression: "cbor"
+      compression: "cbor",
+      timeout: this.props.noDataTimeout
     });
   }
 
@@ -82,6 +87,14 @@ class Lidar extends React.Component {
 
       ctx.fillText(radius, center.x+radius*scale, center.y);
     }
+    let iconImg = new Image(33, 42);
+    iconImg.src = ICON_IMAGE;
+    const robotWidth = 0.7;
+    let scaledDim = {
+      width: robotWidth*scale,
+      height: robotWidth/iconImg.width*iconImg.height*scale
+    }
+    ctx.drawImage(iconImg, center.x - scaledDim.width/2, center.y - scaledDim.height/2, scaledDim.width, scaledDim.height);
   }
 
   _drawPoints(data, ctx, scale, center) {

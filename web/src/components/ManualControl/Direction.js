@@ -1,7 +1,6 @@
 export const Direction = {
-    FORWARD: "FW",
-    BACKWARD: "BW",
-    LEFT: "L",
-    RIGHT: "R",
-    STOP: "S"
-  }
+  FORWARD: Symbol("FW"),
+  BACKWARD: Symbol("BW"),
+  LEFT: Symbol("L"),
+  RIGHT: Symbol("R")
+}

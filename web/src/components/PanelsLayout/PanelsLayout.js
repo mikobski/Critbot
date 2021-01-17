@@ -6,7 +6,6 @@ import EmergencyStop from "../EmergencyStop";
 import StatusDetailed from "components/StatusDetailed/StatusDetailed";
 import Map from "components/Map/Map";
 import Measurements from "components/Measurements/Measurements";
-import { ROS_CONFIG } from "utils/RosConfig";
 import { Mode } from "utils/Mode";
 import "components/PanelsLayout/PanelsLayout.scss";
 
@@ -16,6 +15,7 @@ class PanelsLayout extends React.Component {
     this.panelsContainer = React.createRef();
     this.columnLeft = React.createRef();
     this.cameraPanel = React.createRef();
+    this.columnRightTop = React.createRef();
   }
 
   componentDidMount() {
@@ -30,51 +30,36 @@ class PanelsLayout extends React.Component {
   }
 
   resizeLayout = () => {
-    const containerDim = this.panelsContainer.current.getBoundingClientRect();
-    const cameraPanelRatio = 16/9;
-    let cameraWidth = Math.ceil(containerDim.width/2);
-    let cameraHeight = Math.ceil(cameraWidth/cameraPanelRatio);
-    this.columnLeft.current.style.minWidth = `${cameraWidth}px`;
-    this.cameraPanel.current.style.minHeight = `${cameraHeight}px`;
   };
   
   render() {
     return (
-      <div ref={ this.panelsContainer } className="Panels Panels-container-col">
-        <div ref={ this.columnLeft } className="Panels-col Panels-container Panels-brd-right" 
+      <div ref={ this.panelsContainer } className="Panels-row">
+        <div ref={ this.columnLeft } className="Panels-col Panels-brd-right" 
              style={{flexBasis: "50%" }}>
-          <div ref={ this.cameraPanel } className="Panels-panel" style={{ flexBasis: "50%" }}>
-            <Camera topic={ ROS_CONFIG.defaultTopics.camera }/> 
-          </div>  
-          <div className="Panels-panel Panels-brd-top"
-            style={{flexBasis: "50%" }}>
-            <Lidar topic={ ROS_CONFIG.defaultTopics.lidar }
-              physicalWidth="22" physicalHeight="22"
-    gridMax="10" gridCount="4"/>
-          </div>
+              <div className="Panels-panel" style={{flexGrow: 1}}>
+                <Map mode={ this.props.mode }/>
+              </div>
+              <div className="Panels-panel Panels-brd-top" style={{flexBasis: "400px"}}>
+                <Measurements/>
+              </div>
         </div>
         <div className="Panels-col" style={{flexBasis: "50%" }}>
-          <div style={{flexBasis: "50%" }} className="Panels-container">
-            <div className="Panels-container-col">
-              <div className="Panels-col Panels-container" style={{ flexBasis: "0px" }}>
-                <div className="Panels-panel Panels-container Panels-brd-right" style={{ flexBasis: "100%", padding: "0 1rem" }}>
-                  <StatusDetailed/>
-                  <EmergencyStop/>
-                    {
-                      this.props.mode === Mode.MANUAL && 
-                      <ManualControl topic={ ROS_CONFIG.defaultTopics.manualControl } /> 
-                    }
-                </div>
-              </div>
-              <div className="Panels-col" style={{ flexBasis: "100%" }}>
-                <div className="Panels-panel" style={{ height: "100%" }}>
-                  <Map/>
-                </div>
-              </div>
+          <div className="Panels-row Panels-brd-bottom" style={{ flexGrow: "1", height: "auto" }}>
+            <div className="Panels-panel Panels-brd-right" style={{ flexBasis: "223px", padding: "1rem 1rem" }}>
+              <StatusDetailed/>
+              <EmergencyStop onModeChange={ this.props.onModeChange }/>
+                {
+                  this.props.mode === Mode.MANUAL && 
+                  <ManualControl/> 
+                }
             </div>
-            <div className="Panels-panel Panels-brd-top" style={{ flexBasis: "100%" }} >
-              <Measurements/>
+            <div className="Panels-panel" style={{ flexGrow: "1" }}>
+              <Lidar physicalWidth="22" physicalHeight="22" gridMax="10" gridCount="4"/>
             </div>
+          </div>
+          <div className="Panels-panel" style={{ flexBasis: "540px", minHeight: "540px"}} >
+            <Camera/>
           </div>
         </div>
       </div>
