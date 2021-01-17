@@ -1,4 +1,4 @@
-import ICON_IMAGE from "components/Map/critbot_icon.png";
+import ICON_IMAGE from "assets/critbot_icon.png";
 import L from 'leaflet';
 export const CritbotIcon = L.icon({
   iconUrl: ICON_IMAGE,
