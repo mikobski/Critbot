@@ -15,10 +15,9 @@
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
 
-    <!--remap from="odom" to="/odom" /-->
-    <remap from="cmd_vel" to="/mavros/setpoint" />
+    <remap from="odom" to="/odometry/local" />
+    <remap from="cmd_vel" to="/critbot/autonomic_control" />
     <remap from="scan" to="/scan_lidar" />
-    <!--remap from="/map" to="/map" /-->
 
   </node>
 </launch>
