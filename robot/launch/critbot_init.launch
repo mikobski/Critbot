@@ -1,0 +1,7 @@
+<launch>
+    <include file="apm.launch" />
+    <include file="sensors.launch" />
+    <include file="t265_tf_to_mavros.launch" />
+    <!--include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" /-->
+    <include file="$(find critbot_2dnav)/launch/critbot_tf_configuration.launch" />
+</launch>
