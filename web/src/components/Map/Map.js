@@ -129,30 +129,26 @@ class Map extends React.Component {
     });
   };
   handleStart = () => {
-    this.setState(() => {
-      let waypoints = this.state.waypoints.map((wp) => {
-        return {
-          x: wp.lat,
-          y: wp.lng,
-          theta: 0
-        }
-      });
-      console.log(waypoints);
-      console.log(this._setWpService);
-      this._setWpService.callService({
-        waypoints: waypoints
-      }, (msg) => {
-        console.log("set_waypoints", msg);
-      }, (msg) => {
-        console.error(`Setting waypoint failed! ${msg}`);
-      });
-      return { isDriving: true }
+    let waypoints = this.state.waypoints.map((wp) => {
+      return {
+        x: wp.lat,
+        y: wp.lng,
+        theta: 0
+      }
+    });
+    console.log(waypoints);
+    this._setWpService.callService({
+      waypoints: waypoints
+    }, (msg) => {
+      console.log("set_waypoints", msg);
+      this.setState( { isDriving: true });
+    }, (msg) => {
+      console.error(`Setting waypoint failed! ${msg}`);
+      this.setState( { isDriving: false });
     });
   };
   handlePause = () => {
-    this.setState(() => {
-      return { isDriving: false }
-    });
+    this.setState({ isDriving: false });
   };
   handleMapClick = (e) => {
     if(this.state.isDriving) return;

@@ -1,6 +1,8 @@
 <launch>
     <arg name="navsat_src" default="/navsat/fix" />
+    <arg name="odom_src" default="/odometry/filtered" />
     <node name="waypoint_navigation_node" pkg="waypoint_navigation" type="waypoint_navigation_server.py" output="screen">
         <param name="navsat_src" value="$(arg navsat_src)" />
+        <param name="odom_src" value="$(arg odom_src)" />
     </node>
 </launch>
