@@ -11,6 +11,7 @@ import RotatedMarker from "components/Map/RotatedMarker";
 import { Button, ButtonGroup } from "react-bootstrap";
 import { PlayFill, PauseFill } from "react-bootstrap-icons";
 import RosTopic from "RosClient/Topic";
+import RosService from "RosClient/Service";
 import ActionClient from "RosClient/ActionClient";
 import Goal from "RosClient/Goal";
 import { RosContext } from "utils/RosContext";
@@ -23,11 +24,12 @@ class Map extends React.Component {
   static defaultProps = {
     noDataTimeout: 2000,
     odomTopic: ROS_CONFIG.defaultTopics.mapOdom,
-    navSatTopic: ROS_CONFIG.defaultTopics.mapNavSat
+    navSatTopic: ROS_CONFIG.defaultTopics.mapNavSat,
+    setWaypointsService: ROS_CONFIG.defaultTopics.mapSetWaypoints
 	};
   _odomTopic;
   _navSatTopic;
-  _actionClient;
+  _setWpService;
   _mapRef;
   _mapCenter;
   constructor(props, context) {
@@ -56,13 +58,10 @@ class Map extends React.Component {
       messageType: "sensor_msgs/NavSatFix",
       timeout: this.props.noDataTimeout
     });
-    this._actionClient = new ActionClient({
+    this._setWpService = new RosService({
       ros: rosClient,
-      serverName: ROS_CONFIG.defaultActionServers.mapWaypoints.server,
-      actionName: ROS_CONFIG.defaultActionServers.mapWaypoints.action,
-      omitStatus: false,
-      omitFeedback: true,
-      omitResult: false
+      name: this.props.setWaypointsService,
+      type: "waypoint_navigation/SetWaypoints"
     });
     this._mapRef = createRef();
     this._mapCenter = null;
@@ -70,12 +69,10 @@ class Map extends React.Component {
   componentDidMount() {
     this._odomTopic.subscribe(this.odomListener, this.odomErrorListener);
     this._navSatTopic.subscribe(this.navSatListener, this.navSatErrorListener);
-    this._actionClient.cancel();
   }
   componentDidUpdate(prevProps) {
     if(this.props.mode !== Mode.AUTO && prevProps.mode === Mode.AUTO) {
-      console.log("cancel");
-      this._actionClient.cancel();
+
     }
   }
   componentWillUnmount() {
@@ -133,44 +130,27 @@ class Map extends React.Component {
   };
   handleStart = () => {
     this.setState(() => {
-      console.log("start gola");
-      const waypoint = this.state.waypoints[0];
-      const pos = this._geoToOdom([...waypoint.pos, 0], this.state.geoHome);
-      let goal = new Goal({
-        actionClient: this._actionClient,
-        goalMessage: {
-          target_pose: {
-            header: {
-              frame_id: "odom",
-              stamp: 0
-            },
-            pose: {
-              position: {
-                x: pos[0],
-                y: pos[1],
-                z: 0
-              },
-              orientation: {
-                x: 0, y:0, z:0, w:1
-              }
-            }
-          }
+      let waypoints = this.state.waypoints.map((wp) => {
+        return {
+          x: wp.lat,
+          y: wp.lng,
+          theta: 0
         }
       });
-      goal.on('result', function(result) {
-        console.log(this);
-        console.log(result);
+      console.log(waypoints);
+      console.log(this._setWpService);
+      this._setWpService.callService({
+        waypoints: waypoints
+      }, (msg) => {
+        console.log("set_waypoints", msg);
+      }, (msg) => {
+        console.error(`Setting waypoint failed! ${msg}`);
       });
-      goal.on('status', (status) => {
-        //console.log(status);
-      });
-      goal.send();
       return { isDriving: true }
     });
   };
   handlePause = () => {
     this.setState(() => {
-      this._actionClient.cancel();
       return { isDriving: false }
     });
   };
@@ -179,7 +159,8 @@ class Map extends React.Component {
     this.setState((prevState) => {   
       const wp = prevState.waypoints;
       let newWp = wp.concat({
-        pos: [e.latlng.lat, e.latlng.lng]
+        lat: e.latlng.lat, 
+        lng: e.latlng.lng
       });
       return  {waypoints: newWp}; 
     });  
@@ -196,7 +177,8 @@ class Map extends React.Component {
     if(this.state.isDriving) return;
     this.setState((prevState) => {
       const wp = prevState.waypoints;
-      wp[i].pos = [e.latlng.lat, e.latlng.lng]; 
+      wp[i].lat = e.latlng.lat
+      wp[i].lng = e.latlng.lng; 
       return {waypoints: wp};
     });    
   };
@@ -244,7 +226,7 @@ class Map extends React.Component {
             }
             { this.state.geo.yawAvailable && this.state.geo.posAvailable && 
               this.state.waypoints.length > 0 &&
-              <Polyline positions={[[this.state.geo.lat, this.state.geo.lng], this.state.waypoints[0].pos]} { ...curPosLineOptions } arrowheads={{size: '20px'}}/>
+              <Polyline positions={[[this.state.geo.lat, this.state.geo.lng], [this.state.waypoints[0].lat, this.state.waypoints[0].lng]]} { ...curPosLineOptions } arrowheads={{size: '20px'}}/>
             }
         </MapLeaf>
       </div>
