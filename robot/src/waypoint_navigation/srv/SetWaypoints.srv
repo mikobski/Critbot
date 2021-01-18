@@ -1,0 +1,6 @@
+# Message with array of waypoints
+geometry_msgs/Pose2D[] waypoints
+---
+# Response with status
+int8 statusCode
+string statusMessage

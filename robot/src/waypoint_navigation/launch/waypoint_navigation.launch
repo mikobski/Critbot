@@ -1,0 +1,6 @@
+<launch>
+    <arg name="navsat_src" default="/navsat/fix" />
+    <node name="waypoint_navigation_node" pkg="waypoint_navigation" type="waypoint_navigation_server.py" output="screen">
+        <param name="navsat_src" value="$(arg navsat_src)" />
+    </node>
+</launch>
