@@ -1,0 +1,8 @@
+prefix=/home/rosnuc/Critbot/robot/install
+
+Name: web_robot_communication
+Description: Description of web_robot_communication
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: move_base rospy std_msgs mavros_msgs

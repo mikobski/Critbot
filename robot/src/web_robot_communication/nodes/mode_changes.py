@@ -12,7 +12,7 @@ import std_msgs.msg
 import re
 
 actual_mode = ''
-pub = rospy.Publisher('/mavros/setpoint_velocity/cmd_vel_unstamped', Twist, queue_size=0, latch=False)
+pub = rospy.Publisher('/cmd_vel', Twist, queue_size=0, latch=False)
 
 def autonomic_callback(data):
     if actual_mode == 'autonomic':

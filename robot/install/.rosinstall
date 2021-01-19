@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/rosnuc/Critbot/robot/install/setup.sh

@@ -1,2 +1,4 @@
 *.bag*
 *.pyc
+*.pdf
+*.gv

@@ -1,0 +1,38 @@
+odom_frame: odom
+base_link_frame: base_link
+world_frame: odom
+
+two_d_mode: true
+
+frequency: 50
+
+odom0: /mavros/wheel_odometry/odom
+odom0_config: [true, true, false,   # x,   y,   z
+               false, false, false,   # r,   p,   w (yaw)
+               true,  true,  fa,    # dx,  dy,  dz
+               false, false, true,    # dr,  dp,  dw
+               false, false, false]   # ddx, ddy, ddz
+odom0_differential: false
+odom0_nodelay: true
+odom0_queue_size: 10
+
+odom1: /t265/odom/sample
+odom1_config: [false, false, false,   # x,   y,   z
+               false, false, false,   # r,   p,   w (yaw)
+               true,  true,  false,    # dx,  dy,  dz
+               false, false, true,    # dr,  dp,  dw
+               false, false, false]   # ddx, ddy, ddz
+odom1_differential: false
+odom1_nodelay: true
+odom1_queue_size: 10
+
+imu0: /mavros/imu/data_raw
+imu0_config: [false, false, false,   # x,   y,   z
+              false, false, false,   # r,   p,   w (yaw)
+              false, false, false,   # dx,  dy,  dz
+              true,  true,  true,    # dr,  dp,  dw
+              false, false, false]   # ddx, ddy, ddz
+imu0_differential: true
+imu0_nodelay: true
+imu0_queue_size: 10
+imu0_remove_gravitational_acceleration: true

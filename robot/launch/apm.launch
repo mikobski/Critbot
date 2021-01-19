@@ -3,7 +3,7 @@
 	<!-- example launch script for ArduPilot based FCU's -->
 
 	<arg name="fcu_url" default="/dev/ttyACM0:921600" />
-	<!-- <arg name="gcs_url" default="udp://@192.168.43.94" /> -->
+	<!-- <arg name="gcs_url" default="udp://@192.168.56.1" /> -->
 	<arg name="gcs_url" default="udp://@10.42.0.169" />
 	<arg name="tgt_system" default="1" />
 	<arg name="tgt_component" default="1" />
@@ -12,8 +12,8 @@
 	<arg name="respawn_mavros" default="false" />
 
 	<include file="$(find mavros)/launch/node.launch">
-		<arg name="pluginlists_yaml" value="$(find mavros)/launch/apm_pluginlists.yaml" />
-		<arg name="config_yaml" value="$(find mavros)/launch/apm_config.yaml" />
+		<arg name="pluginlists_yaml" value="../config/apm_pluginlists.yaml" />
+		<arg name="config_yaml" value="../config/apm_config.yaml" />
 
 		<arg name="fcu_url" value="$(arg fcu_url)" />
 		<arg name="gcs_url" value="$(arg gcs_url)" />
