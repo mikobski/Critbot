@@ -37,8 +37,8 @@ class Lidar extends React.Component {
         let angle = message.angle_min;
         for(const range of message.ranges) {
           data.push([
-            Math.cos(angle+Math.PI/2)*range,
-            Math.sin(angle+Math.PI/2)*range
+            Math.cos(angle+Math.PI*3/2)*range,
+            -Math.sin(angle+Math.PI*3/2)*range
           ]);
           angle += message.angle_increment;
         }

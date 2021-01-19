@@ -6,15 +6,15 @@ export const ROS_CONFIG = {
     modeSelect: "/critbot/mode_changes",
     statusBattery: "/mavros/battery",
     statusWifi: "/wifi_status",
-    statusGps: "mavros/global_position/global",
+    statusGps: "/navsat/fix",
     mapOdom: "/odometry/filtered",
-    mapNavSat: "/navsat/fix",
-    measPlot: "/odometry/filtered",
+    mapNavSat: "/gps/filtered",
+    measPlot: "/odometry/local",
     mapSetWaypoints: "/set_waypoints",
     mapCancelMission: "/cancel_mission",
     mapMissionStatus: "/mission_status"
   },
-  defaultURL: "ws://localhost:9090"
-  //defaultURL: "ws://10.42.0.1:9090"
+  //defaultURL: "ws://localhost:9090"
+  defaultURL: "ws://10.42.0.1:9090"
   //defaultURL: "ws://rosnuc:9090"
 };

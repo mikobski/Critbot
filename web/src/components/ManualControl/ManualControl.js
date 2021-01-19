@@ -17,7 +17,7 @@ class ManualControl extends React.Component {
     speedPercentMax: 100,
     speedPercentStep: 5,
     gamepadTickInterval: 300,
-    gamepadMin: 0.15,
+    gamepadMin: 0.20,
     topic: ROS_CONFIG.defaultTopics.manualControl
   };
   _topic;
