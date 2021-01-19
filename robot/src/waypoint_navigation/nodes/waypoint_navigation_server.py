@@ -1,56 +1,91 @@
 #!/usr/bin/env python
-
 from __future__ import print_function
-
-from waypoint_navigation.srv import AddWaypoints, AddWaypointsResponse
-from haversine import haversine
-from sensor_msgs.msg import NavSatFix
 import rospy
+from waypoint_navigation.srv import SetWaypoints, SetWaypointsResponse
+from waypoint_navigation.srv import CancelMission, CancelMissionResponse
+from sensor_msgs.msg import NavSatFix
+from nav_msgs.msg import Odometry
+from std_msgs.msg import String
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+import actionlib
+from actionlib_msgs.msg import GoalStatus
+from conv_geo_to_odom import conv_geo_to_odom
 
-GPS_TOPIC = "/fix"
-WAYPOINTS = []
+current_waypoints = []
+current_wp_index = 0
+client = None
 
-def convert_geographical_to_odom(reference_point, point):
-    distance_y = haversine((reference_point[0], 0), (point[0], 0))
-    distance_x = haversine((0, reference_point[1]), (0, point[1]))
+def handle_set_waypoints(msg):
+    global current_wp_index
+    global current_waypoints
+    global client
+    ref_geo_msg = rospy.wait_for_message(rospy.get_param("~navsat_src"), NavSatFix)
+    ref_geo = (ref_geo_msg.latitude, ref_geo_msg.longitude)
+    ref_odom_msg = rospy.wait_for_message(rospy.get_param("~odom_src"), Odometry)
+    ref_odom = (ref_odom_msg.pose.pose.position.x, ref_odom_msg.pose.pose.position.y)
+    current_waypoints = []
+    current_wp_index = 0
+    client.cancel_all_goals()
+    for waypoint in msg.waypoints:
+        pose_geo = (waypoint.x, waypoint.y)
+        pose_odom = conv_geo_to_odom(pose_geo, ref_geo, ref_odom)
+        current_waypoints.append(pose_odom)
+    next_goal()
+    return SetWaypointsResponse(0, "OK")
 
-    if reference_point[0] > point[0]:
-        distance_y = -distance_y
-    if reference_point[1] > point[1]:
-        distance_x = -distance_x
-    
-    return (distance_x, distance_y)
+def handle_cancel_mission(msg):
+    global client
+    global current_waypoints
+    global current_wp_index
+    client.cancel_all_goals()
+    client.stop_tracking_goal()
+    current_waypoints = []
+    current_wp_index = 0
+    return CancelMissionResponse(0, "OK")
 
-def handle_add_waypoints(waypoints):
-    print(waypoints.points)
-    converted_waypoints = []
-    #https://www.latlong.net/place/gda-sk-poland-1379.html
-    reference_point_msg = rospy.wait_for_message(GPS_TOPIC, NavSatFix)
-    #reference_point = (54.372158, 18.638306)
-    reference_point = (reference_point_msg.latitude, reference_point_msg.longitude)
-    for waypoint in waypoints.points:
-        waypoint_geo = (waypoint.x, waypoint.y)
-        print("Wspolrzedne geograficzne %f, %f" % waypoint_geo)
-        converted_waypoint = convert_geographical_to_odom(reference_point, waypoint_geo)
-        print("Odleglosc %f, %f" % converted_waypoint)
-        WAYPOINTS.append(converted_waypoint)
-    
-    return AddWaypointsResponse("Dodano waypointy!")
+def next_goal_handler(status=None, result=None):
+    global current_wp_index
+    current_wp_index+=1
+    next_goal()
 
-def handle_clear_waypoints():
-    WAYPOINTS = []
-    return AddWaypointsResponse("Usunieto waypointy")
+def next_goal(status=None, result=None):
+    global current_wp_index
+    global current_waypoints
+    if len(current_waypoints) > current_wp_index:
+        current_wp = current_waypoints[current_wp_index]
+        print(current_wp)
+        goal = MoveBaseGoal()
+        goal.target_pose.header.frame_id = "odom"
+        goal.target_pose.header.stamp = rospy.Time.now()
+        goal.target_pose.pose.position.x = current_wp[0]
+        goal.target_pose.pose.position.y = current_wp[1]
+        goal.target_pose.pose.orientation.w = 1.0 
+        client.send_goal(goal, done_cb=next_goal_handler)
+    else:
+        current_waypoints = []
+        current_wp_index = 0
+        print("Mission completed")
 
-def add_waypoints_server():
-    rospy.init_node('add_waypoints_server')
-    s_addwaypoints = rospy.Service('add_waypoints', AddWaypoints, handle_add_waypoints)
-    s_clearwaypoints = rospy.Service('clear_waypoints', AddWaypoints, handle_add_waypoints)
-    print("Ready to add waypoints.")
-    rospy.spin()
-
-def tryfun():
-    print("Ready try fun")
+def server():
+    global current_wp_index
+    global current_waypoints
+    global client
+    rospy.init_node('waypoint_navigation')
+    client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+    client.wait_for_server()
+    s_set_waypoints = rospy.Service('set_waypoints', SetWaypoints, handle_set_waypoints)
+    s_clear_waypoints = rospy.Service('cancel_mission', CancelMission, handle_cancel_mission)
+    pub_status = rospy.Publisher("/mission_status", String, queue_size=0, latch=True)
+    print("Ready to set waypoints.")
+    rate = rospy.Rate(5)
+    while not rospy.is_shutdown():        
+        if len(current_waypoints) > 0 and len(current_waypoints) > current_wp_index:        
+            if client.get_state() == GoalStatus.REJECTED:
+                rospy.logerr("Goal rejected!")
+            pub_status.publish("IN_MISSION")
+        else:
+            pub_status.publish("IDLE")
+        rate.sleep()
 
 if __name__ == "__main__":
-    add_waypoints_server()
-    tryfun()
+    server()   

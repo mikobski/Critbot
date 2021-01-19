@@ -12,7 +12,6 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
-  mavros_msgs
   nav_msgs
 )
 
@@ -78,7 +77,6 @@ add_service_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
-  mavros_msgs
   nav_msgs
 )
 
@@ -114,7 +112,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES web_robot_communication
-  CATKIN_DEPENDS move_base rospy std_msgs mavros_msgs
+  CATKIN_DEPENDS move_base rospy std_msgs
 #  DEPENDS system_lib
 )
 

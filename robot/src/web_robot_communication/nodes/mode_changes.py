@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-from web_robot_communication.srv import ModeChanges,ModeChangesResponse
-from mavros_msgs.srv import SetMode,CommandBool
-from mavros_msgs.msg import State
+from web_robot_communication.srv import ModeChanges, ModeChangesResponse
 from geographic_msgs.msg import GeoPointStamped
 from std_msgs.msg import Header
 from geometry_msgs.msg import Twist
+from waypoint_navigation.srv import CancelMission
 import rospy
-import std_msgs.msg
-import re
 
 actual_mode = ''
 pub = rospy.Publisher('/cmd_vel', Twist, queue_size=0, latch=False)
@@ -28,19 +25,20 @@ def manual_callback(data):
 def manual_mode():
     rospy.Subscriber("/critbot/manual_control", Twist, manual_callback)
 
+def cancel_mission():
+    rospy.wait_for_service("/cancel_mission")
+    cancel_srv = rospy.ServiceProxy("cancel_mission", CancelMission)
+    cancel_srv()
 
-def handle_mode_changes(req):
-    global actual_mode
-    mode_type = re.search('\"(.+?)\"', str(req)).group(1)
-    rospy.wait_for_service('/mavros/set_mode')
-    rospy.wait_for_service('/mavros/cmd/arming')
-    arm_srv = rospy.ServiceProxy('/mavros/cmd/arming', CommandBool) 
-    mode_change_srv = rospy.ServiceProxy('/mavros/set_mode', SetMode)       
+def handle_mode_changes(msg):
+    global actual_mode    
+    mode_type = msg.mode
     if mode_type in ['manual']:
         if actual_mode != 'manual':
             try:
                 actual_mode = 'manual'
-                manual_mode()
+                cancel_mission()
+                manual_mode()                
                 return ModeChangesResponse('manual')
             except rospy.ServiceException as e:
                 print("Service call failed: %s"%e)
@@ -61,13 +59,13 @@ def handle_mode_changes(req):
     elif mode_type in ['emergency_stop']:
         try:
             actual_mode = 'hold'
+            cancel_mission()
             return ModeChangesResponse('emergency_stop')
         except rospy.ServiceException as e:
             print("Service call failed: %s"%e)
             return ModeChangesResponse("Error: %s"%e)
     else:
         return ModeChangesResponse('not_exist')
- 
 
 def mode_changes_server():
     rospy.init_node('mode_changes_server')
@@ -75,7 +73,5 @@ def mode_changes_server():
     print("Ready to change mode.")
     rospy.spin()
 
-
 if __name__ == "__main__":
-    
     mode_changes_server()
