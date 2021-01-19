@@ -46,9 +46,6 @@ class App extends React.Component {
     } else if(mode === Mode.AUTO) {
       rosMode = "autonomic";
     }
-    this.setState({
-      mode: mode
-    });
     this._modeSelectService.callService([rosMode], (msg, btn) => {
       let mode = Mode.DISARMED;
       if(msg) {
