@@ -35,11 +35,18 @@ def handle_set_waypoints(msg):
 
 def handle_cancel_mission(msg):
     global client
+    global current_waypoints
+    global current_wp_index
     client.cancel_all_goals()
     client.stop_tracking_goal()
     current_waypoints = []
     current_wp_index = 0
     return CancelMissionResponse(0, "OK")
+
+def next_goal_handler(status=None, result=None):
+    global current_wp_index
+    current_wp_index+=1
+    next_goal()
 
 def next_goal(status=None, result=None):
     global current_wp_index
@@ -47,14 +54,17 @@ def next_goal(status=None, result=None):
     if len(current_waypoints) > current_wp_index:
         current_wp = current_waypoints[current_wp_index]
         print(current_wp)
-        current_wp_index += 1
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "odom"
         goal.target_pose.header.stamp = rospy.Time.now()
         goal.target_pose.pose.position.x = current_wp[0]
         goal.target_pose.pose.position.y = current_wp[1]
         goal.target_pose.pose.orientation.w = 1.0 
-        client.send_goal(goal, done_cb=next_goal)
+        client.send_goal(goal, done_cb=next_goal_handler)
+    else:
+        current_waypoints = []
+        current_wp_index = 0
+        print("Mission completed")
 
 def server():
     global current_wp_index
@@ -69,7 +79,7 @@ def server():
     print("Ready to set waypoints.")
     rate = rospy.Rate(5)
     while not rospy.is_shutdown():        
-        if len(current_waypoints) > current_wp_index:        
+        if len(current_waypoints) > 0 and len(current_waypoints) > current_wp_index:        
             if client.get_state() == GoalStatus.REJECTED:
                 rospy.logerr("Goal rejected!")
             pub_status.publish("IN_MISSION")
