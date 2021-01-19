@@ -10,7 +10,9 @@ export const ROS_CONFIG = {
     mapOdom: "/odometry/filtered",
     mapNavSat: "/navsat/fix",
     measPlot: "/odometry/filtered",
-    mapSetWaypoints: "/set_waypoints"
+    mapSetWaypoints: "/set_waypoints",
+    mapCancelMission: "/cancel_mission",
+    mapMissionStatus: "/mission_status"
   },
   defaultURL: "ws://localhost:9090"
   //defaultURL: "ws://10.42.0.1:9090"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from waypoint_navigation_server import conv_geo_to_odom
+from conv_geo_to_odom import conv_geo_to_odom
 
 def test_single_conv(in_geo, expected, geo_ref, odom_ref):
     result = conv_geo_to_odom(in_geo, geo_ref, odom_ref)

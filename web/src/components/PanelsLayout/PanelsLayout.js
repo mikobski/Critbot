@@ -41,7 +41,7 @@ class PanelsLayout extends React.Component {
                 <Map mode={ this.props.mode }/>
               </div>
               <div className="Panels-panel Panels-brd-top" style={{flexBasis: "400px"}}>
-                <Measurements/>
+                {/*<Measurements/>*/}
               </div>
         </div>
         <div className="Panels-col" style={{flexBasis: "50%" }}>

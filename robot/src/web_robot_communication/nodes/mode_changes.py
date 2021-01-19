@@ -5,6 +5,7 @@ from web_robot_communication.srv import ModeChanges, ModeChangesResponse
 from geographic_msgs.msg import GeoPointStamped
 from std_msgs.msg import Header
 from geometry_msgs.msg import Twist
+from waypoint_navigation.srv import CancelMission
 import rospy
 
 actual_mode = ''
@@ -24,6 +25,11 @@ def manual_callback(data):
 def manual_mode():
     rospy.Subscriber("/critbot/manual_control", Twist, manual_callback)
 
+def cancel_mission():
+    rospy.wait_for_service("/cancel_mission")
+    cancel_srv = rospy.ServiceProxy("cancel_mission", CancelMission)
+    cancel_srv()
+
 def handle_mode_changes(msg):
     global actual_mode    
     mode_type = msg.mode
@@ -31,7 +37,8 @@ def handle_mode_changes(msg):
         if actual_mode != 'manual':
             try:
                 actual_mode = 'manual'
-                manual_mode()
+                cancel_mission()
+                manual_mode()                
                 return ModeChangesResponse('manual')
             except rospy.ServiceException as e:
                 print("Service call failed: %s"%e)
@@ -52,6 +59,7 @@ def handle_mode_changes(msg):
     elif mode_type in ['emergency_stop']:
         try:
             actual_mode = 'hold'
+            cancel_mission()
             return ModeChangesResponse('emergency_stop')
         except rospy.ServiceException as e:
             print("Service call failed: %s"%e)

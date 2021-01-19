@@ -56,6 +56,7 @@ catkin_python_setup()
 add_service_files(
    FILES
    SetWaypoints.srv
+   CancelMission.srv
  )
 
 ## Generate actions in the 'action' folder
