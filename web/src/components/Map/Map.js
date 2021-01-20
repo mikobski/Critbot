@@ -1,5 +1,5 @@
 import React, { createRef } from "react";
-import { Map as MapLeaf, TileLayer, Marker, Tooltip } from "react-leaflet";
+import { Map as MapLeaf, TileLayer } from "react-leaflet";
 import Polyline from 'react-leaflet-arrowheads'
 
 import "leaflet/dist/leaflet.css";
@@ -12,8 +12,6 @@ import { Button, ButtonGroup } from "react-bootstrap";
 import { PlayFill, XCircle as XIcon } from "react-bootstrap-icons";
 import RosTopic from "RosClient/Topic";
 import RosService from "RosClient/Service";
-import ActionClient from "RosClient/ActionClient";
-import Goal from "RosClient/Goal";
 import { RosContext } from "utils/RosContext";
 import { ROS_CONFIG } from "utils/RosConfig";
 import { Mode } from "utils/Mode";
@@ -240,7 +238,7 @@ class Map extends React.Component {
     return (
       <div className="Map-container">
         <div className="Map-header">
-          { this.props.mode == Mode.AUTO &&
+          { this.props.mode === Mode.AUTO &&
             <ButtonGroup>
               <Button variant="primary" disabled={ this.state.inMission } onClick={ this.handleStart }>
                 <PlayFill/> Start mission

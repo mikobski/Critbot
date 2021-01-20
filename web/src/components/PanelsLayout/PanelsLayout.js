@@ -6,7 +6,6 @@ import EmergencyStop from "../EmergencyStop";
 import StatusDetailed from "components/StatusDetailed/StatusDetailed";
 import Map from "components/Map/Map";
 import Measurements from "components/Measurements/Measurements";
-import { Mode } from "utils/Mode";
 import "components/PanelsLayout/PanelsLayout.scss";
 
 class PanelsLayout extends React.Component {
