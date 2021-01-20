@@ -15,20 +15,9 @@ def autonomic_callback(data):
     if actual_mode == 'autonomic':
         pub.publish(data)
 
-def autonomic_mode():
-    rospy.Subscriber("/critbot/autonomic_control", Twist, autonomic_callback)
-
 def manual_callback(data):
     if actual_mode == 'manual':
         pub.publish(data)
-
-def manual_mode():
-    rospy.Subscriber("/critbot/manual_control", Twist, manual_callback)
-
-def cancel_mission():
-    rospy.wait_for_service("/cancel_mission")
-    cancel_srv = rospy.ServiceProxy("cancel_mission", CancelMission)
-    cancel_srv()
 
 def handle_mode_changes(msg):
     global actual_mode    
@@ -36,9 +25,7 @@ def handle_mode_changes(msg):
     if mode_type in ['manual']:
         if actual_mode != 'manual':
             try:
-                actual_mode = 'manual'
-                cancel_mission()
-                manual_mode()                
+                actual_mode = 'manual'        
                 return ModeChangesResponse('manual')
             except rospy.ServiceException as e:
                 print("Service call failed: %s"%e)
@@ -49,7 +36,6 @@ def handle_mode_changes(msg):
         if actual_mode != 'autonomic':
             try:
                 actual_mode = 'autonomic'
-                autonomic_mode()
                 return ModeChangesResponse('autonomic')
             except rospy.ServiceException as e:
                 print("Service call failed: %s"%e)
@@ -59,7 +45,6 @@ def handle_mode_changes(msg):
     elif mode_type in ['emergency_stop']:
         try:
             actual_mode = 'hold'
-            cancel_mission()
             return ModeChangesResponse('emergency_stop')
         except rospy.ServiceException as e:
             print("Service call failed: %s"%e)
@@ -70,6 +55,8 @@ def handle_mode_changes(msg):
 def mode_changes_server():
     rospy.init_node('mode_changes_server')
     s = rospy.Service('critbot/mode_changes', ModeChanges, handle_mode_changes)
+    rospy.Subscriber("/critbot/autonomic_control", Twist, autonomic_callback)
+    rospy.Subscriber("/critbot/manual_control", Twist, manual_callback)
     print("Ready to change mode.")
     rospy.spin()
 

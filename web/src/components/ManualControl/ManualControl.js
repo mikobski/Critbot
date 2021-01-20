@@ -6,6 +6,7 @@ import RosTopic from "RosClient/Topic";
 import { Form } from "react-bootstrap";
 import { ROS_CONFIG } from "utils/RosConfig";
 import DirectionsMap from "./DirectionsMap";
+import { Mode } from "utils/Mode";
 
 class ManualControl extends React.Component {
   static contextType = RosContext;
@@ -79,6 +80,7 @@ class ManualControl extends React.Component {
   handleClearAndStop = () => {
     this._btnsDirs.clearAll();
     this._keyDirs.clearAll();
+    this._gamepadVel = null;
     this._updateDrivingVel();
   };
   _keyCodeToDir(code) {
@@ -183,6 +185,13 @@ class ManualControl extends React.Component {
       vel = this._dirsToVel(this._btnsDirs);
       stop = false;
     }
+    if(this.props.mode !== Mode.MANUAL) {
+      this._btnsDirs.clearAll();
+      this._keyDirs.clearAll();
+      this._gamepadVel = null;
+      vel = {lin:0, ang: 0};
+      stop = true;
+    }
     if(!(this._stop && stop)) {
       this._stop = stop;
       this._drivingVel = vel;
@@ -254,8 +263,10 @@ class ManualControl extends React.Component {
     this.refSlider.current.blur();
   };
   shouldComponentUpdate(nextProps, nextState) {
-    return this.state.speedPercent !== nextState.speedPercent ||
-      !this.state.drivingDirs.compare(nextState.drivingDirs);
+    let isUpdate = this.state.speedPercent !== nextState.speedPercent;
+    isUpdate = isUpdate || !this.state.drivingDirs.compare(nextState.drivingDirs);
+    isUpdate = isUpdate || this.props.mode !== nextProps.mode;
+    return isUpdate;
   }
   render () {
     const showedDirs = this.state.drivingDirs;
@@ -269,6 +280,12 @@ class ManualControl extends React.Component {
       display: "flex",
       justifyContent: "center"
     };
+    if(this.props.mode !== Mode.MANUAL) {
+      return (
+        <>
+        </>
+      );
+    }
     return (
       <div style={ stylesContainer }>
         <div style={{ ...stylesRow, justifyContent: "space-between" }}>
