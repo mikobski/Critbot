@@ -123,7 +123,7 @@ class Map extends React.Component {
     });
   };
   navSatListener = (message) => {
-    if(message) {
+    if(message && message.latitude !== null && message.longitude !== null) {
       this.setState((prevState) => {
         let geo = Object.assign({}, prevState.geo);
         geo.lat = message.latitude;
