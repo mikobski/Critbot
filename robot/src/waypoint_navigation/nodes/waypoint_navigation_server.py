@@ -55,7 +55,7 @@ def next_goal(status=None, result=None):
         current_wp = current_waypoints[current_wp_index]
         print(current_wp)
         goal = MoveBaseGoal()
-        goal.target_pose.header.frame_id = "odom"
+        goal.target_pose.header.frame_id = "map"
         goal.target_pose.header.stamp = rospy.Time.now()
         goal.target_pose.pose.position.x = current_wp[0]
         goal.target_pose.pose.position.y = current_wp[1]

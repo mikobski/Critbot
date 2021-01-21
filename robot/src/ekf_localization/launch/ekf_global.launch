@@ -19,7 +19,7 @@
     <param name="yaw_offset" value="0" />
     <!-- Magnetic Declination for your location - see http://www.ngdc.noaa.gov/geomag-web -->
     <!-- Gdansk 6.7 degrees -->
-    <!--param name="magnetic_declination_radians" value="0.11693" /-->
+    <param name="magnetic_declination_radians" value="0.11693" />
     <!-- Pretend world is flat -->
     <param name="zero_altitude" value="true" />
     <!-- Publish a faster GPS output -->
@@ -29,7 +29,7 @@
     <param name="use_odometry_yaw" value="false" />
 
     <!-- Subscriptions -->
-    <remap from="imu/data" to="mavros/imu/mag" />
+    <remap from="imu/data" to="mavros/imu/data" />
     <remap from="gps/fix" to="fix" />
     <remap from="odometry/filtered" to="odometry/global" />
 
