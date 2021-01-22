@@ -12,7 +12,7 @@ class WaypointMarkers extends React.Component {
       } else if(index === array.length-1) {
         tooltipText = "End waypoint";
       }
-      return <Marker key={ index.toString() } position={waypoint.pos} draggable={ this.props.editable } onDrag={ (e) => {
+      return <Marker key={ index.toString() } position={[waypoint.lat, waypoint.lng]} draggable={ this.props.editable } onDrag={ (e) => {
         this.props.onMarkerDrag(e, index);
       }} onClick={ (e) => {
         this.props.onMarkerClick(e, index);
@@ -26,7 +26,7 @@ class WaypointMarkers extends React.Component {
       const options = {
         opacity: 0.7
       };
-      return <Polyline key={ index.toString() } positions={[array[index-1].pos, waypoint.pos]} { ...options } arrowheads={{size: '20px'}}/>
+      return <Polyline key={ index.toString() } positions={[[array[index-1].lat, array[index-1].lng], [waypoint.lat, waypoint.lng]]} { ...options } arrowheads={{size: '20px'}}/>
     });
 
     return (

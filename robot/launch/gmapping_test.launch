@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch> 
-  <arg name="scan_topic" default="/rplidar/laser/scan" /> 
+  <arg name="scan_topic" default="/scan_lidar" /> 
  
 <!-- Defining parameters for slam_gmapping node --> 
  
@@ -40,5 +40,5 @@
     <param name="lasamplerange" value="0.005"/> 
     <param name="lasamplestep" value="0.005"/> 
     <remap from="scan" to="$(arg scan_topic)"/> 
-  </node> 
+  </node>
 </launch>

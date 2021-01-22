@@ -6,7 +6,6 @@ import EmergencyStop from "../EmergencyStop";
 import StatusDetailed from "components/StatusDetailed/StatusDetailed";
 import Map from "components/Map/Map";
 import Measurements from "components/Measurements/Measurements";
-import { Mode } from "utils/Mode";
 import "components/PanelsLayout/PanelsLayout.scss";
 
 class PanelsLayout extends React.Component {
@@ -49,10 +48,7 @@ class PanelsLayout extends React.Component {
             <div className="Panels-panel Panels-brd-right" style={{ flexBasis: "223px", padding: "1rem 1rem" }}>
               <StatusDetailed/>
               <EmergencyStop onModeChange={ this.props.onModeChange }/>
-                {
-                  this.props.mode === Mode.MANUAL && 
-                  <ManualControl/> 
-                }
+                  <ManualControl mode={ this.props.mode }/> 
             </div>
             <div className="Panels-panel" style={{ flexGrow: "1" }}>
               <Lidar physicalWidth="22" physicalHeight="22" gridMax="10" gridCount="4"/>

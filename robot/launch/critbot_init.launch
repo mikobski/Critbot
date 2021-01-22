@@ -1,0 +1,16 @@
+<launch>
+    <include file="apm.launch" />
+    <include file="sensors.launch" />
+    <!--include file="t265_tf_to_mavros.launch" /-->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+    <include file="$(find critbot_2dnav)/launch/critbot_tf_configuration.launch" />
+    <include file="nmea_serial_driver.launch" />
+    <include file="arduino.launch" />
+    <include file="$(find waypoint_navigation)/launch/waypoint_navigation.launch"/>
+    <arg name="node_start_delay1" default="4" /> 
+    <arg name="node_start_delay" default="8" /> 
+    <!--node pkg="web_robot_communication" name="convert_nav_to_twist" type="convert_nav_to_twist.py" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/-->
+    <node pkg="web_robot_communication" name="wifi_status" type="wifi_status.py" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>
+    <node pkg="web_robot_communication" name="mode_changes" type="mode_changes.py" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>
+    
+</launch>

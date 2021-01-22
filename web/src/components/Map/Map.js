@@ -1,5 +1,5 @@
 import React, { createRef } from "react";
-import { Map as MapLeaf, TileLayer, Marker, Tooltip } from "react-leaflet";
+import { Map as MapLeaf, TileLayer } from "react-leaflet";
 import Polyline from 'react-leaflet-arrowheads'
 
 import "leaflet/dist/leaflet.css";
@@ -9,10 +9,9 @@ import WaypointMarkers from "components/Map/WaypointMarkers";
 import { CritbotIcon } from "components/Map/CritbotIcon";
 import RotatedMarker from "components/Map/RotatedMarker";
 import { Button, ButtonGroup } from "react-bootstrap";
-import { PlayFill, PauseFill } from "react-bootstrap-icons";
+import { PlayFill, XCircle as XIcon } from "react-bootstrap-icons";
 import RosTopic from "RosClient/Topic";
-import ActionClient from "RosClient/ActionClient";
-import Goal from "RosClient/Goal";
+import RosService from "RosClient/Service";
 import { RosContext } from "utils/RosContext";
 import { ROS_CONFIG } from "utils/RosConfig";
 import { Mode } from "utils/Mode";
@@ -23,11 +22,16 @@ class Map extends React.Component {
   static defaultProps = {
     noDataTimeout: 2000,
     odomTopic: ROS_CONFIG.defaultTopics.mapOdom,
-    navSatTopic: ROS_CONFIG.defaultTopics.mapNavSat
+    navSatTopic: ROS_CONFIG.defaultTopics.mapNavSat,
+    setWaypointsService: ROS_CONFIG.defaultTopics.mapSetWaypoints,
+    cancelMissionService: ROS_CONFIG.defaultTopics.mapCancelMission,
+    missionStatusTopic: ROS_CONFIG.defaultTopics.mapMissionStatus
 	};
   _odomTopic;
   _navSatTopic;
-  _actionClient;
+  _setWpService;
+  _cancelMissionService;
+  _missionStateTopic;
   _mapRef;
   _mapCenter;
   constructor(props, context) {
@@ -42,7 +46,8 @@ class Map extends React.Component {
         yawAvailable: false
       },
       waypoints: [],
-      isDriving: false
+      startWaypoint: null,
+      inMission: false
     }
     this._odomTopic = new RosTopic({
       ros: rosClient,
@@ -56,13 +61,21 @@ class Map extends React.Component {
       messageType: "sensor_msgs/NavSatFix",
       timeout: this.props.noDataTimeout
     });
-    this._actionClient = new ActionClient({
+    this._setWpService = new RosService({
       ros: rosClient,
-      serverName: ROS_CONFIG.defaultActionServers.mapWaypoints.server,
-      actionName: ROS_CONFIG.defaultActionServers.mapWaypoints.action,
-      omitStatus: false,
-      omitFeedback: true,
-      omitResult: false
+      name: this.props.setWaypointsService,
+      type: "waypoint_navigation/SetWaypoints"
+    });
+    this._cancelMissionService = new RosService({
+      ros: rosClient,
+      name: this.props.cancelMissionService,
+      type: "waypoint_navigation/CancelMission"
+    });
+    this._missionStatusTopic = new RosTopic({
+      ros: rosClient,
+      name: this.props.missionStatusTopic,
+      messageType: "std_msgs/String",
+      timeout: this.props.noDataTimeout
     });
     this._mapRef = createRef();
     this._mapCenter = null;
@@ -70,17 +83,17 @@ class Map extends React.Component {
   componentDidMount() {
     this._odomTopic.subscribe(this.odomListener, this.odomErrorListener);
     this._navSatTopic.subscribe(this.navSatListener, this.navSatErrorListener);
-    this._actionClient.cancel();
+    this._missionStatusTopic.subscribe(this.missionStatusListener, this.missionStatusError);
   }
   componentDidUpdate(prevProps) {
     if(this.props.mode !== Mode.AUTO && prevProps.mode === Mode.AUTO) {
-      console.log("cancel");
-      this._actionClient.cancel();
+      this.handleCancel();
     }
   }
   componentWillUnmount() {
     this._odomTopic.unsubscribe(this.odomListener, this.odomErrorListener);
     this._navSatTopic.unsubscribe(this.navSatListener, this.navSatErrorListener);
+    this._missionStatusTopic.unsubscribe(this.missionStatusListener, this.missionStatusError);
   }
   odomListener = (message) => {
     if(message && message.pose) {
@@ -88,7 +101,7 @@ class Map extends React.Component {
         let geo = Object.assign({}, prevState.geo);
         const qa = message.pose.pose.orientation;
         const euler = qte([qa.x, qa.y, qa.z, qa.w]);
-        geo.yaw = -euler[0]*180/Math.PI + 180;
+        geo.yaw = -euler[0]*180/Math.PI;
         geo.yawAvailable = true;
         return {geo: geo};
       });
@@ -108,7 +121,7 @@ class Map extends React.Component {
     });
   };
   navSatListener = (message) => {
-    if(message) {
+    if(message && message.latitude !== null && message.longitude !== null) {
       this.setState((prevState) => {
         let geo = Object.assign({}, prevState.geo);
         geo.lat = message.latitude;
@@ -131,61 +144,67 @@ class Map extends React.Component {
       return {geo: geo};
     });
   };
+  missionStatusListener = (msg) => {
+    if(msg.data === "IN_MISSION") {
+      this.setState({ inMission: true });
+    } else if(msg.data === "IDLE") {
+      this.setState({ inMission: false });
+    } else {
+      console.error(`Unknown mission status! ${msg}`);  
+    }
+  }
+  missionStatusError = () => {
+  };
   handleStart = () => {
-    this.setState(() => {
-      console.log("start gola");
-      const waypoint = this.state.waypoints[0];
-      const pos = this._geoToOdom([...waypoint.pos, 0], this.state.geoHome);
-      let goal = new Goal({
-        actionClient: this._actionClient,
-        goalMessage: {
-          target_pose: {
-            header: {
-              frame_id: "odom",
-              stamp: 0
-            },
-            pose: {
-              position: {
-                x: pos[0],
-                y: pos[1],
-                z: 0
-              },
-              orientation: {
-                x: 0, y:0, z:0, w:1
-              }
-            }
-          }
-        }
-      });
-      goal.on('result', function(result) {
-        console.log(this);
-        console.log(result);
-      });
-      goal.on('status', (status) => {
-        //console.log(status);
-      });
-      goal.send();
-      return { isDriving: true }
+    let waypoints = this.state.waypoints.map((wp) => {
+      return {
+        x: wp.lat,
+        y: wp.lng,
+        theta: 0
+      }
+    });
+    this._setWpService.callService({
+      waypoints: waypoints
+    }, (msg) => {
+      if(msg.statusCode === 0) {
+        this.setState( { 
+          inMission: true,
+          startWaypoint: {
+            lat: this.state.geo.lat,
+            lng: this.state.geo.lng
+          } });
+      } else {
+        console.error(`Setting waypoint failed! ${msg.statusText}`);
+      }
+    }, (msg) => {
+      console.error(`Setting waypoint failed! ${msg}`);
+      this.setState( { inMission: false });
     });
   };
-  handlePause = () => {
-    this.setState(() => {
-      this._actionClient.cancel();
-      return { isDriving: false }
-    });
+  handleCancel = () => {
+    this._cancelMissionService.callService({}, (msg) => {
+      if(msg.statusCode === 0) {
+        this.setState( { inMission: false });
+      } else {
+        console.error(`Setting waypoint failed! ${msg.statusText}`);
+      }
+    }, (msg) => {
+      console.error(`Mission cancel failed! ${msg}`);
+    });    
   };
   handleMapClick = (e) => {
-    if(this.state.isDriving) return;
+    if(this.state.inMission) return;
     this.setState((prevState) => {   
       const wp = prevState.waypoints;
       let newWp = wp.concat({
-        pos: [e.latlng.lat, e.latlng.lng]
+        lat: e.latlng.lat, 
+        lng: e.latlng.lng
       });
       return  {waypoints: newWp}; 
     });  
   };
   handleMarkerClick = (e, i) => {
-    if(this.state.isDriving) return;
+    if(this.state.inMission) return;
     this.setState((prevState) => {   
       let wp = [...prevState.waypoints];
       wp.splice(i, 1);
@@ -193,10 +212,11 @@ class Map extends React.Component {
     });  
   };
   handleMarkerDrag = (e, i) => {
-    if(this.state.isDriving) return;
+    if(this.state.inMission) return;
     this.setState((prevState) => {
       const wp = prevState.waypoints;
-      wp[i].pos = [e.latlng.lat, e.latlng.lng]; 
+      wp[i].lat = e.latlng.lat
+      wp[i].lng = e.latlng.lng; 
       return {waypoints: wp};
     });    
   };
@@ -218,13 +238,13 @@ class Map extends React.Component {
     return (
       <div className="Map-container">
         <div className="Map-header">
-          { this.props.mode == Mode.AUTO &&
+          { this.props.mode === Mode.AUTO &&
             <ButtonGroup>
-              <Button variant="primary" disabled={ this.state.isDriving } onClick={ this.handleStart }>
+              <Button variant="primary" disabled={ this.state.inMission } onClick={ this.handleStart }>
                 <PlayFill/> Start mission
               </Button>
-              <Button variant="primary" disabled={ !this.state.isDriving } onClick={ this.handlePause }>
-                <PauseFill/> Pause mission
+              <Button variant="primary" disabled={ !this.state.inMission } onClick={ this.handleCancel }>
+                <XIcon/> Cancel mission
               </Button>
             </ButtonGroup>
           }
@@ -237,14 +257,17 @@ class Map extends React.Component {
             maxZoom={21}
             maxNativeZoom={19}
           />
-          <WaypointMarkers waypoints={ this.state.waypoints } editable={ !this.state.isDriving }
+          <WaypointMarkers waypoints={ this.state.waypoints } editable={ !this.state.inMission }
             onMarkerDrag={ this.handleMarkerDrag } onMarkerClick={ this.handleMarkerClick }/>
             { this.state.geo.yawAvailable && this.state.geo.posAvailable &&
               <RotatedMarker icon={ CritbotIcon } position={ this.state.geo } rotationAngle={ this.state.geo.yaw }/>              
             }
             { this.state.geo.yawAvailable && this.state.geo.posAvailable && 
               this.state.waypoints.length > 0 &&
-              <Polyline positions={[[this.state.geo.lat, this.state.geo.lng], this.state.waypoints[0].pos]} { ...curPosLineOptions } arrowheads={{size: '20px'}}/>
+              <Polyline positions={[
+                (this.state.inMission ? [this.state.startWaypoint.lat, this.state.startWaypoint.lng] : [this.state.geo.lat, this.state.geo.lng]), 
+                [this.state.waypoints[0].lat, this.state.waypoints[0].lng]
+              ]} { ...curPosLineOptions } arrowheads={{size: '20px'}}/>
             }
         </MapLeaf>
       </div>

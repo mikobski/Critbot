@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  nav_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -53,6 +54,11 @@ find_package(catkin REQUIRED COMPONENTS
 #   Message1.msg
 #   Message2.msg
 # )
+#add_message_files(
+#  FILES
+#  PointPlanar.msg
+#  Points.msg
+#)
 
 # Generate services in the 'srv' folder
 add_service_files(
@@ -71,6 +77,7 @@ add_service_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
+  nav_msgs
 )
 
 ################################################

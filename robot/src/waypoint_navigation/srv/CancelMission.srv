@@ -1,0 +1,5 @@
+# Empty message
+---
+# Response with status
+int8 statusCode
+string statusMessage
