@@ -59,7 +59,7 @@ sudo apt-get update
 ## Get ROS/Gazebo
 echo "!  Installing ROS"
 sudo apt install ros-melodic-desktop -y
-
+sudo apt install catkin -y
 ## Install rosinstall and other dependencies
 echo "!  Installing rosinstall and other dependecies"
 sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential ros-melodic-rqt -y
@@ -145,18 +145,19 @@ git clone https://github.com/Slamtec/rplidar_ros.git
 #############################################################################
 #				Termination
 #############################################################################
-## Build!
-echo "!  Build!"
-sudo apt install catkin
-cd $ABS_PATH
-catkin_make
-
 ## Setup environment variables
 echo "!  Setting up enviroment variables"
 rossource="source /opt/ros/melodic/setup.bash"
 if grep -Fxq "$rossource" ~/.bashrc; then echo ROS setup.bash already in .bashrc;
 else echo "$rossource" >> ~/.bashrc; fi
 eval $rossource
+
+source ~/.bashrc
+
+## Build!
+echo "!  Build!"
+cd $ABS_PATH
+catkin_make
 
 wssource="source $ABS_PATH/devel/setup.bash"
 eval $wssource
