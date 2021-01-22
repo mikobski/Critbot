@@ -1,15 +1,15 @@
-# Interfejs graficzny strony internetowej
-
+# Aplikacja operatora
 ## Instalacja Node.js i NPM
-#### Linux
+### 
+#### Linux (Ubuntu 18.04)
 Uruchom `./install_environment_web.sh`.
-#### Windows
-Też powinno działać, choć nie testowałem. Wystarczy zainstalować Node.js w wersji 14.
+#### Windows 10
+Ręczna instalacja Node.js (zalecana wersja 14.15 lub nowsza).
 
-## Uruchomienie Webviz
-Uruchom w folderze *web/*:
+## Budowanie i uruchomienie
+Wykonaj w folderze *web/*
 * `npm install` - dociąganie zależności
-* `npm start` - budowanie (ze śledzeniem zmian na żywo) oraz uruchomienie serwera pod adresem `http://localhost:3000/`
+* `npm start` - budowanie (ze śledzeniem zmian na żywo) i uruchomienie serwera pod adresem `http://localhost:3000/`
 
-Budowanie w pełni zoptymalizowanej wersji odbywa się poprzez komendę 
+#### Budowanie zoptymalizowanej wersji
 * `npm build` - budowanie
