@@ -7,9 +7,11 @@ Uruchom `./install_environment_web.sh`.
 Ręczna instalacja Node.js (zalecana wersja 14.15 lub nowsza).
 
 ## Budowanie i uruchomienie
+#### Wersja deweloperska
 Wykonaj w folderze *web/*
 * `npm install` - dociąganie zależności
 * `npm start` - budowanie (ze śledzeniem zmian na żywo) i uruchomienie serwera pod adresem `http://localhost:3000/`
 
 #### Budowanie zoptymalizowanej wersji
+Wykonaj w folderze *web/*
 * `npm build` - budowanie
