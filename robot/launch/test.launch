@@ -1,3 +1,0 @@
-<launch>
-	<node pkg="mavros" type="mavsys" name="mavros_change_rate" args="rate --raw-sensors 10"/>
-</launch>

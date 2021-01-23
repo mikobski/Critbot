@@ -1,5 +1,0 @@
-<launch>
-	<include file="gazebo.launch"></include>
-	<!-- <include file="gps_translator.launch"></include> -->
-	<!-- <include file="mavros.launch"></include>	-->
-</launch>

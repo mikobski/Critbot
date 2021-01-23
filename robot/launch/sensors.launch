@@ -1,4 +1,0 @@
-<launch>
-    <include file="cameras.launch"/>
-    <include file="$(find rplidar_ros)/launch/rplidar_s1.launch"/>
-</launch>
