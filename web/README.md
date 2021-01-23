@@ -15,6 +15,7 @@ Wykonaj w folderze *web/*
 
 #### Budowanie zoptymalizowanej wersji
 Wykonaj w folderze *web/*
+* `npm install` - dociąganie zależności
 * `npm build` - budowanie
 
 ## Installation (Node.js and NPM)
@@ -32,5 +33,6 @@ Run in *web/* directory
 
 #### Building optimized app
 Run in *web/* directory
+* `npm install` - installing dependecies
 * `npm build` - building app
 
