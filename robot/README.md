@@ -34,5 +34,5 @@ If everything went fine, you should be able to start robot software
 To run robot software:
 ```
 cd launch
-roslaunch critbot_init.launch
+roslaunch full_critbot_init.launch
 ```
