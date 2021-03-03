@@ -14,6 +14,7 @@
     <include file="$(find critbot_2dnav)/launch/move_base_nav.launch" />
     <include file="$(find ekf_localization)/launch/ekf_global.launch" />
     <include file="$(find critbot_2dnav)/launch/critbot_tf_configuration.launch" />
+    <include file="imu_filter_madgwick.launch" />
     <arg name="node_start_delay" default="8" /> 
     <!--node pkg="web_robot_communication" name="convert_nav_to_twist" type="convert_nav_to_twist.py" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/-->
     <node pkg="web_robot_communication" name="wifi_status" type="wifi_status.py" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' "/>

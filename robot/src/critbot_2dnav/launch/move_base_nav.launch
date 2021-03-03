@@ -16,7 +16,7 @@
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
 
     <remap from="odom" to="/odometry/local" />
-    <remap from="cmd_vel" to="/critbot/autonomic_control" />
+    <remap from="cmd_vel" to="/cmd_vel" />
     <remap from="scan" to="/scan_lidar" />
 
   </node>

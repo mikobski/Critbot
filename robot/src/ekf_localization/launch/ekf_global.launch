@@ -7,7 +7,7 @@
     <!-- Subscriptions (in yaml)
       odom0: odometry/gps
       odom1: /odom
-      imu0:  /mavros/imu/data
+      imu0:  /madgwick/data
     -->
     <!-- Publications -->
     <remap from="odometry/filtered" to="odometry/global" />
@@ -27,9 +27,10 @@
     <param name="frequency" value="10.0" />
     <!-- Use IMU, not odometry, for yaw -->
     <param name="use_odometry_yaw" value="false" />
+<param name="delay" value="5" />
 
     <!-- Subscriptions -->
-    <remap from="imu/data" to="mavros/imu/data" />
+    <remap from="imu/data" to="madgwick/data" />
     <remap from="gps/fix" to="fix" />
     <remap from="odometry/filtered" to="odometry/global" />
 

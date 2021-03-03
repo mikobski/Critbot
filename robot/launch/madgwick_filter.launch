@@ -1,0 +1,10 @@
+<launch>
+	<remap from="imu/data_raw" to="mavros/imu/data" />
+	<remap from="imu/mag" to="mavros/imu/mag" />
+	<node name="madgwick" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+		
+		<param name="use_mag" value="true" />
+		<param name="use_magnetic_field_msg" value="true" />
+	</node>
+
+</launch>
